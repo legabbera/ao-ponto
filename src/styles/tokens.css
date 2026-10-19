@@ -1,0 +1,49 @@
+/* =========================================================
+   IDENTIDADE VISUAL — Frango Assado
+   Altere as cores aqui para mudar o app inteiro.
+   ========================================================= */
+:root {
+  /* Cores principais */
+  --carvao: #1F1B18;
+  --carvao-2: #2B2622;
+  --carvao-3: #3A332E;
+  --brasa: #D9481C;          /* ações principais */
+  --brasa-escura: #B83A13;
+  --brasa-clara: #FDE7DE;
+  --creme: #FBF6EE;          /* fundo */
+  --creme-2: #F3EADC;
+  --branco: #FFFFFF;
+  --verde: #2E8B57;          /* positivo */
+  --verde-claro: #E2F3EA;
+  --vermelho: #C0392B;       /* negativo / erro */
+  --vermelho-claro: #FBE4E1;
+  --ambar: #E8A33D;          /* alerta / pendente */
+  --ambar-claro: #FCF0DA;
+  --azul: #3B6FB6;
+  --azul-claro: #E3ECF8;
+  --roxo: #7A4FB0;
+
+  /* Texto */
+  --texto: #2A2420;
+  --texto-suave: #6E625A;
+  --texto-claro: #F5EDE3;
+  --borda: #E8DDCD;
+
+  /* Tipografia */
+  --fonte-titulo: 'Outfit', system-ui, sans-serif;
+  --fonte-texto: 'Inter', system-ui, sans-serif;
+
+  /* Formas */
+  --raio-p: 10px;
+  --raio: 16px;
+  --raio-g: 24px;
+  --sombra: 0 2px 6px rgba(31, 27, 24, .06), 0 8px 24px rgba(31, 27, 24, .06);
+  --sombra-forte: 0 12px 40px rgba(31, 27, 24, .18);
+
+  /* Medidas */
+  --toque: 48px;             /* altura mínima de botões */
+  --sidebar: 248px;
+  --sidebar-recolhida: 76px;
+  --bottom-nav: 68px;
+  --transicao: 180ms cubic-bezier(.4, 0, .2, 1);
+}

@@ -1,0 +1,18 @@
+ node_modules/
+dist/
+.DS_Store
+*.local
+.env
+.env.*
+!.env.example
+.vercel
+.netlify
+\; Set-Content -Path 'C:\Users\Pc\Documents\appweb\frango assado\netlify.toml' -Value \[build]
+ command = npm run build 
+ publish = dist 
+
+[[redirects]]
+ from = /* 
+ to = /index.html 
+ status = 200
+
