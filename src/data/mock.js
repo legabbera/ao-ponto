@@ -1,58 +1,65 @@
 /**
  * ============================================================
- *  DADOS FICTÍCIOS (MOCK) — NÃO SÃO DADOS REAIS
+ *  DADOS FICTÍCIOS (MOCK) - NÃO SÃO DADOS REAIS
  * ============================================================
  * Tudo aqui é gerado por fórmula para parecer realista.
  * No futuro, estas funções serão substituídas por chamadas
  * ao backend (ver src/services/api.js), mantendo o MESMO formato
- * de retorno — assim as telas não precisam mudar.
+ * de retorno - assim as telas não precisam mudar.
  */
 
 export const PONTOS = [
   { id: 'centro', nome: 'Ponto Centro', referencia: 'Praça da Matriz', fator: 1.0, ativo: true, diasFechado: [] },
-  { id: 'feira', nome: 'Ponto Feira', referencia: 'Feira livre – Av. Brasil', fator: 1.35, ativo: true, diasFechado: [1, 2] }, // fecha seg/ter
+  { id: 'feira', nome: 'Ponto Feira', referencia: 'Feira livre - Av. Brasil', fator: 1.35, ativo: true, diasFechado: [1, 2] }, // fecha seg/ter
   { id: 'jardim', nome: 'Ponto Jardim', referencia: 'Rua das Flores, 120', fator: 0.75, ativo: true, diasFechado: [] },
 ];
 
-/** forma: 'unidade' | 'meia' | 'peso' | 'porcao'  — preço por kg quando 'peso'. */
-export const PRODUTOS = [
-  { id: 'inteiro', nome: 'Frango inteiro', forma: 'unidade', preco: 45.0, base: 18, cor: '#D9481C', emoji: '🍗' },
-  { id: 'meio', nome: 'Meio frango', forma: 'meia', preco: 25.0, base: 14, cor: '#E8A33D', emoji: '🍗' },
-  { id: 'linguica', nome: 'Linguiça assada', forma: 'peso', precoKg: 39.9, gramasMedia: 400, base: 10, cor: '#8B4A22', emoji: '🌭' },
-  { id: 'lombo', nome: 'Lombo assado', forma: 'peso', precoKg: 54.9, gramasMedia: 450, base: 6, cor: '#7A4FB0', emoji: '🥩' },
-  { id: 'batata', nome: 'Batata refogada', forma: 'porcao', preco: 12.0, base: 16, cor: '#2E8B57', emoji: '🥔' },
+export const CATEGORIAS = [
+  { id: 'todos', nome: 'Todos' },
+  { id: 'frangos', nome: 'Frangos Assados' },
+  { id: 'carnes', nome: 'Carnes & Espetos' },
+  { id: 'guarnicoes', nome: 'Acompanhamentos' },
+  { id: 'bebidas', nome: 'Bebidas' },
 ];
 
-/** Perfis demonstrativos — SIMULAÇÃO visual, não é segurança real. */
+export const PRODUTOS = [
+  { id: 'inteiro', nome: 'Frango inteiro assado', categoria: 'frangos', forma: 'unidade', preco: 45.0, base: 18, cor: '#D9481C', emoji: '🍗', desc: 'Acompanha farofa crocante e tempero da casa' },
+  { id: 'meio', nome: 'Meio frango assado', categoria: 'frangos', forma: 'meia', preco: 25.0, base: 14, cor: '#E8A33D', emoji: '🍗', desc: 'Metade do frango dourado e suculento com farofa' },
+  { id: 'linguica', nome: 'Linguiça toscana assada', categoria: 'carnes', forma: 'peso', precoKg: 39.9, gramasMedia: 400, base: 10, cor: '#8B4A22', emoji: '🌭', desc: 'Assada na brasa (preço por kg)' },
+  { id: 'lombo', nome: 'Lombo suíno assado', categoria: 'carnes', forma: 'peso', precoKg: 54.9, gramasMedia: 450, base: 6, cor: '#7A4FB0', emoji: '🥩', desc: 'Fatias suculentas de lombo na brasa' },
+  { id: 'batata', nome: 'Batata bolinha refogada', categoria: 'guarnicoes', forma: 'porcao', preco: 12.0, base: 16, cor: '#2E8B57', emoji: '🥔', desc: 'No azeite, ervas finas e alho' },
+  { id: 'maionese', nome: 'Maionese caseira de batata', categoria: 'guarnicoes', forma: 'porcao', preco: 15.0, base: 12, cor: '#D4AC0D', emoji: '🥗', desc: 'Receita tradicional de domingo' },
+  { id: 'farofa', nome: 'Farofa crocante especial', categoria: 'guarnicoes', forma: 'porcao', preco: 10.0, base: 14, cor: '#B7950B', emoji: '🥣', desc: 'Com bacon, milho e cebola tostada' },
+  { id: 'refri2l', nome: 'Refrigerante 2L', categoria: 'bebidas', forma: 'unidade', preco: 14.0, base: 15, cor: '#2874A6', emoji: '🥤', desc: 'Coca-Cola ou Guaraná Antarctica' },
+];
+
 export const PERFIS = {
-  owner: { id: 'owner', nome: 'Carlos Mendes', papel: 'Dono / Administrador técnico', emoji: '👑', pontos: ['centro', 'feira', 'jardim'], consolidado: true },
-  admin: { id: 'admin', nome: 'Juliana Rocha', papel: 'Administradora do negócio', emoji: '🧑‍💼', pontos: ['centro', 'jardim'], consolidado: true },
-  vendedor: { id: 'vendedor', nome: 'Zé Batista', papel: 'Frangueiro / Vendedor', emoji: '🧑‍🍳', pontos: ['centro'], consolidado: false },
+  owner: { id: 'owner', nome: 'Carlos Mendes', papel: 'Dono / Administrador técnico', emoji: '👨‍💼', pontos: ['centro', 'feira', 'jardim'], consolidado: true },
+  admin: { id: 'admin', nome: 'Juliana Rocha', papel: 'Administradora do negócio', emoji: '👩‍💼', pontos: ['centro', 'jardim'], consolidado: true },
+  vendedor: { id: 'vendedor', nome: 'Zé Batista', papel: 'Frangueiro / Vendedor', emoji: '👨‍🍳', pontos: ['centro'], consolidado: false },
 };
 
 export const STATUS_PEDIDO = [
   { id: 'aguardando', nome: 'Aguardando confirmação', emoji: '⏳', cor: '#FCF0DA' },
-  { id: 'confirmado', nome: 'Confirmado', emoji: '✅', cor: '#E3ECF8' },
+  { id: 'confirmado', nome: 'Confirmado', emoji: '👍', cor: '#E3ECF8' },
   { id: 'preparo', nome: 'Em preparo', emoji: '🔥', cor: '#FDE7DE' },
-  { id: 'pronto', nome: 'Pronto para retirada', emoji: '📦', cor: '#EFE6F8' },
-  { id: 'entregue', nome: 'Entregue / retirado', emoji: '🤝', cor: '#E2F3EA' },
-  { id: 'cancelado', nome: 'Cancelado', emoji: '✖️', cor: '#FBE4E1' },
+  { id: 'pronto', nome: 'Pronto para retirada', emoji: '🍗', cor: '#EFE6F8' },
+  { id: 'entregue', nome: 'Entregue / retirado', emoji: '✅', cor: '#E2F3EA' },
+  { id: 'cancelado', nome: 'Cancelado', emoji: '❌', cor: '#FBE4E1' },
 ];
 
-// ---------- gerador pseudoaleatório (sempre gera os mesmos números para a mesma data) ----------
 function semente(texto) {
   let h = 2166136261;
   for (let i = 0; i < texto.length; i++) { h ^= texto.charCodeAt(i); h = Math.imul(h, 16777619); }
   return () => { h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 }
 const FATOR_DIA = [1.7, 0.7, 0.8, 0.9, 1.0, 1.25, 1.55]; // dom..sáb
-const chave = (d) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+const chave = (d) => d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate();
 const mesmoDia = (a, b) => chave(a) === chave(b);
 
-/** Vendas fictícias de UM ponto em UM dia. */
 function diaPonto(ponto, data, hoje) {
   const zero = { produtos: {}, itens: 0, vendas: 0, receita: 0 };
-  if (data > hoje && !mesmoDia(data, hoje)) return zero;          // futuro não tem venda
+  if (data > hoje && !mesmoDia(data, hoje)) return zero;
   if (ponto.diasFechado.includes(data.getDay())) return zero;
   const r = semente(ponto.id + chave(data));
   let f = FATOR_DIA[data.getDay()] * ponto.fator * (1 + 0.1 * Math.sin(data.getMonth() / 1.9));
@@ -70,10 +77,8 @@ function diaPonto(ponto, data, hoje) {
   return out;
 }
 
-// Distribuição das vendas ao longo do dia (08h às 20h): picos no almoço e fim da tarde
 const CURVA_HORA = [2, 4, 7, 12, 14, 9, 5, 4, 5, 9, 12, 10, 7];
-const HORAS = CURVA_HORA.map((_, i) => `${String(i + 8).padStart(2, '0')}h`);
-
+const HORAS = CURVA_HORA.map((_, i) => String(i + 8).padStart(2, '0') + 'h');
 const MESES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 const DIAS_SEM = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -82,12 +87,6 @@ function* dias(inicio, fim) {
   while (d <= fim) { yield new Date(d); d.setDate(d.getDate() + 1); }
 }
 
-/**
- * Calcula o resumo de vendas.
- * @param {string[]} pontosIds  pontos a considerar
- * @param {Date} inicio @param {Date} fim
- * @param {'hora'|'dia'|'diaSemana'|'semana'|'mes'} grupo  agrupamento do gráfico de evolução
- */
 export function resumoVendas(pontosIds, inicio, fim, grupo, hoje = new Date()) {
   const pontos = PONTOS.filter((p) => pontosIds.includes(p.id));
   const porProduto = Object.fromEntries(PRODUTOS.map((p) => [p.id, { qtd: 0, kg: 0, receita: 0 }]));
@@ -96,10 +95,10 @@ export function resumoVendas(pontosIds, inicio, fim, grupo, hoje = new Date()) {
   const totais = { receita: 0, itens: 0, vendas: 0 };
 
   const rotulo = (d) => {
-    if (grupo === 'diaSemana') return `${DIAS_SEM[d.getDay()]} ${d.getDate()}`;
-    if (grupo === 'dia') return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
-    if (grupo === 'semana') return `Sem ${Math.ceil(d.getDate() / 7) > 4 ? 5 : Math.ceil(d.getDate() / 7)}`;
-    if (grupo === 'mes') return MESES[d.getMonth()] + (inicio.getFullYear() !== fim.getFullYear() ? `/${String(d.getFullYear()).slice(2)}` : '');
+    if (grupo === 'diaSemana') return DIAS_SEM[d.getDay()] + ' ' + d.getDate();
+    if (grupo === 'dia') return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0');
+    if (grupo === 'semana') return 'Sem ' + (Math.ceil(d.getDate() / 7) > 4 ? 5 : Math.ceil(d.getDate() / 7));
+    if (grupo === 'mes') return MESES[d.getMonth()] + (inicio.getFullYear() !== fim.getFullYear() ? '/' + String(d.getFullYear()).slice(2) : '');
     return '';
   };
   if (grupo === 'hora') HORAS.forEach((h) => serie.set(h, { receita: 0, vendas: 0 }));
@@ -110,7 +109,9 @@ export function resumoVendas(pontosIds, inicio, fim, grupo, hoje = new Date()) {
     for (const p of pontos) {
       const r = diaPonto(p, d, hoje);
       for (const id in r.produtos) {
-        porProduto[id].qtd += r.produtos[id].qtd; porProduto[id].kg += r.produtos[id].kg; porProduto[id].receita += r.produtos[id].receita;
+        if (porProduto[id]) {
+          porProduto[id].qtd += r.produtos[id].qtd; porProduto[id].kg += r.produtos[id].kg; porProduto[id].receita += r.produtos[id].receita;
+        }
       }
       Object.assign(porPonto[p.id], { receita: porPonto[p.id].receita + r.receita, vendas: porPonto[p.id].vendas + r.vendas, itens: porPonto[p.id].itens + r.itens });
       totais.receita += r.receita; totais.itens += r.itens; totais.vendas += r.vendas;
@@ -133,7 +134,6 @@ export function resumoVendas(pontosIds, inicio, fim, grupo, hoje = new Date()) {
   };
 }
 
-/** Resumo fictício de pedidos/reservas por status. Cancelados NÃO entram no faturamento. */
 export function resumoPedidos(pontosIds, inicio, fim, hoje = new Date()) {
   const r = semente(pontosIds.join() + chave(inicio) + chave(fim));
   const fimEf = fim > hoje ? hoje : fim;
@@ -150,3 +150,114 @@ export function resumoPedidos(pontosIds, inicio, fim, hoje = new Date()) {
     cancelado: Math.round(entregue * (0.03 + r() * 0.04)),
   };
 }
+
+export const PEDIDOS_INICIAIS = [
+  {
+    id: 1041,
+    cliente: 'Marcos Oliveira',
+    telefone: '11987654321',
+    ponto: 'centro',
+    data: 'hoje',
+    hora: '11:30',
+    itens: [
+      { produtoId: 'inteiro', nome: 'Frango inteiro assado', qtd: 1, precoUnit: 45.0, obs: 'Cortar em 4 pedaços' },
+      { produtoId: 'batata', nome: 'Batata refogada', qtd: 1, precoUnit: 12.0 }
+    ],
+    total: 57.0,
+    status: 'pronto',
+    pagamento: { status: 'pago', metodo: 'pix' },
+    criadoEm: '10:15'
+  },
+  {
+    id: 1042,
+    cliente: 'Fernanda Souza',
+    telefone: '11976543210',
+    ponto: 'centro',
+    data: 'hoje',
+    hora: '12:00',
+    itens: [
+      { produtoId: 'inteiro', nome: 'Frango inteiro assado', qtd: 2, precoUnit: 45.0, obs: 'Bem douradinho' },
+      { produtoId: 'linguica', nome: 'Linguiça toscana assada', qtd: 1, pesoKg: 0.5, precoKg: 39.9, precoUnit: 19.95 }
+    ],
+    total: 109.95,
+    status: 'preparo',
+    pagamento: { status: 'pendente', metodo: 'retirada' },
+    criadoEm: '09:40'
+  },
+  {
+    id: 1043,
+    cliente: 'Roberto Lima',
+    telefone: '11991234567',
+    ponto: 'centro',
+    data: 'hoje',
+    hora: '12:30',
+    itens: [
+      { produtoId: 'meio', nome: 'Meio frango assado', qtd: 1, precoUnit: 25.0 },
+      { produtoId: 'batata', nome: 'Batata refogada', qtd: 2, precoUnit: 12.0 }
+    ],
+    total: 49.0,
+    status: 'confirmado',
+    pagamento: { status: 'pendente', metodo: 'retirada' },
+    criadoEm: '10:30'
+  },
+  {
+    id: 1044,
+    cliente: 'Carla Silveira',
+    telefone: '11988887777',
+    ponto: 'centro',
+    data: 'hoje',
+    hora: '13:00',
+    itens: [
+      { produtoId: 'inteiro', nome: 'Frango inteiro assado', qtd: 1, precoUnit: 45.0 },
+      { produtoId: 'lombo', nome: 'Lombo assado', qtd: 1, pesoKg: 0.45, precoKg: 54.9, precoUnit: 24.70 }
+    ],
+    total: 69.70,
+    status: 'aguardando',
+    pagamento: { status: 'pendente', metodo: 'retirada' },
+    criadoEm: '11:00'
+  },
+  {
+    id: 1045,
+    cliente: 'Cláudio Duarte',
+    telefone: '11999991111',
+    ponto: 'centro',
+    data: 'domingo',
+    hora: '12:00',
+    itens: [
+      { produtoId: 'inteiro', nome: 'Frango inteiro assado', qtd: 3, precoUnit: 45.0, obs: 'Almoço de família' },
+      { produtoId: 'batata', nome: 'Batata refogada', qtd: 2, precoUnit: 12.0 },
+      { produtoId: 'farofa', nome: 'Farofa crocante', qtd: 2, precoUnit: 10.0 }
+    ],
+    total: 179.0,
+    status: 'confirmado',
+    pagamento: { status: 'pago', metodo: 'pix' },
+    criadoEm: '08:20'
+  }
+];
+
+export const VENDAS_RECENTES = [
+  {
+    id: 'V-102',
+    hora: '11:10',
+    itensTexto: '1x Frango inteiro, 1x Batata',
+    total: 57.0,
+    metodo: 'pix',
+    cliente: 'Balcão'
+  },
+  {
+    id: 'V-101',
+    hora: '10:45',
+    itensTexto: '1x Meio frango',
+    total: 25.0,
+    metodo: 'dinheiro',
+    cliente: 'Balcão'
+  },
+  {
+    id: 'V-100',
+    hora: '10:20',
+    itensTexto: '1x Linguiça assada (480g)',
+    total: 19.15,
+    metodo: 'cartao_debito',
+    cliente: 'Dona Neide'
+  }
+];

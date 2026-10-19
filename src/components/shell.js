@@ -1,22 +1,17 @@
 /**
- * NAVEGAÇÃO (casca do app)
- * - Celular: barra inferior + botão "+" (Nova venda / Novo pedido)
- * - Tablet/desktop: menu lateral recolhível + cabeçalho
- * As telas visíveis mudam conforme o perfil (simulação visual).
+ * CASCA DO APP (Header, Sidebar e Bottom Navigation)
  */
 import { icone } from './icons.js';
-import { abrirModal, toast } from './ui.js';
+import { toast, abrirModal } from './ui.js';
 import { store } from '../state/store.js';
-import { PERFIS, PONTOS } from '../data/mock.js';
+import { PONTOS, PERFIS } from '../data/mock.js';
 
-/** Lista de telas. "perfis" = quem vê; "etapa" = quando será construída. */
 export const ROTAS = [
   { id: 'inicio', rotulo: 'Início', icone: 'home', principal: true },
-  { id: 'vendas', rotulo: 'Vendas', icone: 'vendas', principal: true, etapa: 2 },
-  { id: 'pedidos', rotulo: 'Pedidos', icone: 'pedidos', principal: true, etapa: 2 },
-  { id: 'clientes', rotulo: 'Clientes', icone: 'clientes', principal: true, etapa: 2 },
-  { id: 'produtos', rotulo: 'Produtos', icone: 'pacote', etapa: 2, desc: 'Cardápio e formas de venda' },
-  { id: 'pontos', rotulo: 'Pontos de venda', icone: 'local', etapa: 2, perfis: ['owner', 'admin'], desc: 'Locais e comparativos' },
+  { id: 'vendas', rotulo: 'Vendas', icone: 'vendas', principal: true, desc: 'PDV e caixa rápido' },
+  { id: 'pedidos', rotulo: 'Pedidos', icone: 'calendario', principal: true, desc: 'Reservas e encomendas' },
+  { id: 'estoque', rotulo: 'Estoque', icone: 'pacote', principal: true, etapa: 2, desc: 'Frangos e insumos' },
+  { id: 'clientes', rotulo: 'Clientes', icone: 'clientes', etapa: 2, perfis: ['owner', 'admin'], desc: 'Histórico e fidelidade' },
   { id: 'usuarios', rotulo: 'Usuários', icone: 'usuarios', etapa: 2, perfis: ['owner', 'admin'], desc: 'Equipe e permissões' },
   { id: 'whatsapp', rotulo: 'WhatsApp', icone: 'conversa', etapa: 3, perfis: ['owner', 'admin'], desc: 'Central de atendimento' },
   { id: 'pagamentos', rotulo: 'Pagamentos', icone: 'cartao', etapa: 3, perfis: ['owner'], desc: 'Máquinas e provedores' },
@@ -29,7 +24,9 @@ export function renderShell(raiz, rotaAtual, irPara) {
   const st = store.get(), perfil = PERFIS[st.perfil];
   const rotas = rotasDoPerfil();
   const iniciais = perfil.nome.split(' ').map((p) => p[0]).slice(0, 2).join('');
-  const nomePonto = st.ponto === 'todos' ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome) : PONTOS.find((p) => p.id === st.ponto)?.nome;
+  const nomePonto = st.ponto === 'todos' 
+    ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome) 
+    : PONTOS.find((p) => p.id === st.ponto)?.nome;
   const atual = ROTAS.find((r) => r.id === rotaAtual);
   const ativo = (id) => (id === rotaAtual || (id === 'menu' && !atual?.principal && rotaAtual !== 'inicio') ? 'aria-current="page"' : '');
 
@@ -73,7 +70,7 @@ export function renderShell(raiz, rotaAtual, irPara) {
     return `<button class="sb-item" data-ir="${r.id}" ${r.id === rotaAtual ? 'aria-current="page"' : ''} title="${r.rotulo}">${icone(r.icone)}<span>${r.rotulo}</span>${r.etapa ? `<span class="tag-breve">Etapa ${r.etapa}</span>` : ''}</button>`;
   }
 
-  // ---- eventos ----
+  // Eventos
   raiz.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => irPara(b.dataset.ir)));
   raiz.querySelectorAll('[data-acao]').forEach((b) => b.addEventListener('click', () => acoes[b.dataset.acao]?.()));
 
@@ -85,8 +82,8 @@ export function renderShell(raiz, rotaAtual, irPara) {
     if (aberto) return;
     const fundo = document.createElement('div'); fundo.className = 'fab-fundo';
     const menu = document.createElement('div'); menu.className = 'fab-menu';
-    menu.innerHTML = `<button class="btn btn-escuro" data-q="novo-pedido">${icone('calendario')} Novo pedido/reserva</button>
-                      <button class="btn btn-primario" data-q="nova-venda">${icone('vendas')} Nova venda</button>`;
+    menu.innerHTML = `<button class="btn btn-escuro" data-q="novo-pedido">${icone('calendario')} Novo pedido / reserva</button>
+                      <button class="btn btn-primario" data-q="nova-venda">${icone('vendas')} Nova venda (PDV)</button>`;
     const fechar = () => { menu.remove(); fundo.remove(); fab.setAttribute('aria-expanded', 'false'); };
     fundo.addEventListener('click', fechar);
     menu.querySelectorAll('[data-q]').forEach((b) => b.addEventListener('click', () => { fechar(); acoes[b.dataset.q](); }));
@@ -94,14 +91,14 @@ export function renderShell(raiz, rotaAtual, irPara) {
   });
 
   const acoes = {
-    'nova-venda': () => { toast('A tela de Nova venda chega na Etapa 2.', 'info'); irPara('vendas'); },
-    'novo-pedido': () => { toast('O formulário de Novo pedido chega na Etapa 2.', 'info'); irPara('pedidos'); },
+    'nova-venda': () => irPara('vendas'),
+    'novo-pedido': () => irPara('pedidos'),
     recolher: () => { store.set({ sidebarRecolhida: !store.get().sidebarRecolhida }); raiz.querySelector('.app').classList.toggle('recolhido'); },
     notificacoes: () => abrirModal(`
       <h2>Notificações</h2><p>Exemplos fictícios.</p>
       <div class="pontos-lista">
-        <div class="ponto-linha"><div><strong>⏳ Reserva aguardando confirmação</strong><small>Pedido #1043 · retirada 19:00</small></div></div>
-        <div class="ponto-linha"><div><strong>🔥 2 frangos em preparo</strong><small>Ponto Centro · há 12 min</small></div></div>
+        <div class="ponto-linha"><div><strong>⏳ Reserva aguardando confirmação</strong><small>Pedido #1044 &bull; retirada 13:00</small></div></div>
+        <div class="ponto-linha"><div><strong>🔥 2 frangos no espeto</strong><small>Ponto Centro &bull; há 12 min</small></div></div>
         <div class="ponto-linha"><div><strong>📈 Meta do dia 80% atingida</strong><small>Todos os pontos</small></div></div>
       </div>
       <div class="modal-acoes"><button class="btn btn-contorno btn-bloco" data-fechar>Fechar</button></div>`),
@@ -114,9 +111,9 @@ export function modalPerfil(irPara) {
   const st = store.get();
   abrirModal(`
     <h2>Trocar perfil (demonstração)</h2>
-    <p>Veja como o menu e o dashboard mudam para cada tipo de usuário. <strong>Simulação visual — não é segurança real.</strong></p>
+    <p>Veja como o menu e o dashboard mudam para cada tipo de usuário. <strong>Simulação visual - não é segurança real.</strong></p>
     <div class="perfil-troca">
-      ${Object.values(PERFIS).map((p) => `<button class="perfil-op" data-p="${p.id}" aria-pressed="${p.id === st.perfil}"><span>${p.emoji}</span><span><strong>${p.nome}</strong><small>${p.papel} · ${p.pontos.length === 3 ? 'todos os pontos' : p.pontos.map((id) => PONTOS.find((x) => x.id === id).nome).join(', ')}</small></span></button>`).join('')}
+      ${Object.values(PERFIS).map((p) => `<button class="perfil-op" data-p="${p.id}" aria-pressed="${p.id === st.perfil}"><span>${p.emoji}</span><span><strong>${p.nome}</strong><small>${p.papel} &bull; ${p.pontos.length === 3 ? 'todos os pontos' : p.pontos.map((id) => PONTOS.find((x) => x.id === id).nome).join(', ')}</small></span></button>`).join('')}
     </div>
     <div class="modal-acoes">
       <button class="btn btn-contorno btn-bloco" data-sair>${icone('sair')} Sair da sessão demonstrativa</button>

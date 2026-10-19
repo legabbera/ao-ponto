@@ -12,6 +12,8 @@ import { store } from './state/store.js';
 import { renderLogin } from './pages/login.js';
 import { renderShell, rotasDoPerfil } from './components/shell.js';
 import { renderDashboard, destruirDashboard } from './pages/dashboard.js';
+import { renderVendas } from './pages/vendas.js';
+import { renderPedidos } from './pages/pedidos.js';
 import { renderEmBreve, renderMenu } from './pages/placeholder.js';
 
 const app = document.getElementById('app');
@@ -26,15 +28,22 @@ function render() {
   destruirDashboard();
   window.scrollTo(0, 0);
 
-  if (!store.get().logado) { if (rota !== 'login') return (location.hash = '#/login'); return renderLogin(app, irPara); }
+  if (!store.get().logado) {
+    if (rota !== 'login') return (location.hash = '#/login');
+    return renderLogin(app, irPara);
+  }
   if (rota === 'login') return (location.hash = '#/inicio');
 
-  // perfil sem permissão para a tela → volta ao início
-  if (rota !== 'menu' && rota !== 'inicio' && !rotasDoPerfil().some((r) => r.id === rota)) rota = 'inicio';
+  if (rota !== 'menu' && rota !== 'inicio' && !rotasDoPerfil().some((r) => r.id === rota)) {
+    rota = 'inicio';
+  }
 
   renderShell(app, rota, irPara);
   const conteudo = document.getElementById('conteudo');
+  
   if (rota === 'inicio') renderDashboard(conteudo, irPara);
+  else if (rota === 'vendas') renderVendas(conteudo, irPara);
+  else if (rota === 'pedidos') renderPedidos(conteudo, irPara);
   else if (rota === 'menu') renderMenu(conteudo, irPara);
   else renderEmBreve(conteudo, rota, irPara);
 }
