@@ -13,7 +13,7 @@ export function renderLogin(raiz, irPara) {
   <main class="login">
     <section class="login-hero">
       <div class="logo">
-        <div class="logo-marca">🍗</div>
+        <div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div>
         <div><div class="logo-nome">Frango Assado</div><div class="logo-sub">Gestão de vendas</div></div>
       </div>
       <h1>Suas vendas na palma da mão.</h1>

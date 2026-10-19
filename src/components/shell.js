@@ -33,7 +33,7 @@ export function renderShell(raiz, rotaAtual, irPara) {
   raiz.innerHTML = `
   <div class="app ${st.sidebarRecolhida ? 'recolhido' : ''}">
     <aside class="sidebar" aria-label="Menu principal">
-      <div class="logo"><div class="logo-marca">🍗</div><div><div class="logo-nome">Frango Assado</div><div class="logo-sub">Gestão de vendas</div></div></div>
+      <div class="logo"><div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div><div><div class="logo-nome">Frango Assado</div><div class="logo-sub">Gestão de vendas</div></div></div>
       <button class="btn btn-primario sb-nova" data-acao="nova-venda" title="Nova venda">${icone('mais')}<span>Nova venda</span></button>
       <div class="sb-secao">Principal</div>
       ${rotas.filter((r) => r.principal).map(itemSb).join('')}
@@ -48,7 +48,7 @@ export function renderShell(raiz, rotaAtual, irPara) {
     <div class="principal">
       <header class="topo">
         <button class="topo-btn btn-menu-lateral" data-acao="recolher" aria-label="Recolher ou expandir menu">${icone('painel')}</button>
-        <div class="logo-marca">🍗</div>
+        <div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div>
         <div class="topo-titulo">
           <strong>${atual?.rotulo === 'Início' ? 'Frango Assado' : atual?.rotulo || 'Menu'}</strong>
           <small>${icone('local', 'mini')} ${nomePonto}</small>
