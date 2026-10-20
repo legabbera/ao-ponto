@@ -1,6 +1,7 @@
 /**
  * LANDING PAGE B2B — MEU FRANGO
  * Foco comercial, alta conversão, responsiva e honesta.
+ * Tipografia: Montserrat com hierarquia para Leitura em F.
  */
 import { icone } from '../components/icons.js';
 import { fmtMoeda } from '../utils/format.js';
@@ -15,7 +16,7 @@ export const LANDING_CONFIG = {
 export function renderLanding(raiz, irPara) {
   raiz.innerHTML = `
   <div class="lp-body">
-    <!-- 1. BARRA SUPERIOR -->
+    <!-- 1. BARRA SUPERIOR (Topo do F) -->
     <header class="lp-nav">
       <div class="lp-container lp-nav-inner">
         <a href="#hero" class="lp-logo">
@@ -63,7 +64,7 @@ export function renderLanding(raiz, irPara) {
       </div>
     </header>
 
-    <!-- 2. HERO — PRIMEIRA DOBRA -->
+    <!-- 2. HERO — PRIMEIRA DOBRA (Horizontal 1 do F) -->
     <section class="lp-hero" id="hero">
       <div class="lp-container lp-hero-grid">
         <div class="lp-hero-content">
@@ -71,11 +72,11 @@ export function renderLanding(raiz, irPara) {
             🍗 Feito para quem vende comida na brasa e no balcão
           </div>
           <h1 class="lp-hero-title">
-            Você cuida da brasa. <br />
+            <span class="destaque-linha1">Você cuida da brasa.</span>
             <span class="destaque-brasa">O Meu Frango ajuda a cuidar das vendas.</span>
           </h1>
           <p class="lp-hero-subtitle">
-            Organize suas vendas, acompanhe seus produtos e tenha uma visão mais clara do seu negócio — direto pelo celular, sem complicação.
+            <span class="f-lead">Organize suas vendas</span>, acompanhe seus produtos e tenha uma visão mais clara do seu negócio — direto pelo celular, sem complicação.
           </p>
 
           <div class="lp-hero-ctas">
@@ -94,13 +95,13 @@ export function renderLanding(raiz, irPara) {
 
           <div class="lp-hero-pills">
             <div class="lp-hero-pill">
-              <span>🍗</span> Mais organização no dia a dia
+              <span>🍗</span> <strong>Mais organização</strong> no dia a dia
             </div>
             <div class="lp-hero-pill">
-              <span>📊</span> Visão das vendas por produto
+              <span>📊</span> <strong>Visão das vendas</strong> por produto
             </div>
             <div class="lp-hero-pill">
-              <span>📅</span> Pedidos e reservas em um só lugar
+              <span>📅</span> <strong>Pedidos e reservas</strong> em um só lugar
             </div>
           </div>
         </div>
@@ -171,17 +172,17 @@ export function renderLanding(raiz, irPara) {
       </div>
     </section>
 
-    <!-- 3. IDENTIFICAÇÃO — QUEM VIVE DE VENDA SABE -->
+    <!-- 3. IDENTIFICAÇÃO — QUEM VIVE DE VENDA SABE (Eixo Vertical) -->
     <section class="lp-realidade">
       <div class="lp-container">
         <div class="lp-realidade-intro">
           <div class="lp-badge lp-badge-dark">🔥 Feito para a sua realidade</div>
           <h2 class="lp-section-title light">Na correria do atendimento, cada detalhe conta.</h2>
           <p>
-            Tem o preparo, o cliente chegando, o pedido pelo WhatsApp, o pagamento, a reposição dos produtos e as contas no fim do dia. Quem vende frango assado ou churrasquinho precisa cuidar de tudo ao mesmo tempo.
+            <span class="f-lead-light">Tem o preparo, o cliente chegando</span>, o pedido pelo WhatsApp, o pagamento, a reposição dos produtos e as contas no fim do dia. Quem vende frango assado ou churrasquinho precisa cuidar de tudo ao mesmo tempo.
           </p>
           <p style="color:var(--ambar)">
-            O Meu Frango foi pensado para ajudar você a organizar essa rotina e enxergar melhor o movimento do seu negócio.
+            <span class="f-lead-light" style="color:var(--ambar)">O Meu Frango foi pensado</span> para ajudar você a organizar essa rotina e enxergar melhor o movimento do seu negócio.
           </p>
         </div>
 
@@ -190,7 +191,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-situacao-icon">🏃</div>
             <h3>No atendimento</h3>
             <p>
-              Registre vendas com rapidez no balcão, mesmo com as mãos ocupadas. Botões grandes de toque ágil, cálculo automático de troco e fechamento em poucos segundos.
+              <span class="f-lead-light">Registre vendas com rapidez</span> no balcão, mesmo com as mãos ocupadas. Botões grandes de toque ágil, cálculo automático de troco e fechamento em poucos segundos.
             </p>
           </div>
 
@@ -198,7 +199,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-situacao-icon">📅</div>
             <h3>Nas encomendas</h3>
             <p>
-              Organize os pedidos antecipados de sábado e domingo com horário combinado de retirada. Chega de comandas de papel perdidas na fumaça ou assados atrasados.
+              <span class="f-lead-light">Organize os pedidos antecipados</span> de sábado e domingo com horário combinado de retirada. Chega de comandas de papel perdidas na fumaça ou assados atrasados.
             </p>
           </div>
 
@@ -206,14 +207,14 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-situacao-icon">📈</div>
             <h3>No fechamento</h3>
             <p>
-              Consulte os números do dia com clareza. Saiba exatamente quanto faturou, o que mais vendeu e o que sobrou, sem precisar passar horas fazendo contas no caderno.
+              <span class="f-lead-light">Consulte os números do dia</span> com clareza. Saiba exatamente quanto faturou, o que mais vendeu e o que sobrou, sem precisar passar horas fazendo contas no caderno.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 4. BENEFÍCIOS PRINCIPAIS -->
+    <!-- 4. BENEFÍCIOS PRINCIPAIS (Escaneamento Vertical 1 a 6) -->
     <section class="lp-beneficios" id="beneficios">
       <div class="lp-container">
         <div class="lp-section-header">
@@ -227,39 +228,39 @@ export function renderLanding(raiz, irPara) {
         <div class="lp-beneficios-grid">
           <div class="lp-beneficio-card">
             <div class="lp-beneficio-icon">⚡</div>
-            <h3>1. Vendas organizadas</h3>
-            <p>Registre as vendas do balcão em segundos e consulte os resultados e faturamento do ponto de venda em tempo real.</p>
+            <h3><span class="num-beneficio">1.</span> Vendas organizadas</h3>
+            <p><span class="f-lead">Registre as vendas do balcão</span> em segundos e consulte os resultados e faturamento do ponto de venda em tempo real.</p>
           </div>
 
           <div class="lp-beneficio-card">
             <div class="lp-beneficio-icon">🍗</div>
-            <h3>2. Saiba o que mais sai</h3>
-            <p>Visualize a quantidade vendida por produto (frango inteiro, meio, espetos, guarnições ou peso por kg) e identifique os itens de maior saída.</p>
+            <h3><span class="num-beneficio">2.</span> Saiba o que mais sai</h3>
+            <p><span class="f-lead">Visualize a quantidade vendida</span> por produto (frango inteiro, meio, espetos, guarnições ou peso por kg) e identifique os itens de maior saída.</p>
           </div>
 
           <div class="lp-beneficio-card">
             <div class="lp-beneficio-icon">📅</div>
-            <h3>3. Pedidos e reservas mais claros</h3>
-            <p>Organize pedidos com nome do cliente, produto, quantidade, data e horário marcado para retirada, separando o fluxo de preparo.</p>
+            <h3><span class="num-beneficio">3.</span> Pedidos e reservas mais claros</h3>
+            <p><span class="f-lead">Organize encomendas</span> com nome do cliente, produto, quantidade, data e horário marcado para retirada, separando o fluxo de preparo.</p>
           </div>
 
           <div class="lp-beneficio-card">
             <div class="lp-beneficio-icon">📊</div>
-            <h3>4. Acompanhe o resultado</h3>
-            <p>Consulte indicadores consolidados por dia, semana, mês ou período personalizado através de gráficos simples e fáceis de ler.</p>
+            <h3><span class="num-beneficio">4.</span> Acompanhe o resultado</h3>
+            <p><span class="f-lead">Consulte indicadores consolidados</span> por dia, semana, mês ou período personalizado através de gráficos simples e fáceis de ler.</p>
           </div>
 
           <div class="lp-beneficio-card">
             <div class="lp-beneficio-icon">👥</div>
-            <h3>5. Conheça seus clientes</h3>
-            <p>Mantenha os contatos e histórico de quem sempre encomenda com você organizados com total respeito à privacidade.</p>
+            <h3><span class="num-beneficio">5.</span> Conheça seus clientes</h3>
+            <p><span class="f-lead">Mantenha os contatos</span> e histórico de quem sempre encomenda com você organizados com total respeito à privacidade.</p>
             <span class="lp-tag-status">Em desenvolvimento &bull; Etapa 2</span>
           </div>
 
           <div class="lp-beneficio-card">
             <div class="lp-beneficio-icon">📱</div>
-            <h3>6. Feito para a rotina do vendedor</h3>
-            <p>Interface projetada sob medida para celulares: botões largos, alto contraste para leitura clara e operação sem complicação técnica.</p>
+            <h3><span class="num-beneficio">6.</span> Feito para a rotina do vendedor</h3>
+            <p><span class="f-lead">Interface projetada sob medida</span> para celulares: botões largos, alto contraste para leitura clara e operação sem complicação técnica.</p>
           </div>
         </div>
       </div>
@@ -274,7 +275,7 @@ export function renderLanding(raiz, irPara) {
         </div>
 
         <div class="lp-comp-intro">
-          Marketplaces de entrega, como o iFood, podem ajudar estabelecimentos a serem descobertos por novos clientes. Cada canal tem suas regras, condições comerciais e custos. O <strong>Meu Frango</strong> foi criado como uma ferramenta de apoio à gestão e à organização das vendas do seu próprio negócio — <strong>não como substituto automático de todos os canais</strong>.
+          <span class="f-lead">Marketplaces de entrega</span>, como o iFood, podem ajudar estabelecimentos a serem descobertos por novos clientes. Cada canal tem suas regras, condições comerciais e custos. O <strong>Meu Frango</strong> foi criado como uma ferramenta de apoio à gestão e à organização das vendas do seu próprio negócio — <strong>não como substituto automático de todos os canais</strong>.
         </div>
 
         <div class="lp-comp-table-wrap">
@@ -289,27 +290,27 @@ export function renderLanding(raiz, irPara) {
             <tbody>
               <tr>
                 <td class="lp-comp-aspecto">Objetivo principal</td>
-                <td class="col-meufrango">Apoiar a organização, o controle do balcão e a clareza dos números do seu ponto de venda.</td>
+                <td class="col-meufrango"><span class="f-lead">Apoiar a organização</span>, o controle do balcão e a clareza dos números do seu ponto de venda.</td>
                 <td>Conectar consumidores e estabelecimentos em uma plataforma de entrega com catálogo geral.</td>
               </tr>
               <tr>
                 <td class="lp-comp-aspecto">Gestão de vendas próprias (balcão e retirada)</td>
-                <td class="col-meufrango">Feito para registrar vendas presenciais, reservas de assados para domingo e clientes fiéis.</td>
+                <td class="col-meufrango"><span class="f-lead">Feito para registrar vendas</span> presenciais, reservas de assados para domingo e clientes fiéis.</td>
                 <td>Focado na gestão de pedidos que entram pela própria plataforma do aplicativo.</td>
               </tr>
               <tr>
                 <td class="lp-comp-aspecto">Descoberta por novos clientes</td>
-                <td class="col-meufrango">Não gera clientes automaticamente: é um sistema para você gerenciar o negócio que você já construiu.</td>
+                <td class="col-meufrango"><span class="f-lead">Não gera clientes magicamente</span>: é um sistema para você gerenciar o negócio que você já construiu.</td>
                 <td>Pode oferecer visibilidade e exposição para novos consumidores dentro da base do marketplace.</td>
               </tr>
               <tr>
                 <td class="lp-comp-aspecto">Custos e condições</td>
-                <td class="col-meufrango">Sem comissões por cada assado vendido no balcão. Modelo de assinatura transparente em validação.</td>
+                <td class="col-meufrango"><span class="f-lead">Sem comissões por cada assado</span> vendido no balcão. Modelo de assinatura transparente em validação.</td>
                 <td>Costuma cobrar comissões percentuais sobre as vendas e mensalidades (consultar tabela vigente da plataforma).</td>
               </tr>
               <tr>
                 <td class="lp-comp-aspecto">Relatórios da operação</td>
-                <td class="col-meufrango">Indicadores diretos de faturamento, horários de maior movimento e itens mais pedidos na sua loja.</td>
+                <td class="col-meufrango"><span class="f-lead">Indicadores diretos</span> de faturamento, horários de maior movimento e itens mais pedidos na sua loja.</td>
                 <td>Relatórios focados nos pedidos e repasses realizados exclusivamente dentro do marketplace.</td>
               </tr>
             </tbody>
@@ -322,7 +323,7 @@ export function renderLanding(raiz, irPara) {
       </div>
     </section>
 
-    <!-- 6. DEMONSTRAÇÃO VISUAL DO PRODUTO -->
+    <!-- 6. DEMONSTRAÇÃO VISUAL DO PRODUTO (Horizontal 2 do F) -->
     <section class="lp-demo" id="demonstracao">
       <div class="lp-container">
         <div class="lp-section-header">
@@ -359,17 +360,17 @@ export function renderLanding(raiz, irPara) {
 
               <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:12px;margin-bottom:16px">
                 <div style="background:var(--creme);padding:12px;border-radius:var(--raio-p);border:1px solid var(--borda)">
-                  <span style="font-size:11px;color:var(--texto-suave)">Faturamento Estimado</span>
+                  <span style="font-size:11px;color:var(--texto-suave);font-weight:var(--peso-semi)">Faturamento Estimado</span>
                   <div style="font-size:20px;font-weight:800;color:var(--carvao)">R$ 4.250,00</div>
                   <small style="color:var(--verde);font-weight:600">▲ 18% vs domingo passado</small>
                 </div>
                 <div style="background:var(--creme);padding:12px;border-radius:var(--raio-p);border:1px solid var(--borda)">
-                  <span style="font-size:11px;color:var(--texto-suave)">Frangos Vendidos</span>
+                  <span style="font-size:11px;color:var(--texto-suave);font-weight:var(--peso-semi)">Frangos Vendidos</span>
                   <div style="font-size:20px;font-weight:800;color:var(--brasa)">52 unidades</div>
                   <small style="color:var(--texto-suave)">Total de 55 assados</small>
                 </div>
                 <div style="background:var(--creme);padding:12px;border-radius:var(--raio-p);border:1px solid var(--borda)">
-                  <span style="font-size:11px;color:var(--texto-suave)">Ticket Médio</span>
+                  <span style="font-size:11px;color:var(--texto-suave);font-weight:var(--peso-semi)">Ticket Médio</span>
                   <div style="font-size:20px;font-weight:800;color:var(--carvao)">R$ 53,80</div>
                   <small style="color:var(--texto-suave)">79 clientes atendidos</small>
                 </div>
@@ -506,7 +507,7 @@ export function renderLanding(raiz, irPara) {
       </div>
     </section>
 
-    <!-- 7. COMO FUNCIONA -->
+    <!-- 7. COMO FUNCIONA (Etapas 1, 2, 3) -->
     <section class="lp-como-funciona" id="como-funciona">
       <div class="lp-container">
         <div class="lp-section-header">
@@ -522,7 +523,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-etapa-num">1</div>
             <h3>Conheça o sistema</h3>
             <p>
-              Entenda as ferramentas disponíveis para sua rotina: navegue pelo PDV rápido, consulte o painel de pedidos e veja como os números se organizam na tela.
+              <span class="f-lead">Entenda as ferramentas</span> disponíveis para sua rotina: navegue pelo PDV rápido, consulte o painel de pedidos e veja como os números se organizam na tela.
             </p>
           </div>
 
@@ -530,7 +531,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-etapa-num">2</div>
             <h3>Organize seu negócio</h3>
             <p>
-              Configure seus produtos e preços — seja frango assado por unidade, cortes na brasa por peso (kg) ou acompanhamentos da casa.
+              <span class="f-lead">Configure seus produtos</span> e preços — seja frango assado por unidade, cortes na brasa por peso (kg) ou acompanhamentos da casa.
             </p>
           </div>
 
@@ -538,7 +539,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-etapa-num">3</div>
             <h3>Acompanhe suas vendas</h3>
             <p>
-              Consulte os dados na hora em que precisar. Saiba quanto faturou no fim do dia e utilize as informações para comprar a quantidade certa de insumos para a próxima fornada.
+              <span class="f-lead">Consulte os dados</span> na hora em que precisar. Saiba quanto faturou no fim do dia e utilize as informações para comprar a quantidade certa de insumos para a próxima fornada.
             </p>
           </div>
         </div>
@@ -561,7 +562,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-publico-emoji">🍗</div>
             <div>
               <h3>Quem vende frango assado aos finais de semana</h3>
-              <p>Perfeito para quem acorda cedo aos sábados e domingos para ligar a máquina de frango e precisa organizar a fila de encomendas do almoço.</p>
+              <p><span class="f-lead">Para quem acorda cedo</span> aos sábados e domingos para ligar a máquina de frango e precisa organizar a fila de encomendas do almoço.</p>
             </div>
           </div>
 
@@ -569,7 +570,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-publico-emoji">🍢</div>
             <div>
               <h3>Quem prepara e vende churrasquinho à noite</h3>
-              <p>Ideal para pontos de espetinho de rua que precisam registrar dezenas de espetos, refrigerantes e cervejas de forma rápida e prática.</p>
+              <p><span class="f-lead">Para pontos de espetinho</span> de rua que precisam registrar dezenas de espetos, refrigerantes e cervejas de forma rápida e prática.</p>
             </div>
           </div>
 
@@ -577,7 +578,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-publico-emoji">🥩</div>
             <div>
               <h3>Quem trabalha com carnes e guarnições por quilo</h3>
-              <p>Facilidade para calcular itens vendidos por peso (linguiça, costela, cupim, lombo) e porções tradicionais como maionese e farofa.</p>
+              <p><span class="f-lead">Facilidade para calcular</span> itens vendidos por peso (linguiça, costela, cupim, lombo) e porções tradicionais como maionese e farofa.</p>
             </div>
           </div>
 
@@ -585,7 +586,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-publico-emoji">💬</div>
             <div>
               <h3>Quem recebe encomendas pelo WhatsApp</h3>
-              <p>Organize em uma tela limpa todos os pedidos combinados para retirada, eliminando a dependência de papéis espalhados no balcão.</p>
+              <p><span class="f-lead">Organize em uma tela</span> limpa todos os pedidos combinados para retirada, eliminando a dependência de papéis espalhados no balcão.</p>
             </div>
           </div>
 
@@ -593,13 +594,13 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-publico-emoji">🏪</div>
             <div>
               <h3>Quem administra trailers, food trucks ou um ponto fixo</h3>
-              <p>Controle centralizado para quem trabalha com a família ou com uma pequena equipe de confiança no atendimento e preparo.</p>
+              <p><span class="f-lead">Controle centralizado</span> para quem trabalha com a família ou com uma pequena equipe de confiança no atendimento e preparo.</p>
             </div>
           </div>
         </div>
 
         <div class="lp-para-quem-fechamento">
-          "Seu negócio pode ser pequeno no tamanho e grande na dedicação. A ferramenta deve acompanhar a sua realidade, não complicá-la."
+          "Seu negócio pode ser <strong>pequeno no tamanho</strong> e <strong>grande na dedicação</strong>. A ferramenta deve acompanhar a sua realidade, não complicá-la."
         </div>
       </div>
     </section>
@@ -622,7 +623,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              O Meu Frango é uma ferramenta digital desenvolvida para ajudar pequenos comerciantes de alimentos — especialmente pontos de frango assado, churrasquinho e carnes preparadas — a registrar vendas de balcão, controlar encomendas e acompanhar o faturamento do negócio direto pelo celular.
+              <span class="f-lead">O Meu Frango é</span> uma ferramenta digital desenvolvida para ajudar pequenos comerciantes de alimentos — especialmente pontos de frango assado, churrasquinho e carnes preparadas — a registrar vendas de balcão, controlar encomendas e acompanhar o faturamento do negócio direto pelo celular.
             </div>
           </div>
 
@@ -632,7 +633,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              Para vendedores de frango assado na brasa ou na máquina de espeto, barracas de churrasquinho e espetinhos de rua, trailers, food trucks, açougues com assados de fim de semana e pequenos negócios familiares de comida para viagem.
+              <span class="f-lead">Para vendedores de frango assado</span> na brasa ou na máquina de espeto, barracas de churrasquinho e espetinhos de rua, trailers, food trucks, açougues com assados de fim de semana e pequenos negócios familiares de comida para viagem.
             </div>
           </div>
 
@@ -642,7 +643,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              Sim! O Meu Frango foi projetado com prioridade total para celulares (mobile-first). Os botões são grandes para facilitar o toque na correria do balcão e os textos possuem alto contraste para boa visibilidade mesmo em ambientes abertos e sob sol.
+              <span class="f-lead">Sim! O Meu Frango foi</span> projetado com prioridade total para celulares (mobile-first). Os botões são grandes para facilitar o toque na correria do balcão e os textos possuem alto contraste para boa visibilidade mesmo em ambientes abertos e sob sol.
             </div>
           </div>
 
@@ -652,7 +653,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              Não. Ele funciona como uma aplicação web moderna que roda direto no navegador do seu celular ou tablet, sem ocupar a memória do seu aparelho.
+              <span class="f-lead">Não. Ele funciona como</span> uma aplicação web moderna que roda direto no navegador do seu celular ou tablet, sem ocupar a memória do seu aparelho.
             </div>
           </div>
 
@@ -662,7 +663,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              Sim. O sistema permite visualizar a saída individual de itens, como frangos inteiros, meios frangos, cortes pesados por quilo e acompanhamentos, ajudando você a saber o que mais rende no seu ponto.
+              <span class="f-lead">Sim. O sistema permite</span> visualizar a saída individual de itens, como frangos inteiros, meios frangos, cortes pesados por quilo e acompanhamentos, ajudando você a saber o que mais rende no seu ponto.
             </div>
           </div>
 
@@ -672,7 +673,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              Com certeza! Essa é uma das principais utilidades: cadastrar as reservas antecipadas com nome do cliente, quantidade e horário combinado de retirada, com tags de status (confirmado, em preparo e pronto).
+              <span class="f-lead">Com certeza! Essa é</span> uma das principais utilidades: cadastrar as reservas antecipadas com nome do cliente, quantidade e horário combinado de retirada, com tags de status (confirmado, em preparo e pronto).
             </div>
           </div>
 
@@ -682,7 +683,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              No momento, o aplicativo ajuda você a organizar as informações de pedidos que chegam pelo seu WhatsApp manualmente na tela de reservas. O disparo automatizado de mensagens é uma funcionalidade planejada para as próximas etapas de evolução do sistema.
+              <span class="f-lead">No momento, o aplicativo ajuda</span> você a organizar as informações de pedidos que chegam pelo seu WhatsApp manualmente na tela de reservas. O disparo automatizado de mensagens é uma funcionalidade planejada para as próximas etapas de evolução do sistema.
             </div>
           </div>
 
@@ -692,7 +693,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              Não. O Meu Frango é um sistema de gestão e controle próprio para o seu balcão e clientes diretos. Ele não concorre com os marketplaces de entrega; ele complementa a organização da sua operação para você ter total clareza sobre suas vendas próprias.
+              <span class="f-lead">Não. O Meu Frango é</span> um sistema de gestão e controle próprio para o seu balcão e clientes diretos. Ele não concorre com os marketplaces de entrega; ele complementa a organização da sua operação para você ter total clareza sobre suas vendas próprias.
             </div>
           </div>
 
@@ -702,7 +703,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              O projeto está atualmente em fase de validação e demonstração com pequenos empreendedores de alimentação. As condições comerciais e planos definitivos estão sendo estruturados. Cadastre seu interesse para ser avisado em primeira mão com condições especiais de lançamento.
+              <span class="f-lead">O projeto está atualmente</span> em fase de validação e demonstração com pequenos empreendedores de alimentação. As condições comerciais e planos definitivos estão sendo estruturados. Cadastre seu interesse para ser avisado em primeira mão com condições especiais de lançamento.
             </div>
           </div>
 
@@ -712,7 +713,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              Você pode experimentar o protótipo interativo agora mesmo clicando no botão "Testar App Demo" no topo da página ou preencher o formulário abaixo para conversar com a equipe.
+              <span class="f-lead">Você pode experimentar</span> o protótipo interativo agora mesmo clicando no botão "Testar App Demo" no topo da página ou preencher o formulário abaixo para conversar com a equipe.
             </div>
           </div>
         </div>
@@ -843,7 +844,7 @@ export function renderLanding(raiz, irPara) {
         <button class="lp-modal-close" id="lp-modal-close" aria-label="Fechar modal">&times;</button>
         <div style="text-align:center;margin-bottom:20px">
           <div style="font-size:36px;margin-bottom:8px">🍗</div>
-          <h3 style="font-family:var(--fonte-titulo);font-size:22px;color:var(--carvao);margin:0 0 6px 0">
+          <h3 style="font-family:var(--fonte-titulo);font-size:22px;color:var(--carvao);margin:0 0 6px 0;font-weight:var(--peso-extra)">
             Quero conhecer o Meu Frango
           </h3>
           <p style="font-size:14px;color:var(--texto-suave);margin:0">
@@ -931,7 +932,6 @@ export function renderLanding(raiz, irPara) {
     const questionBtn = item.querySelector('.lp-faq-question');
     questionBtn?.addEventListener('click', () => {
       const estaAberto = item.classList.contains('aberto');
-      // Fecha os outros para manter foco limpo
       faqItems.forEach((other) => {
         other.classList.remove('aberto');
         other.querySelector('.lp-faq-question')?.setAttribute('aria-expanded', 'false');
@@ -958,7 +958,6 @@ export function renderLanding(raiz, irPara) {
     abrirModalLead();
   });
   raiz.querySelector('#hero-btn-cta')?.addEventListener('click', () => {
-    // Scroll suave até o formulário do final
     const formBox = raiz.querySelector('#contato');
     if (formBox) {
       formBox.scrollIntoView({ behavior: 'smooth' });
@@ -984,7 +983,6 @@ export function renderLanding(raiz, irPara) {
     const whats = raiz.querySelector('#lead-whats')?.value.trim();
     const tipo = raiz.querySelector('#lead-tipo')?.value;
 
-    // Guarda demonstração no sessionStorage
     sessionStorage.setItem('meufrango-lead', JSON.stringify({ nome, whats, tipo, data: new Date().toISOString() }));
 
     formPrincipal.style.display = 'none';

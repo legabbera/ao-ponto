@@ -29,9 +29,18 @@
   --texto-claro: #F5EDE3;
   --borda: #E8DDCD;
 
-  /* Tipografia */
-  --fonte-titulo: 'Outfit', system-ui, sans-serif;
-  --fonte-texto: 'Inter', system-ui, sans-serif;
+  /* Tipografia — Montserrat com pesos calibrados para Leitura em F */
+  --fonte-titulo: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --fonte-texto: 'Montserrat', system-ui, -apple-system, sans-serif;
+
+  /* Escala de pesos de leitura em F */
+  --peso-light: 300;     /* notas, descrições secundárias */
+  --peso-regular: 400;   /* corpo de texto para leitura rápida */
+  --peso-medio: 500;     /* itens de navegação, chips */
+  --peso-semi: 600;      /* subtítulos, valores em listas, destaques */
+  --peso-bold: 700;      /* botões, badges, títulos de cards, âncoras */
+  --peso-extra: 800;     /* títulos de seção H2, números de impacto */
+  --peso-black: 900;     /* H1 hero, ganchos primários da leitura em F */
 
   /* Formas */
   --raio-p: 10px;
