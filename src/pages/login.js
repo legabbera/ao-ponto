@@ -58,6 +58,12 @@ export function renderLogin(raiz, irPara) {
           <button type="button" class="atalho" data-perfil="admin" id="atalho-admin"><span>🧑‍💼</span><span>Administrador</span></button>
           <button type="button" class="atalho" data-perfil="vendedor" id="atalho-vendedor"><span>🧑‍🍳</span><span>Vendedor</span></button>
         </div>
+
+        <div style="text-align:center;margin-top:20px;padding-top:14px;border-top:1px solid var(--borda)">
+          <button type="button" class="link-btn" id="btn-voltar-landing" style="font-size:14px;color:var(--texto-suave);font-weight:600">
+            &larr; Conhecer a Apresentação do Meu Frango
+          </button>
+        </div>
       </form>
     </section>
   </main>`;
@@ -126,4 +132,6 @@ export function renderLogin(raiz, irPara) {
       });
     });
   });
+
+  $('#btn-voltar-landing')?.addEventListener('click', () => irPara('landing'));
 }

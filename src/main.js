@@ -1,14 +1,16 @@
 /**
- * PONTO DE ENTRADA DO APP + ROTEADOR SIMPLES
- * A URL usa "#/nome-da-tela" (ex.: #/inicio). Assim o botão
- * "voltar" do celular funciona entre as telas.
+ * PONTO DE ENTRADA DO APP + ROTEADOR
+ * Rota padrão: Landing Page B2B comercial
+ * Rotas do App: #/app, #/login, #/inicio, #/vendas, #/pedidos, #/menu
  */
 import './styles/tokens.css';
 import './styles/components.css';
 import './styles/layout.css';
 import './styles/pages.css';
+import './styles/landing.css';
 
 import { store } from './state/store.js';
+import { renderLanding } from './pages/landing.js';
 import { renderLogin } from './pages/login.js';
 import { renderShell, rotasDoPerfil } from './components/shell.js';
 import { renderDashboard, destruirDashboard } from './pages/dashboard.js';
@@ -24,28 +26,39 @@ export function irPara(rota) {
 }
 
 function render() {
-  let rota = location.hash.replace('#/', '') || 'inicio';
+  let hashRota = location.hash.replace('#/', '').trim();
   destruirDashboard();
   window.scrollTo(0, 0);
 
+  // Rota padrão vazia ou 'landing' -> exibe a Landing Page B2B
+  if (!hashRota || hashRota === 'landing') {
+    return renderLanding(app, irPara);
+  }
+
+  // Atalho para entrar no aplicativo
+  if (hashRota === 'app') {
+    hashRota = store.get().logado ? 'inicio' : 'login';
+  }
+
   if (!store.get().logado) {
-    if (rota !== 'login') return (location.hash = '#/login');
+    if (hashRota !== 'login') return (location.hash = '#/login');
     return renderLogin(app, irPara);
   }
-  if (rota === 'login') return (location.hash = '#/inicio');
 
-  if (rota !== 'menu' && rota !== 'inicio' && !rotasDoPerfil().some((r) => r.id === rota)) {
-    rota = 'inicio';
+  if (hashRota === 'login') return (location.hash = '#/inicio');
+
+  if (hashRota !== 'menu' && hashRota !== 'inicio' && !rotasDoPerfil().some((r) => r.id === hashRota)) {
+    hashRota = 'inicio';
   }
 
-  renderShell(app, rota, irPara);
+  renderShell(app, hashRota, irPara);
   const conteudo = document.getElementById('conteudo');
   
-  if (rota === 'inicio') renderDashboard(conteudo, irPara);
-  else if (rota === 'vendas') renderVendas(conteudo, irPara);
-  else if (rota === 'pedidos') renderPedidos(conteudo, irPara);
-  else if (rota === 'menu') renderMenu(conteudo, irPara);
-  else renderEmBreve(conteudo, rota, irPara);
+  if (hashRota === 'inicio') renderDashboard(conteudo, irPara);
+  else if (hashRota === 'vendas') renderVendas(conteudo, irPara);
+  else if (hashRota === 'pedidos') renderPedidos(conteudo, irPara);
+  else if (hashRota === 'menu') renderMenu(conteudo, irPara);
+  else renderEmBreve(conteudo, hashRota, irPara);
 }
 
 window.addEventListener('hashchange', render);

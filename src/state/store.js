@@ -1,4 +1,4 @@
-/**
+﻿/**
  * "Memória" da sessão (estado demonstrativo).
  * Guarda: usuário logado, perfil, filtros, pedidos e vendas.
  * Persiste no localStorage/sessionStorage.
@@ -45,7 +45,7 @@ export const store = {
   adicionarPedido: (novo) => {
     const pedido = {
       id: Math.floor(1000 + Math.random() * 9000),
-      criadoEm: new Date().toLocaleTimeString('pt-BR', { hour: '2_�igit', minute: '2-digit' }),
+      criadoEm: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       status: 'confirmado',
       ...novo,
     };
@@ -65,7 +65,7 @@ export const store = {
   adicionarVenda: (nova) => {
     const venda = {
       id: `V-${Math.floor(100 + Math.random() * 900)}`,
-      hora: new Date().toLocaleTimeString('pt-BR', { hour: '2_�igit', minute: '2-digit' }),
+      hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       ...nova,
     };
     estado.vendas = [venda, ...estado.vendas];
