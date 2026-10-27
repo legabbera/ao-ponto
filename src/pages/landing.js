@@ -1,5 +1,5 @@
-/**
- * LANDING PAGE B2B — MEU FRANGO
+﻿/**
+ * LANDING PAGE B2B — Ao Ponto
  * Foco comercial, alta conversão, responsiva e honesta.
  * Tipografia: Montserrat com hierarquia para Leitura em F.
  */
@@ -9,7 +9,7 @@ import { fmtMoeda } from '../utils/format.js';
 // Configuração centralizada para links e contatos reais
 export const LANDING_CONFIG = {
   WHATSAPP_NUMERO: '', // Preencha com o número oficial (ex: '5511999999999')
-  WHATSAPP_MENSAGEM: 'Olá! Gostaria de conhecer mais sobre o aplicativo Meu Frango.',
+  WHATSAPP_MENSAGEM: 'Olá! Gostaria de conhecer mais sobre o aplicativo Ao Ponto.',
   ANO_ATUAL: 2026,
 };
 
@@ -20,9 +20,9 @@ export function renderLanding(raiz, irPara) {
     <header class="lp-nav">
       <div class="lp-container lp-nav-inner">
         <a href="#hero" class="lp-logo">
-          <img src="/logo-badge.jpg" alt="Logo Meu Frango" class="lp-logo-img" />
+          <img src="/logo-badge.jpg" alt="Logo Ao Ponto" class="lp-logo-img" />
           <div class="lp-logo-text">
-            <strong>Meu Frango</strong>
+            <strong>Ao Ponto</strong>
             <small>Gestão de Vendas</small>
           </div>
         </a>
@@ -59,7 +59,7 @@ export function renderLanding(raiz, irPara) {
           ${icone('vendas')} Experimentar App Demonstrativo
         </button>
         <button class="btn btn-primario" id="mobile-btn-cta">
-          Quero conhecer o Meu Frango
+          Quero conhecer o Ao Ponto
         </button>
       </div>
     </header>
@@ -73,7 +73,7 @@ export function renderLanding(raiz, irPara) {
           </div>
           <h1 class="lp-hero-title">
             <span class="destaque-linha1">Você cuida da brasa.</span>
-            <span class="destaque-brasa">O Meu Frango ajuda a cuidar das vendas.</span>
+            <span class="destaque-brasa">O Ao Ponto ajuda a cuidar das vendas.</span>
           </h1>
           <p class="lp-hero-subtitle">
             <span class="f-lead">Organize suas vendas</span>, acompanhe seus produtos e tenha uma visão mais clara do seu negócio — direto pelo celular, sem complicação.
@@ -81,7 +81,7 @@ export function renderLanding(raiz, irPara) {
 
           <div class="lp-hero-ctas">
             <button class="lp-btn-cta" id="hero-btn-cta">
-              Quero conhecer o Meu Frango
+              Quero conhecer o Ao Ponto
             </button>
             <a href="#demonstracao" class="lp-btn-secundario">
               ${icone('painel', 'mini')} Ver como funciona
@@ -117,7 +117,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-phone-screen">
               <div class="lp-mock-header">
                 <div>
-                  <strong>Meu Frango</strong>
+                  <strong>Ao Ponto</strong>
                   <div style="font-size:10px;color:var(--texto-suave)">Ponto Centro &bull; Hoje</div>
                 </div>
                 <span class="lp-mock-badge">Online</span>
@@ -182,7 +182,7 @@ export function renderLanding(raiz, irPara) {
             <span class="f-lead-light">Tem o preparo, o cliente chegando</span>, o pedido pelo WhatsApp, o pagamento, a reposição dos produtos e as contas no fim do dia. Quem vende frango assado ou churrasquinho precisa cuidar de tudo ao mesmo tempo.
           </p>
           <p style="color:var(--ambar)">
-            <span class="f-lead-light" style="color:var(--ambar)">O Meu Frango foi pensado</span> para ajudar você a organizar essa rotina e enxergar melhor o movimento do seu negócio.
+            <span class="f-lead-light" style="color:var(--ambar)">O Ao Ponto foi pensado</span> para ajudar você a organizar essa rotina e enxergar melhor o movimento do seu negócio.
           </p>
         </div>
 
@@ -266,7 +266,7 @@ export function renderLanding(raiz, irPara) {
       </div>
     </section>
 
-    <!-- 5. SEÇÃO COMPARATIVA — MEU FRANGO E MARKETPLACES -->
+    <!-- 5. SEÇÃO COMPARATIVA — Ao Ponto E MARKETPLACES -->
     <section class="lp-comparativo" id="comparativo">
       <div class="lp-container">
         <div class="lp-section-header">
@@ -275,7 +275,7 @@ export function renderLanding(raiz, irPara) {
         </div>
 
         <div class="lp-comp-intro">
-          <span class="f-lead">Marketplaces de entrega</span>, como o iFood, podem ajudar estabelecimentos a serem descobertos por novos clientes. Cada canal tem suas regras, condições comerciais e custos. O <strong>Meu Frango</strong> foi criado como uma ferramenta de apoio à gestão e à organização das vendas do seu próprio negócio — <strong>não como substituto automático de todos os canais</strong>.
+          <span class="f-lead">Marketplaces de entrega</span>, como o iFood, podem ajudar estabelecimentos a serem descobertos por novos clientes. Cada canal tem suas regras, condições comerciais e custos. O <strong>Ao Ponto</strong> foi criado como uma ferramenta de apoio à gestão e à organização das vendas do seu próprio negócio — <strong>não como substituto automático de todos os canais</strong>.
         </div>
 
         <div class="lp-comp-table-wrap">
@@ -283,34 +283,34 @@ export function renderLanding(raiz, irPara) {
             <thead>
               <tr>
                 <th style="width: 28%;">Aspecto da Operação</th>
-                <th class="col-meufrango" style="width: 36%;">Meu Frango 🍗</th>
+                <th class="col-aoponto" style="width: 36%;">Ao Ponto 🍗</th>
                 <th style="width: 36%;">Marketplaces de Entrega 🛵</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td class="lp-comp-aspecto">Objetivo principal</td>
-                <td class="col-meufrango"><span class="f-lead">Apoiar a organização</span>, o controle do balcão e a clareza dos números do seu ponto de venda.</td>
+                <td class="col-aoponto"><span class="f-lead">Apoiar a organização</span>, o controle do balcão e a clareza dos números do seu ponto de venda.</td>
                 <td>Conectar consumidores e estabelecimentos em uma plataforma de entrega com catálogo geral.</td>
               </tr>
               <tr>
                 <td class="lp-comp-aspecto">Gestão de vendas próprias (balcão e retirada)</td>
-                <td class="col-meufrango"><span class="f-lead">Feito para registrar vendas</span> presenciais, reservas de assados para domingo e clientes fiéis.</td>
+                <td class="col-aoponto"><span class="f-lead">Feito para registrar vendas</span> presenciais, reservas de assados para domingo e clientes fiéis.</td>
                 <td>Focado na gestão de pedidos que entram pela própria plataforma do aplicativo.</td>
               </tr>
               <tr>
                 <td class="lp-comp-aspecto">Descoberta por novos clientes</td>
-                <td class="col-meufrango"><span class="f-lead">Não gera clientes magicamente</span>: é um sistema para você gerenciar o negócio que você já construiu.</td>
+                <td class="col-aoponto"><span class="f-lead">Não gera clientes magicamente</span>: é um sistema para você gerenciar o negócio que você já construiu.</td>
                 <td>Pode oferecer visibilidade e exposição para novos consumidores dentro da base do marketplace.</td>
               </tr>
               <tr>
                 <td class="lp-comp-aspecto">Custos e condições</td>
-                <td class="col-meufrango"><span class="f-lead">Sem comissões por cada assado</span> vendido no balcão. Modelo de assinatura transparente em validação.</td>
+                <td class="col-aoponto"><span class="f-lead">Sem comissões por cada assado</span> vendido no balcão. Modelo de assinatura transparente em validação.</td>
                 <td>Costuma cobrar comissões percentuais sobre as vendas e mensalidades (consultar tabela vigente da plataforma).</td>
               </tr>
               <tr>
                 <td class="lp-comp-aspecto">Relatórios da operação</td>
-                <td class="col-meufrango"><span class="f-lead">Indicadores diretos</span> de faturamento, horários de maior movimento e itens mais pedidos na sua loja.</td>
+                <td class="col-aoponto"><span class="f-lead">Indicadores diretos</span> de faturamento, horários de maior movimento e itens mais pedidos na sua loja.</td>
                 <td>Relatórios focados nos pedidos e repasses realizados exclusivamente dentro do marketplace.</td>
               </tr>
             </tbody>
@@ -318,7 +318,7 @@ export function renderLanding(raiz, irPara) {
         </div>
 
         <div class="lp-comp-conclusao">
-          <strong>Conclusão prática:</strong> Você não precisa escolher um único canal para vender. Use os canais que fazem sentido para seu negócio e utilize o <strong>Meu Frango</strong> como apoio à gestão da sua operação real.
+          <strong>Conclusão prática:</strong> Você não precisa escolher um único canal para vender. Use os canais que fazem sentido para seu negócio e utilize o <strong>Ao Ponto</strong> como apoio à gestão da sua operação real.
         </div>
       </div>
     </section>
@@ -328,7 +328,7 @@ export function renderLanding(raiz, irPara) {
       <div class="lp-container">
         <div class="lp-section-header">
           <div class="lp-badge">Telas do Aplicativo</div>
-          <h2 class="lp-section-title">Veja como o Meu Frango pode acompanhar sua rotina.</h2>
+          <h2 class="lp-section-title">Veja como o Ao Ponto pode acompanhar sua rotina.</h2>
           <p class="lp-section-desc">
             Explore as principais ferramentas do protótipo desenvolvido para funcionar com agilidade na tela do seu celular.
           </p>
@@ -612,18 +612,18 @@ export function renderLanding(raiz, irPara) {
           <div class="lp-badge">Tire Suas Dúvidas</div>
           <h2 class="lp-section-title">Perguntas Frequentes</h2>
           <p class="lp-section-desc">
-            Respostas claras e transparentes sobre o que o Meu Frango é e como ele funciona.
+            Respostas claras e transparentes sobre o que o Ao Ponto é e como ele funciona.
           </p>
         </div>
 
         <div class="lp-faq-list">
           <div class="lp-faq-item">
             <button class="lp-faq-question" aria-expanded="false">
-              <span>O que é o Meu Frango?</span>
+              <span>O que é o Ao Ponto?</span>
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              <span class="f-lead">O Meu Frango é</span> uma ferramenta digital desenvolvida para ajudar pequenos comerciantes de alimentos — especialmente pontos de frango assado, churrasquinho e carnes preparadas — a registrar vendas de balcão, controlar encomendas e acompanhar o faturamento do negócio direto pelo celular.
+              <span class="f-lead">O Ao Ponto é</span> uma ferramenta digital desenvolvida para ajudar pequenos comerciantes de alimentos — especialmente pontos de frango assado, churrasquinho e carnes preparadas — a registrar vendas de balcão, controlar encomendas e acompanhar o faturamento do negócio direto pelo celular.
             </div>
           </div>
 
@@ -643,7 +643,7 @@ export function renderLanding(raiz, irPara) {
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              <span class="f-lead">Sim! O Meu Frango foi</span> projetado com prioridade total para celulares (mobile-first). Os botões são grandes para facilitar o toque na correria do balcão e os textos possuem alto contraste para boa visibilidade mesmo em ambientes abertos e sob sol.
+              <span class="f-lead">Sim! O Ao Ponto foi</span> projetado com prioridade total para celulares (mobile-first). Os botões são grandes para facilitar o toque na correria do balcão e os textos possuem alto contraste para boa visibilidade mesmo em ambientes abertos e sob sol.
             </div>
           </div>
 
@@ -679,7 +679,7 @@ export function renderLanding(raiz, irPara) {
 
           <div class="lp-faq-item">
             <button class="lp-faq-question" aria-expanded="false">
-              <span>O Meu Frango é integrado ao WhatsApp?</span>
+              <span>O Ao Ponto é integrado ao WhatsApp?</span>
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
@@ -689,11 +689,11 @@ export function renderLanding(raiz, irPara) {
 
           <div class="lp-faq-item">
             <button class="lp-faq-question" aria-expanded="false">
-              <span>O Meu Frango substitui o iFood?</span>
+              <span>O Ao Ponto substitui o iFood?</span>
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              <span class="f-lead">Não. O Meu Frango é</span> um sistema de gestão e controle próprio para o seu balcão e clientes diretos. Ele não concorre com os marketplaces de entrega; ele complementa a organização da sua operação para você ter total clareza sobre suas vendas próprias.
+              <span class="f-lead">Não. O Ao Ponto é</span> um sistema de gestão e controle próprio para o seu balcão e clientes diretos. Ele não concorre com os marketplaces de entrega; ele complementa a organização da sua operação para você ter total clareza sobre suas vendas próprias.
             </div>
           </div>
 
@@ -728,7 +728,7 @@ export function renderLanding(raiz, irPara) {
           <div class="lp-badge lp-badge-dark">Dê o Próximo Passo</div>
           <h2 class="lp-section-title light">Sua dedicação merece uma gestão mais simples.</h2>
           <p class="lp-section-desc light">
-            Conheça o Meu Frango e descubra como organizar melhor a rotina do seu negócio.
+            Conheça o Ao Ponto e descubra como organizar melhor a rotina do seu negócio.
           </p>
 
           <div class="lp-form-box">
@@ -766,11 +766,11 @@ export function renderLanding(raiz, irPara) {
               </div>
 
               <button type="submit" class="lp-btn-cta" style="width:100%;margin-top:20px;height:50px;font-size:16px">
-                Quero conhecer o Meu Frango
+                Quero conhecer o Ao Ponto
               </button>
 
               <div class="lp-form-aviso">
-                🔒 Seus dados são confidenciais e serão usados exclusivamente para contato sobre o Meu Frango. Não enviamos spam.
+                🔒 Seus dados são confidenciais e serão usados exclusivamente para contato sobre o Ao Ponto. Não enviamos spam.
               </div>
             </form>
 
@@ -795,9 +795,9 @@ export function renderLanding(raiz, irPara) {
         <div class="lp-footer-grid">
           <div class="lp-footer-brand">
             <div class="lp-logo" style="color:var(--branco)">
-              <img src="/logo-badge.jpg" alt="Logo Meu Frango" class="lp-logo-img" />
+              <img src="/logo-badge.jpg" alt="Logo Ao Ponto" class="lp-logo-img" />
               <div class="lp-logo-text">
-                <strong style="color:var(--branco)">Meu Frango</strong>
+                <strong style="color:var(--branco)">Ao Ponto</strong>
                 <small>Gestão de Vendas</small>
               </div>
             </div>
@@ -829,7 +829,7 @@ export function renderLanding(raiz, irPara) {
 
         <div class="lp-footer-bottom">
           <div>
-            &copy; ${LANDING_CONFIG.ANO_ATUAL} Meu Frango &bull; Todos os direitos reservados.
+            &copy; ${LANDING_CONFIG.ANO_ATUAL} Ao Ponto &bull; Todos os direitos reservados.
           </div>
           <div style="font-size:12px;color:rgba(255,255,255,0.4)">
             Imagens e dados com fins demonstrativos de protótipo de software.
@@ -845,7 +845,7 @@ export function renderLanding(raiz, irPara) {
         <div style="text-align:center;margin-bottom:20px">
           <div style="font-size:36px;margin-bottom:8px">🍗</div>
           <h3 style="font-family:var(--fonte-titulo);font-size:22px;color:var(--carvao);margin:0 0 6px 0;font-weight:var(--peso-extra)">
-            Quero conhecer o Meu Frango
+            Quero conhecer o Ao Ponto
           </h3>
           <p style="font-size:14px;color:var(--texto-suave);margin:0">
             Deixe seus dados para receber uma demonstração sem compromisso:
@@ -983,14 +983,14 @@ export function renderLanding(raiz, irPara) {
     const whats = raiz.querySelector('#lead-whats')?.value.trim();
     const tipo = raiz.querySelector('#lead-tipo')?.value;
 
-    sessionStorage.setItem('meufrango-lead', JSON.stringify({ nome, whats, tipo, data: new Date().toISOString() }));
+    sessionStorage.setItem('aoponto-lead', JSON.stringify({ nome, whats, tipo, data: new Date().toISOString() }));
 
     formPrincipal.style.display = 'none';
     if (boxSucesso) {
       boxSucesso.style.display = 'block';
       const msg = raiz.querySelector('#msg-sucesso-texto');
       if (msg) {
-        msg.textContent = `Olá ${nome}! Seu interesse foi registrado. Entraremos em contato com você pelo WhatsApp (${whats}) para apresentar o Meu Frango.`;
+        msg.textContent = `Olá ${nome}! Seu interesse foi registrado. Entraremos em contato com você pelo WhatsApp (${whats}) para apresentar o Ao Ponto.`;
       }
       if (LANDING_CONFIG.WHATSAPP_NUMERO && btnWhats) {
         btnWhats.style.display = 'inline-flex';
@@ -1011,7 +1011,7 @@ export function renderLanding(raiz, irPara) {
     const whats = raiz.querySelector('#modal-whats')?.value.trim();
     const tipo = raiz.querySelector('#modal-tipo')?.value;
 
-    sessionStorage.setItem('meufrango-lead', JSON.stringify({ nome, whats, tipo, data: new Date().toISOString() }));
+    sessionStorage.setItem('aoponto-lead', JSON.stringify({ nome, whats, tipo, data: new Date().toISOString() }));
     formModal.style.display = 'none';
     if (modalSucesso) modalSucesso.style.display = 'block';
 

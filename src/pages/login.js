@@ -63,7 +63,7 @@ export function renderLogin(raiz, irPara) {
 
         <div style="text-align:center;margin-top:20px;padding-top:14px;border-top:1px solid var(--borda)">
           <button type="button" class="link-btn" id="btn-voltar-landing" style="font-size:14px;color:var(--texto-suave);font-weight:600">
-            &larr; Conhecer a Apresentação do Meu Frango
+            &larr; Conhecer a Apresentação do Ao Ponto
           </button>
         </div>
       </form>

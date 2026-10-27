@@ -1,5 +1,5 @@
 /* =========================================================
-   LANDING PAGE B2B — MEU FRANGO
+   LANDING PAGE B2B — AO PONTO
    Tipografia: MONTSERRAT (Google Fonts)
    Hierarquia Calibrada para LEITURA EM F (F-Shaped Pattern)
    ========================================================= */
@@ -725,7 +725,7 @@
 }
 
 /* =========================================================
-   5. COMPARATIVO MEU FRANGO VS MARKETPLACES
+   5. COMPARATIVO AO PONTO VS MARKETPLACES
    ========================================================= */
 .lp-comparativo {
   padding: 80px 0;
@@ -773,13 +773,13 @@
   letter-spacing: -0.01em;
 }
 
-.lp-comp-table th.col-meufrango {
+.lp-comp-table th.col-aoponto {
   background: var(--brasa-clara);
   color: var(--brasa-escura);
   font-weight: var(--peso-black); /* 900 */
 }
 
-.lp-comp-table td.col-meufrango {
+.lp-comp-table td.col-aoponto {
   background: #FFFBF9;
   font-weight: var(--peso-semi); /* 600 */
   color: var(--carvao);
