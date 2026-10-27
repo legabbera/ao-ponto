@@ -7,6 +7,8 @@ import { toast, abrirModal } from '../components/ui.js';
 import { store } from '../state/store.js';
 import { PRODUTOS, CATEGORIAS, PONTOS } from '../data/mock.js';
 import { fmtMoeda, fmtKg } from '../utils/format.js';
+import { exibirModalLimite } from '../components/limite-modal.js';
+import { registrarVendaTenant } from '../data/tenants.js';
 
 let carrinho = [];
 let categoriaAtiva = 'todos';
@@ -429,6 +431,17 @@ export function renderVendas(raiz, irPara) {
 
   function finalizarVenda() {
     if (carrinho.length === 0) return;
+
+    // ── Guard de limite do plano gratuito ───────────────────
+    try {
+      registrarVendaTenant();
+    } catch (e) {
+      if (e.message === 'LIMITE_ATINGIDO') {
+        exibirModalLimite(irPara, store.getTenant());
+        return;
+      }
+    }
+
     const subtotal = carrinho.reduce((acc, it) => acc + it.total, 0);
     const troco = Math.max(0, (valorRecebido || subtotal) - subtotal);
     const itensTexto = carrinho.map((it) => it.forma === 'peso' ? `${it.nome} (${fmtKg(it.pesoKg)})` : `${it.qtd}x ${it.nome}`).join(', ');

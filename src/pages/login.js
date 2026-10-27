@@ -1,7 +1,6 @@
 /**
- * TELA DE LOGIN — DEMONSTRATIVA
- * ⚠️ Não existe autenticação real. Qualquer e-mail válido + senha
- * com 4+ caracteres entra. A senha "errada" simula um erro.
+ * TELA DE LOGIN — DEMONSTRATIVA (multi-tenant)
+ * Agora conecta com loginTenant via api.js.
  */
 import { icone } from '../components/icons.js';
 import { abrirModal, toast } from '../components/ui.js';
@@ -14,7 +13,7 @@ export function renderLogin(raiz, irPara) {
     <section class="login-hero">
       <div class="logo">
         <div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div>
-        <div><div class="logo-nome">Frango Assado</div><div class="logo-sub">Gestão de vendas</div></div>
+        <div><div class="logo-nome">Ao Ponto</div><div class="logo-sub">Gestão de vendas</div></div>
       </div>
       <h1>Suas vendas na palma da mão.</h1>
       <p>Acompanhe faturamento, pedidos e pontos de venda em tempo real, direto do celular.</p>
@@ -52,6 +51,9 @@ export function renderLogin(raiz, irPara) {
         <div class="linha-entre"><button type="button" class="link-btn" id="btn-esqueci">Esqueci minha senha</button></div>
         <button class="btn btn-primario btn-bloco" id="btn-entrar" type="submit" style="min-height:54px;font-size:16px">Entrar</button>
 
+        <div class="divisor">não tem conta?</div>
+        <button type="button" class="btn btn-contorno btn-bloco" id="btn-ir-cadastro">Criar conta grátis — 10 vendas/mês</button>
+
         <div class="divisor">ou entre direto como</div>
         <div class="atalhos-perfil">
           <button type="button" class="atalho" data-perfil="owner" id="atalho-dono"><span>👑</span><span>Dono</span></button>
@@ -80,9 +82,9 @@ export function renderLogin(raiz, irPara) {
     e.currentTarget.setAttribute('aria-label', mostrar ? 'Ocultar senha' : 'Mostrar senha');
   });
 
-  const entrar = (perfil) => {
-    store.set({ logado: true, perfil, ponto: 'todos' });
-    toast(`Bem-vindo(a), ${store.perfil().nome.split(' ')[0]}!`);
+  const entrar = (perfil, usuario, tenant) => {
+    store.set({ logado: true, perfil, ponto: 'todos', usuario: usuario || null, tenant: tenant || null });
+    toast(`Bem-vindo(a), ${(usuario?.nome || store.perfil().nome).split(' ')[0]}!`);
     irPara('inicio');
   };
 
@@ -101,15 +103,19 @@ export function renderLogin(raiz, irPara) {
 
     const btn = $('#btn-entrar');
     btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Entrando...';
-    try { await loginDemo(u, s); entrar('owner'); }
-    catch (err) {
+    try {
+      const resultado = await loginDemo(u, s);
+      entrar('owner', resultado?.usuario, resultado?.tenant);
+    } catch (err) {
       erroGeral.querySelector('span').textContent = err.message;
       erroGeral.classList.add('visivel');
       btn.disabled = false; btn.textContent = 'Entrar';
     }
   });
 
-  raiz.querySelectorAll('[data-perfil]').forEach((b) => b.addEventListener('click', () => entrar(b.dataset.perfil)));
+  raiz.querySelectorAll('[data-perfil]').forEach((b) => b.addEventListener('click', () => entrar(b.dataset.perfil, null, null)));
+
+  $('#btn-ir-cadastro')?.addEventListener('click', () => irPara('cadastro'));
 
   $('#btn-esqueci').addEventListener('click', () => {
     abrirModal(`

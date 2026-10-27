@@ -12,7 +12,7 @@ import { buscarDashboard } from '../services/api.js';
 import { fmtMoeda, fmtMoedaCurta, fmtNumero, fmtKg, fmtData, isoData, deIso } from '../utils/format.js';
 
 Chart.register(...registerables);
-Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+Chart.defaults.font.family = "'Montserrat', system-ui, sans-serif";
 Chart.defaults.color = '#6E625A';
 
 const PERIODOS = [

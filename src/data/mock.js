@@ -154,6 +154,7 @@ export function resumoPedidos(pontosIds, inicio, fim, hoje = new Date()) {
 export const PEDIDOS_INICIAIS = [
   {
     id: 1041,
+    tenantId: 'tenant_demo',
     cliente: 'Marcos Oliveira',
     telefone: '11987654321',
     ponto: 'centro',
@@ -170,6 +171,7 @@ export const PEDIDOS_INICIAIS = [
   },
   {
     id: 1042,
+    tenantId: 'tenant_demo',
     cliente: 'Fernanda Souza',
     telefone: '11976543210',
     ponto: 'centro',
@@ -186,6 +188,7 @@ export const PEDIDOS_INICIAIS = [
   },
   {
     id: 1043,
+    tenantId: 'tenant_demo',
     cliente: 'Roberto Lima',
     telefone: '11991234567',
     ponto: 'centro',
@@ -202,6 +205,7 @@ export const PEDIDOS_INICIAIS = [
   },
   {
     id: 1044,
+    tenantId: 'tenant_demo',
     cliente: 'Carla Silveira',
     telefone: '11988887777',
     ponto: 'centro',
@@ -218,6 +222,7 @@ export const PEDIDOS_INICIAIS = [
   },
   {
     id: 1045,
+    tenantId: 'tenant_demo',
     cliente: 'Cláudio Duarte',
     telefone: '11999991111',
     ponto: 'centro',
@@ -238,6 +243,7 @@ export const PEDIDOS_INICIAIS = [
 export const VENDAS_RECENTES = [
   {
     id: 'V-102',
+    tenantId: 'tenant_demo',
     hora: '11:10',
     itensTexto: '1x Frango inteiro, 1x Batata',
     total: 57.0,
@@ -246,6 +252,7 @@ export const VENDAS_RECENTES = [
   },
   {
     id: 'V-101',
+    tenantId: 'tenant_demo',
     hora: '10:45',
     itensTexto: '1x Meio frango',
     total: 25.0,
@@ -254,6 +261,7 @@ export const VENDAS_RECENTES = [
   },
   {
     id: 'V-100',
+    tenantId: 'tenant_demo',
     hora: '10:20',
     itensTexto: '1x Linguiça assada (480g)',
     total: 19.15,

@@ -5,6 +5,7 @@ import { icone } from './icons.js';
 import { toast, abrirModal } from './ui.js';
 import { store } from '../state/store.js';
 import { PONTOS, PERFIS } from '../data/mock.js';
+import { PLANOS, logoutTenant } from '../data/tenants.js';
 
 export const ROTAS = [
   { id: 'inicio', rotulo: 'Início', icone: 'home', principal: true },
@@ -16,12 +17,14 @@ export const ROTAS = [
   { id: 'whatsapp', rotulo: 'WhatsApp', icone: 'conversa', etapa: 3, perfis: ['owner', 'admin'], desc: 'Central de atendimento' },
   { id: 'pagamentos', rotulo: 'Pagamentos', icone: 'cartao', etapa: 3, perfis: ['owner'], desc: 'Máquinas e provedores' },
   { id: 'relatorios', rotulo: 'Relatórios', icone: 'grafico', etapa: 3, perfis: ['owner', 'admin'], desc: 'Análises e exportação' },
-  { id: 'config', rotulo: 'Configurações', icone: 'config', etapa: 3, desc: 'Perfil e preferências' },
+  { id: 'planos', rotulo: 'Meu Plano', icone: 'grafico', perfis: ['owner'], desc: 'Planos e limites de uso' },
+  { id: 'configuracoes', rotulo: 'Configurações', icone: 'config', perfis: ['owner', 'admin'], desc: 'Domínio e dados do negócio' },
 ];
 export const rotasDoPerfil = () => ROTAS.filter((r) => !r.perfis || r.perfis.includes(store.get().perfil));
 
 export function renderShell(raiz, rotaAtual, irPara) {
   const st = store.get(), perfil = PERFIS[st.perfil];
+  const tenant = store.getTenant();
   const rotas = rotasDoPerfil();
   const iniciais = perfil.nome.split(' ').map((p) => p[0]).slice(0, 2).join('');
   const nomePonto = st.ponto === 'todos' 
@@ -33,13 +36,13 @@ export function renderShell(raiz, rotaAtual, irPara) {
   raiz.innerHTML = `
   <div class="app ${st.sidebarRecolhida ? 'recolhido' : ''}">
     <aside class="sidebar" aria-label="Menu principal">
-      <div class="logo"><div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div><div><div class="logo-nome">Frango Assado</div><div class="logo-sub">Gestão de vendas</div></div></div>
+      <div class="logo"><div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div><div><div class="logo-nome">Ao Ponto</div><div class="logo-sub">Gestão de vendas</div></div></div>
       <button class="btn btn-primario sb-nova" data-acao="nova-venda" title="Nova venda">${icone('mais')}<span>Nova venda</span></button>
       <div class="sb-secao">Principal</div>
       ${rotas.filter((r) => r.principal).map(itemSb).join('')}
       <div class="sb-secao">Gestão</div>
       ${rotas.filter((r) => !r.principal).map(itemSb).join('')}
-      <div class="sb-rodape">
+        ${tenant ? `<div class="sb-plano-badge" data-ir="planos" title="Meu Plano">${icone('grafico')}<span>${PLANOS[tenant.plano]?.nome || 'Grátis'}</span></div>` : ''}
         <button class="sb-item" data-acao="landing" title="Ver Apresentação B2B">${icone('globo')}<span>Apresentação B2B</span></button>
         <button class="sb-item" data-acao="perfil" title="Trocar perfil (demo)">${icone('trocar')}<span>Trocar perfil (demo)</span></button>
         <button class="sb-item" data-acao="sair" title="Sair">${icone('sair')}<span>Sair</span></button>
@@ -51,7 +54,7 @@ export function renderShell(raiz, rotaAtual, irPara) {
         <button class="topo-btn btn-menu-lateral" data-acao="recolher" aria-label="Recolher ou expandir menu">${icone('painel')}</button>
         <div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div>
         <div class="topo-titulo">
-          <strong>${atual?.rotulo === 'Início' ? 'Frango Assado' : atual?.rotulo || 'Menu'}</strong>
+          <strong>${atual?.rotulo === 'Início' ? 'Ao Ponto' : atual?.rotulo || 'Menu'}</strong>
           <small>${icone('local', 'mini')} ${nomePonto}</small>
         </div>
         <button class="topo-btn" data-acao="notificacoes" aria-label="Notificações">${icone('sino')}<span class="ponto-notif"></span></button>
@@ -134,5 +137,11 @@ export function modalPerfil(irPara) {
 export function sair(irPara) {
   abrirModal(`<h2>Sair da sessão?</h2><p>Você voltará para a tela de login.</p>
     <div class="modal-acoes"><button class="btn btn-primario btn-bloco" data-ok>Sim, sair</button><button class="btn btn-fantasma btn-bloco" data-fechar>Cancelar</button></div>`,
-  (m, fechar) => m.querySelector('[data-ok]').addEventListener('click', () => { fechar(); store.set({ logado: false }); toast('Você saiu da sessão.', 'info'); irPara('login'); }));
+  (m, fechar) => m.querySelector('[data-ok]').addEventListener('click', () => {
+    fechar();
+    logoutTenant();
+    store.set({ logado: false, tenant: null, usuario: null });
+    toast('Você saiu da sessão.', 'info');
+    irPara('login');
+  }));
 }

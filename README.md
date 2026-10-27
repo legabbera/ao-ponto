@@ -1,4 +1,4 @@
-# 🍗 Frango Assado — Gestão de Vendas (protótipo)
+# 🍗 Ao Ponto — Gestão de Vendas (SaaS Multi-tenant)
 
 Protótipo visual **mobile-first** com **dados fictícios**. Etapa 1: identidade visual, navegação, login demonstrativo e dashboard.
 
