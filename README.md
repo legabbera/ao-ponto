@@ -5,8 +5,8 @@ Protótipo visual **mobile-first** com **dados fictícios**. Etapa 1: identidade
 > ⚠️ Não há backend, banco de dados, autenticação real, WhatsApp ou pagamentos. Tudo é simulação.
 
 ## 🌐 Deploy em Produção
-- **Site Oficial:** [https://meufrango.netlify.app/](https://meufrango.netlify.app/)
-- **Repositório:** [https://github.com/legabbera/frango-assado](https://github.com/legabbera/frango-assado)
+- **Site Oficial:** [https://aoponto.netlify.app/](https://aoponto.netlify.app/)
+- **Repositório:** [https://github.com/legabbera/ao-ponto](https://github.com/legabbera/ao-ponto)
 
 ## Como rodar
 ```bash
