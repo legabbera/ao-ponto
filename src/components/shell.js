@@ -36,7 +36,7 @@ export function renderShell(raiz, rotaAtual, irPara) {
   raiz.innerHTML = `
   <div class="app ${st.sidebarRecolhida ? 'recolhido' : ''}">
     <aside class="sidebar" aria-label="Menu principal">
-      <div class="logo"><div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div><div><div class="logo-nome">Ao Ponto</div><div class="logo-sub">Gestão de vendas</div></div></div>
+      <div class="logo"><div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div><div><div class="logo-nome">Ao Ponto</div></div></div>
       <button class="btn btn-primario sb-nova" data-acao="nova-venda" title="Nova venda">${icone('mais')}<span>Nova venda</span></button>
       <div class="sb-secao">Principal</div>
       ${rotas.filter((r) => r.principal).map(itemSb).join('')}
@@ -46,7 +46,6 @@ export function renderShell(raiz, rotaAtual, irPara) {
         <button class="sb-item" data-acao="landing" title="Ver Apresentação B2B">${icone('globo')}<span>Apresentação B2B</span></button>
         <button class="sb-item" data-acao="perfil" title="Trocar perfil (demo)">${icone('trocar')}<span>Trocar perfil (demo)</span></button>
         <button class="sb-item" data-acao="sair" title="Sair">${icone('sair')}<span>Sair</span></button>
-      </div>
     </aside>
 
     <div class="principal">

@@ -24,7 +24,7 @@ const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 // ── Autenticação ─────────────────────────────────────────────
 
 /** Login real (multi-tenant mock). Retorna { usuario, tenant } */
-export async function loginDemo(email, senha) {
+export async function loginDemo(identificador, senha) {
   await esperar(700);
   return loginTenant(email, senha);
 }

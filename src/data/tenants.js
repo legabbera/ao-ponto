@@ -62,6 +62,9 @@ const USUARIOS_MOCK = [
     id: 'user_demo',
     tenantId: 'tenant_demo',
     email: 'demo@aoponto.app',
+    celular: '11987654321',
+    celularFormatado: '(11) 98765-4321',
+    username: 'carlos',
     nome: 'Carlos Mendes',
     perfil: 'owner',
     createdAt: '2026-10-01T12:00:00Z',
@@ -104,7 +107,7 @@ export function atualizarTenantAtivo(parcial) {
 }
 
 /** Cria um novo tenant + usuário owner */
-export function cadastrarEstabelecimento({ nomeEstabelecimento, slug, email, nome }) {
+export function cadastrarEstabelecimento({ nomeEstabelecimento, slug, celular, email, nome, senha }) {
   const tenants = carregarTenants();
   const usuarios = carregarUsuarios();
 
@@ -113,7 +116,11 @@ export function cadastrarEstabelecimento({ nomeEstabelecimento, slug, email, nom
     throw new Error('Este endereço já está em uso. Escolha outro.');
   }
   // Valida unicidade do email
-  if (usuarios.some((u) => u.email === email)) {
+  const celLimpo = (celular || '').replace(/\D/g, '');
+  if (celLimpo && usuarios.some((u) => (u.celular || '').replace(/\D/g, '') === celLimpo)) {
+    throw new Error('Este número de celular já possui uma conta.');
+  }
+  if (email && usuarios.some((u) => u.email?.toLowerCase() === email.toLowerCase())) {
     throw new Error('Este e-mail já possui uma conta.');
   }
 
@@ -136,7 +143,10 @@ export function cadastrarEstabelecimento({ nomeEstabelecimento, slug, email, nom
   const usuario = {
     id: userId,
     tenantId,
-    email,
+    email: email || `${slug}@aoponto.app`,
+    celular: celLimpo,
+    celularFormatado: celular,
+    username: slug,
     nome,
     perfil: 'owner',
     createdAt: agora,
@@ -151,13 +161,25 @@ export function cadastrarEstabelecimento({ nomeEstabelecimento, slug, email, nom
 }
 
 /** Login: valida credenciais e ativa o tenant na sessão */
-export function loginTenant(email, senha) {
+export function loginTenant(identificador, senha) {
   if (senha === 'errada') throw new Error('Usuário ou senha incorretos.');
   if (senha.length < 4) throw new Error('Senha deve ter pelo menos 4 caracteres.');
 
   const usuarios = carregarUsuarios();
   // Para o mock, qualquer e-mail válido com senha ≥ 4 funciona
-  let usuario = usuarios.find((u) => u.email === email);
+  const termo = (identificador || '').trim().toLowerCase();
+  const digits = termo.replace(/\D/g, '');
+  let usuario = usuarios.find((u) => {
+    const cel = (u.celular || '').replace(/\D/g, '');
+    const em = (u.email || '').toLowerCase();
+    const us = (u.username || '').toLowerCase();
+    if (digits.length >= 8 && cel.includes(digits)) return true;
+    if (em && em === termo) return true;
+    if (us && us === termo) return true;
+    const nome = (u.nome || '').toLowerCase();
+    if (nome && (nome === termo || nome.startsWith(termo))) return true;
+    return false;
+  });
   if (!usuario) {
     // fallback: usa o demo (simulação)
     usuario = usuarios[0];

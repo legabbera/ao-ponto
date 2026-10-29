@@ -1,10 +1,11 @@
-﻿/**
+/**
  * LANDING PAGE B2B — Ao Ponto
  * Foco comercial, alta conversão, responsiva e honesta.
  * Tipografia: Montserrat com hierarquia para Leitura em F.
  */
 import { icone } from '../components/icons.js';
 import { fmtMoeda } from '../utils/format.js';
+import { abrirModalTermos, abrirModalLGPD } from '../components/legal-modal.js';
 
 // Configuração centralizada para links e contatos reais
 export const LANDING_CONFIG = {
@@ -19,12 +20,8 @@ export function renderLanding(raiz, irPara) {
     <!-- 1. BARRA SUPERIOR (Topo do F) -->
     <header class="lp-nav">
       <div class="lp-container lp-nav-inner">
-        <a href="#hero" class="lp-logo">
-          <img src="/logo-badge.jpg" alt="Logo Ao Ponto" class="lp-logo-img" />
-          <div class="lp-logo-text">
-            <strong>Ao Ponto</strong>
-            <small>Gestão de Vendas</small>
-          </div>
+        <a href="#hero" class="lp-logo" aria-label="Ao Ponto">
+          <img src="/logo.png" alt="Ao Ponto" class="lp-logo-img" />
         </a>
 
         <ul class="lp-nav-links">
@@ -794,12 +791,8 @@ export function renderLanding(raiz, irPara) {
       <div class="lp-container">
         <div class="lp-footer-grid">
           <div class="lp-footer-brand">
-            <div class="lp-logo" style="color:var(--branco)">
-              <img src="/logo-badge.jpg" alt="Logo Ao Ponto" class="lp-logo-img" />
-              <div class="lp-logo-text">
-                <strong style="color:var(--branco)">Ao Ponto</strong>
-                <small>Gestão de Vendas</small>
-              </div>
+            <div class="lp-logo">
+              <img src="/logo.png" alt="Ao Ponto" class="lp-logo-img" />
             </div>
             <p>
               Apoiando pequenos comerciantes e mestres da brasa a organizarem suas vendas com simplicidade e tecnologia que respeita a rotina da rua.
@@ -823,6 +816,15 @@ export function renderLanding(raiz, irPara) {
               <li><a href="javascript:void(0)" id="footer-link-app">Acessar App Demo</a></li>
               <li><a href="#contato">Falar com a equipe</a></li>
               <li><span style="font-size:12px;color:rgba(255,255,255,0.4)">Versão 0.1 (Protótipo B2B)</span></li>
+            </ul>
+          </div>
+
+          <div class="lp-footer-col">
+            <h4>Legal & Privacidade</h4>
+            <ul>
+              <li><a href="javascript:void(0)" id="footer-link-termos">Termos de Uso</a></li>
+              <li><a href="javascript:void(0)" id="footer-link-lgpd">Privacidade & LGPD</a></li>
+              <li><span style="font-size:12px;color:rgba(255,255,255,0.4)">Lei nº 13.709/2018</span></li>
             </ul>
           </div>
         </div>
@@ -896,6 +898,14 @@ export function renderLanding(raiz, irPara) {
   raiz.querySelector('#mobile-btn-app')?.addEventListener('click', irParaApp);
   raiz.querySelector('#hero-link-app')?.addEventListener('click', irParaApp);
   raiz.querySelector('#footer-link-app')?.addEventListener('click', irParaApp);
+  raiz.querySelector('#footer-link-termos')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    abrirModalTermos();
+  });
+  raiz.querySelector('#footer-link-lgpd')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    abrirModalLGPD();
+  });
 
   // Menu Mobile Toggle
   const btnToggleMenu = raiz.querySelector('#btn-toggle-menu');
