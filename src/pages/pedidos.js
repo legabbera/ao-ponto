@@ -7,6 +7,7 @@ import { toast, abrirModal } from '../components/ui.js';
 import { store } from '../state/store.js';
 import { PRODUTOS, STATUS_PEDIDO, PONTOS } from '../data/mock.js';
 import { fmtMoeda, fmtKg } from '../utils/format.js';
+import { salvarPedidoNoBanco } from '../services/api.js';
 
 let filtroStatus = 'todos';
 let filtroData = 'hoje';
@@ -421,6 +422,17 @@ export function renderPedidos(raiz, irPara) {
             metodo: pagMetodo,
           },
         });
+
+        const tenantAtivo = store.getTenant();
+        salvarPedidoNoBanco(tenantAtivo?.id, {
+          cliente,
+          telefone,
+          data,
+          hora,
+          total,
+          status: 'confirmado',
+          itens: itensAtivos,
+        }).catch((err) => console.warn('Supabase sync pedido:', err));
 
         toast(`Reserva de ${cliente} confirmada para ${data} às ${hora}h!`, 'sucesso');
         fechar();

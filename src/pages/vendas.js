@@ -9,6 +9,7 @@ import { PRODUTOS, CATEGORIAS, PONTOS } from '../data/mock.js';
 import { fmtMoeda, fmtKg } from '../utils/format.js';
 import { exibirModalLimite } from '../components/limite-modal.js';
 import { registrarVendaTenant } from '../data/tenants.js';
+import { registrarVenda as registrarVendaApi } from '../services/api.js';
 
 let carrinho = [];
 let categoriaAtiva = 'todos';
@@ -455,6 +456,14 @@ export function renderVendas(raiz, irPara) {
       troco: metodoPagamento === 'dinheiro' ? troco : 0,
       itens: [...carrinho],
     });
+
+    const tenantAtivo = store.getTenant();
+    registrarVendaApi({
+      total: subtotal,
+      pagamento: { metodo: metodoPagamento, troco, valorRecebido },
+      cliente: { nome: clienteNome, telefone: clienteTelefone },
+      itens: [...carrinho],
+    }, tenantAtivo?.id).catch((err) => console.warn('Supabase sync venda:', err));
 
     const msgZap = encodeURIComponent(
       '🍗 *Frango Assado - Comprovante de Venda*' +
