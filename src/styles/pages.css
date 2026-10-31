@@ -372,3 +372,173 @@
 .sb-plano-badge:hover { background: rgba(217,72,28,.2); }
 .sb-plano-badge svg { flex-shrink: 0; }
 
+
+
+/* =========================================================
+   CONTROLE DE ESTOQUE — CICLO DA BRASA & INSUMOS
+   ========================================================= */
+.estoque-container { display: flex; flex-direction: column; gap: 20px; }
+.estoque-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.estoque-topo-info h1 { font-size: 24px; font-weight: 800; margin: 0; }
+.estoque-topo-info p { color: var(--texto-suave); font-size: 14px; margin: 4px 0 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.estoque-topo-acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-perda-topo { color: var(--vermelho); }
+
+/* Alerta de Estoque Mínimo */
+.estoque-aviso-alerta {
+  background: #FFF3E8; border: 1.5px solid #FFCC99; border-radius: var(--raio);
+  padding: 14px 18px; display: flex; align-items: center; gap: 14px;
+}
+.aviso-icone { width: 38px; height: 38px; border-radius: 10px; background: #FFDFC2; color: #D9531E; display: grid; place-items: center; flex-shrink: 0; }
+.aviso-conteudo { flex: 1; }
+.aviso-conteudo strong { font-size: 14px; color: #9C380F; display: block; }
+.aviso-conteudo p { font-size: 13px; color: #7B3213; margin: 2px 0 0; }
+.btn-perigo-suave { background: #FFDFC2; color: #9C380F; border: 0; font-weight: 700; }
+.btn-perigo-suave:hover { background: #FFCC99; }
+
+/* KPIs de Estoque */
+.estoque-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+.kpi-estoque {
+  background: var(--branco); border: 1.5px solid var(--borda); border-radius: var(--raio);
+  padding: 16px; display: flex; flex-direction: column; gap: 6px; box-shadow: var(--sombra);
+}
+.kpi-estoque.pronto-destaque {
+  background: linear-gradient(135deg, #2A1810 0%, #462215 100%);
+  color: var(--texto-claro); border-color: var(--brasa);
+}
+.kpi-estoque.pronto-destaque .kpi-estoque-rotulo { color: #E0CFC5; }
+.kpi-estoque.pronto-destaque .kpi-estoque-valor { color: #FFB37C; }
+.kpi-estoque.pronto-destaque .kpi-estoque-desc { color: #D0BDB2; }
+.kpi-estoque-topo { display: flex; justify-content: space-between; align-items: center; }
+.kpi-estoque-rotulo { font-size: 13px; font-weight: 600; color: var(--texto-suave); }
+.kpi-badge-etapa { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; }
+.kpi-badge-etapa.pronto { background: rgba(217,72,28,.2); color: #FF9E66; }
+.kpi-badge-etapa.espeto { background: #FFE8D6; color: #C2410C; }
+.kpi-badge-etapa.temperado { background: #FEF3C7; color: #B45309; }
+.kpi-badge-etapa.cru { background: #E0F2FE; color: #0369A1; }
+.kpi-estoque-valor { font-family: var(--fonte-titulo); font-size: 32px; font-weight: 800; line-height: 1.1; margin: 4px 0 2px; }
+.kpi-estoque-valor small { font-size: 14px; font-weight: 600; opacity: .8; }
+.kpi-estoque-desc { font-size: 12px; color: var(--texto-suave); line-height: 1.3; }
+
+/* SEÇÃO CICLO DA BRASA */
+.secao-cabecalho { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.secao-cabecalho h2 { font-size: 18px; font-weight: 800; margin: 0; }
+.secao-cabecalho p { font-size: 13px; color: var(--texto-suave); margin: 2px 0 0; }
+.secao-meta-resumo { display: flex; gap: 8px; flex-wrap: wrap; }
+.badge-vendidos { background: #DCFCE7; color: #166534; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px; }
+.badge-perdas { background: #FEE2E2; color: #991B1B; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px; }
+
+.ciclo-grade {
+  display: grid; grid-template-columns: 1fr; gap: 12px; align-items: center;
+}
+@media (min-width: 900px) {
+  .ciclo-grade { grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; gap: 8px; }
+}
+.ciclo-seta {
+  display: none; font-size: 24px; color: var(--borda-forte); font-weight: 800; text-align: center;
+}
+@media (min-width: 900px) {
+  .ciclo-seta { display: block; }
+}
+
+.ciclo-etapa {
+  background: var(--creme); border: 2px solid var(--borda); border-radius: var(--raio);
+  padding: 16px; display: flex; flex-direction: column; gap: 10px; position: relative;
+  transition: transform var(--transicao), border-color var(--transicao);
+}
+.ciclo-etapa:hover { transform: translateY(-2px); border-color: var(--brasa); }
+.ciclo-etapa.cru { border-top: 4px solid #0284C7; }
+.ciclo-etapa.temperado { border-top: 4px solid #D97706; }
+.ciclo-etapa.espeto { border-top: 4px solid #EA580C; background: #FFF9F5; }
+.ciclo-etapa.pronto { border-top: 4px solid #16A34A; background: #F7FEFA; }
+
+.etapa-topo { display: flex; align-items: center; gap: 10px; }
+.etapa-icone { font-size: 26px; }
+.etapa-info strong { font-size: 14px; font-weight: 700; display: block; }
+.etapa-info small { font-size: 12px; color: var(--texto-suave); }
+.etapa-numero { font-family: var(--fonte-titulo); font-size: 30px; font-weight: 800; line-height: 1; }
+.etapa-numero .unidade { font-size: 14px; font-weight: 600; color: var(--texto-suave); }
+.etapa-barra { height: 6px; background: var(--borda); border-radius: 999px; overflow: hidden; }
+.barra-preenchimento { height: 100%; border-radius: 999px; background: var(--brasa); transition: width .4s ease; }
+.ciclo-etapa.cru .barra-preenchimento { background: #0284C7; }
+.ciclo-etapa.temperado .barra-preenchimento { background: #D97706; }
+.ciclo-etapa.espeto .barra-preenchimento { background: #EA580C; }
+.ciclo-etapa.pronto .barra-preenchimento { background: #16A34A; }
+
+.etapa-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+.etapa-acoes .btn { flex: 1; min-width: 90px; }
+.btn-link-pequeno { background: none; border: 0; color: var(--texto-suave); font-size: 11px; cursor: pointer; text-decoration: underline; padding: 2px 0; align-self: flex-start; }
+.btn-link-pequeno:hover { color: var(--brasa); }
+
+/* SEÇÃO INSUMOS */
+.insumos-filtros-linha {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  margin-bottom: 16px; flex-wrap: wrap;
+}
+.abas-categorias { display: flex; gap: 6px; flex-wrap: wrap; }
+.aba-filtro {
+  background: var(--creme); border: 1px solid var(--borda); border-radius: 999px;
+  padding: 6px 14px; font-size: 13px; font-weight: 600; color: var(--texto-suave);
+  cursor: pointer; transition: all var(--transicao);
+}
+.aba-filtro:hover { border-color: var(--brasa); color: var(--carvao); }
+.aba-filtro.ativa { background: var(--carvao); color: var(--texto-claro); border-color: var(--carvao); }
+.aba-filtro.ativa.alerta { background: #DC2626; border-color: #DC2626; color: #fff; }
+
+.busca-insumo-caixa { position: relative; min-width: 220px; }
+.busca-insumo-caixa .busca-ic { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--texto-suave); width: 16px; height: 16px; }
+.busca-insumo-caixa input { padding-left: 36px; height: 38px; font-size: 13px; }
+
+.grade-insumos { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.insumo-card {
+  background: var(--branco); border: 1.5px solid var(--borda); border-radius: var(--raio);
+  padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: var(--sombra);
+  transition: transform var(--transicao), border-color var(--transicao);
+}
+.insumo-card:hover { transform: translateY(-2px); border-color: var(--brasa); }
+.insumo-card.baixo { border-color: #FBBF24; background: #FFFCF5; }
+.insumo-card.critico { border-color: #F87171; background: #FFF5F5; }
+
+.insumo-card-topo { display: flex; align-items: flex-start; gap: 10px; }
+.insumo-icone { font-size: 26px; }
+.insumo-titulos { flex: 1; }
+.insumo-nome { font-size: 14px; font-weight: 700; display: block; line-height: 1.25; }
+.insumo-categoria-tag { font-size: 11px; color: var(--texto-suave); text-transform: uppercase; font-weight: 600; }
+.badge-status-insumo { font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 6px; white-space: nowrap; }
+.badge-status-insumo.normal { background: #DCFCE7; color: #166534; }
+.badge-status-insumo.baixo { background: #FEF3C7; color: #B45309; }
+.badge-status-insumo.critico { background: #FEE2E2; color: #991B1B; }
+
+.insumo-valores { display: flex; justify-content: space-between; align-items: flex-end; }
+.insumo-qtd-atual .val { font-family: var(--fonte-titulo); font-size: 24px; font-weight: 800; color: var(--carvao); }
+.insumo-qtd-atual .un { font-size: 13px; color: var(--texto-suave); font-weight: 600; margin-left: 2px; }
+.insumo-minimo { text-align: right; font-size: 12px; color: var(--texto-suave); }
+.insumo-minimo strong { color: var(--carvao); font-weight: 700; display: block; }
+
+.insumo-barra-nivel { height: 6px; background: var(--creme-2); border-radius: 999px; overflow: hidden; }
+.insumo-barra-progresso { height: 100%; border-radius: 999px; }
+.insumo-barra-progresso.normal { background: #22C55E; }
+.insumo-barra-progresso.baixo { background: #F59E0B; }
+.insumo-barra-progresso.critico { background: #EF4444; }
+
+.insumo-card-acoes { display: flex; gap: 6px; margin-top: auto; }
+.insumo-card-acoes .btn { flex: 1; }
+
+.estado-vazio-insumo { text-align: center; padding: 36px 16px; color: var(--texto-suave); }
+.estado-vazio-insumo .ev-icone { font-size: 40px; margin-bottom: 8px; opacity: .6; }
+
+/* SEÇÃO HISTÓRICO & AUDITORIA */
+.tabela-responsiva { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tabela-historico { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+.tabela-historico th { padding: 10px 12px; background: var(--creme); color: var(--texto-suave); font-weight: 700; border-bottom: 1px solid var(--borda); }
+.tabela-historico td { padding: 12px; border-bottom: 1px solid var(--borda); }
+.tabela-historico tr:hover td { background: var(--creme); }
+.col-hora { font-family: monospace; font-size: 12px; color: var(--carvao); }
+.col-desc { font-weight: 500; }
+.col-operador { font-size: 12px; color: var(--texto-suave); display: flex; align-items: center; gap: 4px; }
+.badge-tipo { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
+.badge-tipo.primario { background: #E0F2FE; color: #0369A1; }
+.badge-tipo.sucesso { background: #DCFCE7; color: #166534; }
+.badge-tipo.perigo { background: #FEE2E2; color: #991B1B; }
+.badge-tipo.info { background: #F3E8FF; color: #6B21A8; }
+.tabela-vazia { text-align: center; padding: 28px; color: var(--texto-suave); }
