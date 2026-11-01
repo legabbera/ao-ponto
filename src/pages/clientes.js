@@ -617,10 +617,17 @@ export function renderClientes(raiz, irPara) {
     });
   }
 
-  // Modal 4: Regras do Clube do Frango
+  // Modal 4: Regras do Clube do Frango (Personalizáveis pelo Lojista)
   function abrirModalRegrasClube() {
+    const configAtual = store.getTenant()?.fidelidade || {
+      metaSelos: 10,
+      premio: '1 Frango Assado Inteiro Grátis',
+      meioFrangoSelo: true,
+      validadeDias: 90,
+    };
+
     abrirModal({
-      titulo: 'Como funciona o Clube do Frango? 🍗✨',
+      titulo: 'Regras do Clube do Frango 🍗⭐',
       html: `
         <div class="modal-regras-clube" style="display: flex; flex-direction: column; gap: 14px; font-size: 14px;">
           <div style="background: var(--creme); padding: 14px; border-radius: 12px; border: 1px solid var(--borda);">
@@ -628,43 +635,58 @@ export function renderClientes(raiz, irPara) {
               Programa de Selos de Fidelidade
             </strong>
             <p style="margin: 0; color: var(--texto-suave);">
-              Fidelize seus clientes do almoço de domingo! A cada compra de frango assado (inteiro ou meio frango), o cliente ganha selos na cartela.
+              Fidelize seus clientes do almoço de domingo! A cada compra de assados registrada na plataforma de gestão e controle de vendas, o freguês acumula selos na cartela.
             </p>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; gap: 10px; align-items: flex-start;">
-              <span style="font-size: 20px;">🍗</span>
-              <div>
-                <strong>1 Frango Inteiro = 1 Selo</strong>
-                <p style="margin: 2px 0 0; color: var(--texto-suave); font-size: 13px;">Computado automaticamente ao finalizar vendas no PDV ou retirar encomendas.</p>
-              </div>
+          <form id="form-regras-fidelidade" style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="campo">
+              <label style="font-weight: 700; font-size: 13px; color: var(--carvao);">Meta de Selos para Ganhar o Prêmio:</label>
+              <input type="number" id="regra-meta-selos" class="input" min="5" max="20" value="${configAtual.metaSelos}" style="width: 100%;" required />
+              <small style="color: var(--texto-suave); font-size: 11px;">Padrão recomendado: 10 selos.</small>
             </div>
 
-            <div style="display: flex; gap: 10px; align-items: flex-start;">
-              <span style="font-size: 20px;">🎁</span>
-              <div>
-                <strong>10 Selos = 1 Frango Assado Grátis</strong>
-                <p style="margin: 2px 0 0; color: var(--texto-suave); font-size: 13px;">O cliente atinge a cartela premiada e o botão de resgate é liberado para zerar os 10 selos.</p>
-              </div>
+            <div class="campo">
+              <label style="font-weight: 700; font-size: 13px; color: var(--carvao);">Prêmio Concedido na Cartela Completa:</label>
+              <input type="text" id="regra-premio" class="input" value="${configAtual.premio}" style="width: 100%;" required />
+              <small style="color: var(--texto-suave); font-size: 11px;">Ex: 1 Frango Assado Inteiro Grátis, 1 Porção de Maionese + Farofa, etc.</small>
             </div>
 
-            <div style="display: flex; gap: 10px; align-items: flex-start;">
-              <span style="font-size: 20px;">💬</span>
-              <div>
-                <strong>Notificação por WhatsApp em 1 clique</strong>
-                <p style="margin: 2px 0 0; color: var(--texto-suave); font-size: 13px;">Envie o extrato de selos ou lembrete de reserva do almoço de domingo direto para o WhatsApp do cliente.</p>
-              </div>
+            <div class="campo" style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+              <input type="checkbox" id="regra-meio-frango" style="width: 18px; height: 18px; cursor: pointer;" ${configAtual.meioFrangoSelo ? 'checked' : ''} />
+              <label for="regra-meio-frango" style="font-size: 13px; color: var(--carvao); cursor: pointer;">
+                Meio frango assado também dá direito a 1 selo
+              </label>
             </div>
-          </div>
 
-          <div class="modal-botoes" style="margin-top: 14px; display: flex; justify-content: flex-end;">
-            <button class="btn btn-primario" data-fechar>Entendido</button>
-          </div>
+            <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #166534;">
+              ✨ <b>Automação:</b> Ao finalizar cada venda na plataforma de gestão e controle de vendas, o selo é computado no histórico do freguês e enviado por WhatsApp.
+            </div>
+
+            <div class="modal-botoes" style="margin-top: 10px; display: flex; justify-content: flex-end; gap: 8px;">
+              <button type="button" class="btn btn-contorno" data-fechar>Cancelar</button>
+              <button type="submit" class="btn btn-primario">💾 Salvar Regras</button>
+            </div>
+          </form>
         </div>
       `,
       aoAbrir: (el, fechar) => {
         el.querySelector('[data-fechar]').onclick = fechar;
+        el.querySelector('#form-regras-fidelidade').onsubmit = (e) => {
+          e.preventDefault();
+          const metaSelos = parseInt(el.querySelector('#regra-meta-selos').value, 10) || 10;
+          const premio = el.querySelector('#regra-premio').value.trim() || '1 Frango Assado Grátis';
+          const meioFrangoSelo = el.querySelector('#regra-meio-frango').checked;
+
+          const tenant = store.getTenant() || {};
+          tenant.fidelidade = { metaSelos, premio, meioFrangoSelo };
+          store.set({ tenant });
+          localStorage.setItem('fa-tenant-custom', JSON.stringify(tenant));
+
+          toast('Regras do Clube do Frango atualizadas com sucesso!', 'sucesso');
+          fechar();
+          desenhar();
+        };
       }
     });
   }

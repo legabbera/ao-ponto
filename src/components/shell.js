@@ -43,6 +43,8 @@ export function renderShell(raiz, rotaAtual, irPara) {
       <div class="sb-secao">Gestão</div>
       ${rotas.filter((r) => !r.principal).map(itemSb).join('')}
         ${tenant ? `<div class="sb-plano-badge" data-ir="planos" title="Meu Plano">${icone('grafico')}<span>${PLANOS[tenant.plano]?.nome || 'Grátis'}</span></div>` : ''}
+        <a href="/manual.html" target="_blank" class="sb-item" style="text-decoration:none" title="Manual do Usuário (PDF / Impressão)">${icone('info')}<span>Manual do Usuário</span></a>
+        <a href="/treinamento-video.html" target="_blank" class="sb-item" style="text-decoration:none" title="Vídeo Treinamento Full HD 1080p">${icone('grafico')}<span>Vídeo Treinamento</span></a>
         <button class="sb-item" data-acao="landing" title="Ver Apresentação B2B">${icone('globo')}<span>Apresentação B2B</span></button>
         <button class="sb-item" data-acao="perfil" title="Trocar perfil (demo)">${icone('trocar')}<span>Trocar perfil (demo)</span></button>
         <button class="sb-item" data-acao="sair" title="Sair">${icone('sair')}<span>Sair</span></button>
@@ -86,7 +88,7 @@ export function renderShell(raiz, rotaAtual, irPara) {
     const fundo = document.createElement('div'); fundo.className = 'fab-fundo';
     const menu = document.createElement('div'); menu.className = 'fab-menu';
     menu.innerHTML = `<button class="btn btn-escuro" data-q="novo-pedido">${icone('calendario')} Novo pedido / reserva</button>
-                      <button class="btn btn-primario" data-q="nova-venda">${icone('vendas')} Nova venda (PDV)</button>`;
+                      <button class="btn btn-primario" data-q="nova-venda">${icone('vendas')} Nova venda (Gestão de Vendas)</button>`;
     const fechar = () => { menu.remove(); fundo.remove(); fab.setAttribute('aria-expanded', 'false'); };
     fundo.addEventListener('click', fechar);
     menu.querySelectorAll('[data-q]').forEach((b) => b.addEventListener('click', () => { fechar(); acoes[b.dataset.q](); }));

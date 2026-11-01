@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vídeo de Treinamento Oficial (1920x1080) — Plataforma Ao Ponto</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Fira+Code:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #09090B;
+      color: #FAFAFA;
+      font-family: 'Montserrat', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Container de Aspect Ratio Fixo 16:9 (1920x1080 nativo) */
+    .video-viewport {
+      width: 1920px;
+      height: 1080px;
+      max-width: 96vw;
+      max-height: 54vw;
+      aspect-ratio: 16 / 9;
+      background: radial-gradient(circle at 50% 30%, #1C1917 0%, #0C0A09 100%);
+      border-radius: 16px;
+      border: 2px solid #27272A;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform-origin: center center;
+    }
+
+    /* Topo do Player */
+    .video-header {
+      padding: 24px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 10, 9, 0.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      z-index: 10;
+    }
+    .video-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 26px;
+      font-weight: 900;
+      color: #EA580C;
+      letter-spacing: -0.5px;
+    }
+    .badge-fhd {
+      background: #27272A;
+      color: #F43F5E;
+      border: 1px solid #3F3F46;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    /* Palco Central do Slide */
+    .video-stage {
+      flex: 1;
+      padding: 40px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 5;
+    }
+
+    .slide-tag {
+      font-size: 16px;
+      font-weight: 800;
+      color: #EA580C;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .slide-title {
+      font-size: 44px;
+      font-weight: 900;
+      color: #FFFFFF;
+      margin-bottom: 20px;
+      line-height: 1.15;
+    }
+
+    .slide-content-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .slide-bullets {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .bullet-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: rgba(28, 25, 23, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 18px;
+      line-height: 1.4;
+      color: #D4D4D8;
+    }
+    .bullet-item strong { color: #FFFFFF; font-weight: 800; }
+    .bullet-icon { font-size: 24px; line-height: 1; }
+
+    /* Mockup Visual no Vídeo */
+    .slide-preview-box {
+      background: #09090B;
+      border: 1.5px solid #27272A;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      color: #A1A1AA;
+      line-height: 1.5;
+    }
+    .preview-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #18181B;
+    }
+    .circle { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+    .c-red { background: #EF4444; }
+    .c-yellow { background: #F59E0B; }
+    .c-green { background: #10B981; }
+
+    /* Barra de Legendas Sincronizadas */
+    .video-subtitles {
+      background: rgba(9, 9, 11, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 16px 40px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+      color: #FEF08A;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Barra de Controles Inferior */
+    .video-controls {
+      background: #0C0A09;
+      padding: 14px 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border-top: 1px solid #1C1917;
+      z-index: 10;
+    }
+
+    .btn-ctrl {
+      background: #1C1917;
+      border: 1px solid #27272A;
+      color: #FFFFFF;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-ctrl:hover {
+      background: #27272A;
+      border-color: #3F3F46;
+    }
+    .btn-ctrl.btn-destaque {
+      background: #EA580C;
+      border-color: #C2410C;
+    }
+    .btn-ctrl.btn-destaque:hover {
+      background: #C2410C;
+    }
+
+    .timeline-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .timeline-bar {
+      flex: 1;
+      height: 8px;
+      background: #27272A;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+    .timeline-progress {
+      width: 0%;
+      height: 100%;
+      background: #EA580C;
+      transition: width 0.3s;
+    }
+    .time-display {
+      font-size: 14px;
+      font-family: 'Fira Code', monospace;
+      color: #A1A1AA;
+      min-width: 80px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Full HD 1920x1080 Viewport -->
+  <div class="video-viewport" id="video-root">
+    
+    <!-- Header -->
+    <div class="video-header">
+      <div class="video-brand">
+        <span>🍗 Ao Ponto</span>
+        <span style="font-size: 16px; color: #71717A; font-weight: 600;">Treinamento Oficial em Vídeo</span>
+      </div>
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <span class="badge-fhd">FULL HD 1080P</span>
+        <button class="btn-ctrl" onclick="toggleFullscreen()">⛶ Tela Cheia</button>
+      </div>
+    </div>
+
+    <!-- Palco Central do Slide -->
+    <div class="video-stage" id="slide-stage">
+      <!-- Inserido dinamicamente via JS -->
+    </div>
+
+    <!-- Barra de Legendas -->
+    <div class="video-subtitles" id="subtitles-box">
+      Pressione "Iniciar Vídeo" para começar o treinamento narrado da plataforma.
+    </div>
+
+    <!-- Controles do Player -->
+    <div class="video-controls">
+      <button class="btn-ctrl btn-destaque" id="btn-play" onclick="togglePlay()">
+        ▶ Iniciar Vídeo
+      </button>
+      <button class="btn-ctrl" onclick="prevSlide()">⏮ Anterior</button>
+      <button class="btn-ctrl" onclick="nextSlide()">Próximo ⏭</button>
+
+      <div class="timeline-container">
+        <div class="timeline-bar" onclick="seekVideo(event)">
+          <div class="timeline-progress" id="progress-bar"></div>
+        </div>
+        <div class="time-display" id="time-display">01 / 08</div>
+      </div>
+
+      <button class="btn-ctrl" id="btn-voz" onclick="toggleVoz()">🔊 Narração: ON</button>
+      <a href="./manual.html" class="btn-ctrl">📄 Ver Manual PDF</a>
+    </div>
+
+  </div>
+
+  <script>
+    const slides = [
+      {
+        tag: "Módulo 00: Boas-vindas",
+        title: "Ao Ponto: Gestão e Controle de Vendas",
+        bullets: [
+          { icon: "🍗", text: "<strong>Especializado para Assadeiras:</strong> Otimizado para o ritmo do domingo, eliminando esperas e filas." },
+          { icon: "🔥", text: "<strong>Ciclo da Brasa:</strong> Controle do tempo de assamento (1h45 a 2h10) para o frango estar sempre no ponto." },
+          { icon: "⚡", text: "<strong>Automação WhatsApp:</strong> Avisa o freguês quando o frango entrou no espeto e quando está pronto na estufa." }
+        ],
+        preview: `// PLATAFORMA AO PONTO
+Status: Operação de Domingo Ativa 🔥
+Frangos no Fogo: 42 unidades
+Reservas do Dia: 58 pedidos
+Lucro Operacional: 59.5% de Margem`,
+        legenda: "Bem-vindo à plataforma de gestão e controle de vendas Ao Ponto. Aqui seu domingo é organizado e lucrativo."
+      },
+      {
+        tag: "Módulo 01: Início & Acesso",
+        title: "Acesso Rápido e Painel de Ações",
+        bullets: [
+          { icon: "🔑", text: "<strong>Login Seguro:</strong> Acesso rápido por celular, e-mail e PIN de operador de caixa." },
+          { icon: "🟠", text: "<strong>+ Nova Venda:</strong> Abre imediatamente o controle de vendas de balcão." },
+          { icon: "📅", text: "<strong>Novo Pedido:</strong> Encomenda antecipada com horário e corte personalizado." }
+        ],
+        preview: `PAINEL DE AÇÕES RÁPIDAS:
+[ + Nova Venda (Gestão de Vendas) ]
+[ 📅 Novo Pedido (Reserva Domingo)]
+[ 📲 Conectar WhatsApp           ]
+[ 📊 Relatório Rápido             ]`,
+        legenda: "No painel direito da tela inicial, os botões principais de Nova Venda e Novo Pedido agilizam o atendimento do caixa."
+      },
+      {
+        tag: "Módulo 02: Vendas & Balcão",
+        title: "Operação Rápida no Balcão",
+        bullets: [
+          { icon: "🍗", text: "<strong>Toque no Produto:</strong> Clique no item para enviar instantaneamente para a comanda." },
+          { icon: "⚖️", text: "<strong>Carnes por Peso:</strong> Informe o peso em gramas ou o valor aferido na balança." },
+          { icon: "💳", text: "<strong>Finalizar Venda:</strong> Receba via Dinheiro, Pix com QR Code ou Cartão." }
+        ],
+        preview: `COMANDA DO BALCÃO:
+1x Frango Inteiro Assado ... R$ 45,00
+1x Maionese Caseira ........ R$ 15,00
+1x Farofa Especial ......... R$ 10,00
+TOTAL: R$ 70,00
+[ FINALIZAR VENDA (F2) ]`,
+        legenda: "Na tela de gestão e controle de vendas, o lançamento é feito em segundos, com total precisão de peso e valor."
+      },
+      {
+        tag: "Módulo 02: Pedidos & Encomendas",
+        title: "Reservas de Domingo Sem Fila",
+        bullets: [
+          { icon: "⏰", text: "<strong>Horário de Retirada:</strong> Cada pedido tem sua janela de tempo (ex.: 11h30 às 12h00)." },
+          { icon: "📲", text: "<strong>Notificação Automática:</strong> O freguês recebe confirmação instantânea no WhatsApp." },
+          { icon: "🍗", text: "<strong>Status no Espeto & Estufa:</strong> O assador sabe exatamente quantos frangos preparar." }
+        ],
+        preview: `RESERVAS DE DOMINGO:
+#1041 - Marcos Oliveira (11:30) [PRONTO]
+#1042 - Fernanda Souza  (12:00) [NO ESPETO]
+#1043 - Carlos Eduardo  (12:30) [CONFIRMADO]`,
+        legenda: "Organize as reservas com antecedência para que o cliente retire o frango quentinho exatamente no horário marcado."
+      },
+      {
+        tag: "Módulo 03: Clientes & Fidelidade",
+        title: "Clube do Frango: Selos no Domingo",
+        bullets: [
+          { icon: "⭐", text: "<strong>Cartela de 10 Selos:</strong> A cada frango assado, o cliente carimba 1 selo na cartela." },
+          { icon: "🎁", text: "<strong>Resgate Premiado:</strong> Ao atingir 10 selos, o cliente ganha 1 frango assado de cortesia." },
+          { icon: "📥", text: "<strong>Importação em Lote:</strong> Puxe contatos diretamente do seu WhatsApp para o sistema." }
+        ],
+        preview: `CLUBE DO FRANGO:
+Cartela do Freguês:
+[ 🍗 🍗 🍗 🍗 🍗 ]
+[ 🍗 🍗 🍗 🍗 🎁 ] 10/10 Selos
+[ 🎁 RESGATAR PRÊMIO CONQUISTADO ]`,
+        legenda: "O Clube do Frango fideliza o almoço de domingo da família, aumentando em 42% as vendas de acompanhamentos."
+      },
+      {
+        tag: "Módulo: Pagamentos & Maquininhas",
+        title: "Conciliação e Provedores Homologados",
+        bullets: [
+          { icon: "💳", text: "<strong>Stone, Mercado Pago, PagBank e Cielo:</strong> Conecte sua maquininha física com 1 clique." },
+          { icon: "⚡", text: "<strong>Modo Push SmartPOS:</strong> O valor da venda vai direto para o visor da maquininha." },
+          { icon: "📋", text: "<strong>Placa Pix de Balcão:</strong> Imprima a placa com QR Code e chave Pix com taxa 0%." }
+        ],
+        preview: `CONEXÃO MAQUININHA:
+Modelo: Stone SmartPOS S920
+Status: ONLINE (Bateria 95%)
+Comunicação TEF: 84ms
+Líquido na Conta: Faturamento Bruto (-) Taxas`,
+        legenda: "Conecte suas maquininhas de cartão físicas e emita a placa oficial de Pix para economizar em taxas bancárias."
+      },
+      {
+        tag: "Módulo: Relatórios & DRE",
+        title: "Fechamento de Caixa & Lucro Real",
+        bullets: [
+          { icon: "💵", text: "<strong>DRE Operacional:</strong> Faturamento Bruto (-) Taxas (-) CMV Insumos = Lucro Real." },
+          { icon: "🍗", text: "<strong>Curva ABC:</strong> Descubra quais assados e guarnições geram o maior lucro." },
+          { icon: "🖨️", text: "<strong>Impressão de Fechamento:</strong> Imprima o relatório de gaveta para o contador conferir." }
+        ],
+        preview: `DEMONSTRATIVO DRE OPERACIONAL:
+(+) Faturamento Bruto: R$ 4.712,00
+(-) Taxas Maquininhas: R$ -68,40
+(-) Custo Insumos CMV: R$ -1.837,00
+(=) LUCRO BRUTO OPERACIONAL: R$ 2.806,60 (59.5%)`,
+        legenda: "Tenha controle absoluto da sua margem de lucro com relatórios automáticos e exportação para Excel."
+      },
+      {
+        tag: "Módulo Final: Conclusão",
+        title: "Pronto para o Próximo Domingo!",
+        bullets: [
+          { icon: "✅", text: "<strong>Manual Completo Disponível:</strong> Baixe a versão em PDF para a sua equipe." },
+          { icon: "🚀", text: "<strong>Acesse o Sistema:</strong> Comece a cadastrar produtos, preços e clientes agora mesmo." },
+          { icon: "🤝", text: "<strong>Suporte Especializado:</strong> Conte com a equipe Ao Ponto em toda a jornada." }
+        ],
+        preview: `SISTEMA 100% HOMOLOGADO:
+• Vendas e Balcão: ATIVO
+• WhatsApp e Fidelidade: ATIVO
+• Maquininhas & Pix: ATIVO
+• Relatórios e Fechamento: ATIVO`,
+        legenda: "Parabéns! Sua assadeira está pronta para operar com máxima eficiência e controle de vendas no domingo."
+      }
+    ];
+
+    let slideAtual = 0;
+    let tocando = false;
+    let timer = null;
+    let vozAtiva = true;
+
+    function renderSlide() {
+      const s = slides[slideAtual];
+      const stage = document.getElementById('slide-stage');
+      const subtitulo = document.getElementById('subtitles-box');
+      const progressBar = document.getElementById('progress-bar');
+      const timeDisplay = document.getElementById('time-display');
+
+      stage.innerHTML = `
+        <div class="slide-tag">${s.tag}</div>
+        <div class="slide-title">${s.title}</div>
+        <div class="slide-content-grid">
+          <div class="slide-bullets">
+            ${s.bullets.map(b => `
+              <div class="bullet-item">
+                <span class="bullet-icon">${b.icon}</span>
+                <div>${b.text}</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="slide-preview-box">
+            <div class="preview-header">
+              <span class="circle c-red"></span>
+              <span class="circle c-yellow"></span>
+              <span class="circle c-green"></span>
+              <span style="margin-left: 8px; font-size: 11px; text-transform: uppercase;">Ao Ponto Sistema</span>
+            </div>
+            <pre style="white-space: pre-wrap; margin: 0;">${s.preview}</pre>
+          </div>
+        </div>
+      `;
+
+      subtitulo.textContent = s.legenda;
+      progressBar.style.width = `${((slideAtual + 1) / slides.length) * 100}%`;
+      timeDisplay.textContent = `0${slideAtual + 1} / 0${slides.length}`;
+
+      if (vozAtiva) {
+        falarTexto(s.legenda);
+      }
+    }
+
+    function falarTexto(texto) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(texto);
+        utter.lang = 'pt-BR';
+        utter.rate = 1.05;
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    function togglePlay() {
+      tocando = !tocando;
+      const btn = document.getElementById('btn-play');
+      if (tocando) {
+        btn.innerHTML = '⏸ Pausar Vídeo';
+        btn.classList.remove('btn-destaque');
+        iniciarAutoplay();
+      } else {
+        btn.innerHTML = '▶ Continuar Vídeo';
+        btn.classList.add('btn-destaque');
+        clearInterval(timer);
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function iniciarAutoplay() {
+      clearInterval(timer);
+      renderSlide();
+      timer = setInterval(() => {
+        if (slideAtual < slides.length - 1) {
+          slideAtual++;
+          renderSlide();
+        } else {
+          slideAtual = 0;
+          togglePlay();
+        }
+      }, 7500); // 7.5 segundos por slide
+    }
+
+    function nextSlide() {
+      if (slideAtual < slides.length - 1) {
+        slideAtual++;
+        renderSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (slideAtual > 0) {
+        slideAtual--;
+        renderSlide();
+      }
+    }
+
+    function seekVideo(e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      slideAtual = Math.floor(pct * slides.length);
+      renderSlide();
+    }
+
+    function toggleVoz() {
+      vozAtiva = !vozAtiva;
+      document.getElementById('btn-voz').textContent = vozAtiva ? '🔊 Narração: ON' : '🔇 Narração: OFF';
+      if (!vozAtiva) window.speechSynthesis.cancel();
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Inicializa no primeiro slide
+    renderSlide();
+  </script>
+
+</body>
+</html>
