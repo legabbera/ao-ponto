@@ -66,8 +66,53 @@ const USUARIOS_MOCK = [
     celularFormatado: '(11) 98765-4321',
     username: 'carlos',
     nome: 'Carlos Mendes',
+    cargo: 'Proprietário & Mestre Assador',
     perfil: 'owner',
+    pontos: ['todos'],
+    status: 'ativo',
     createdAt: '2026-10-01T12:00:00Z',
+  },
+  {
+    id: 'user_juliana',
+    tenantId: 'tenant_demo',
+    email: 'juliana@aoponto.app',
+    celular: '11999991122',
+    celularFormatado: '(11) 99999-1122',
+    username: 'juliana',
+    nome: 'Juliana Rocha',
+    cargo: 'Gerente Operacional & Estoque',
+    perfil: 'admin',
+    pontos: ['centro', 'jardim'],
+    status: 'ativo',
+    createdAt: '2026-10-05T10:00:00Z',
+  },
+  {
+    id: 'user_ze',
+    tenantId: 'tenant_demo',
+    email: 'ze.batista@aoponto.app',
+    celular: '11988883344',
+    celularFormatado: '(11) 98888-3344',
+    username: 'zebatista',
+    nome: 'Zé Batista',
+    cargo: 'Operador de Máquina / Frangueiro',
+    perfil: 'vendedor',
+    pontos: ['centro'],
+    status: 'ativo',
+    createdAt: '2026-10-10T14:30:00Z',
+  },
+  {
+    id: 'user_mariana',
+    tenantId: 'tenant_demo',
+    email: 'mariana.costa@aoponto.app',
+    celular: '11977775566',
+    celularFormatado: '(11) 97777-5566',
+    username: 'mariana',
+    nome: 'Mariana Costa',
+    cargo: 'Atendente de Caixa & Balcão',
+    perfil: 'vendedor',
+    pontos: ['todos'],
+    status: 'ativo',
+    createdAt: '2026-10-15T09:15:00Z',
   },
 ];
 
@@ -81,7 +126,12 @@ function carregarTenants() {
   return JSON.parse(localStorage.getItem(CHAVE_TENANTS) || 'null') || [...TENANTS_MOCK];
 }
 function carregarUsuarios() {
-  return JSON.parse(localStorage.getItem(CHAVE_USUARIOS) || 'null') || [...USUARIOS_MOCK];
+  let us = JSON.parse(localStorage.getItem(CHAVE_USUARIOS) || 'null');
+  if (!us || us.length <= 1) {
+    us = [...USUARIOS_MOCK];
+    salvarUsuarios(us);
+  }
+  return us;
 }
 function salvarTenants(ts) { localStorage.setItem(CHAVE_TENANTS, JSON.stringify(ts)); }
 function salvarUsuarios(us) { localStorage.setItem(CHAVE_USUARIOS, JSON.stringify(us)); }
@@ -255,4 +305,64 @@ export function vendasRestantes() {
   if (!tenant || !plano) return null;
   if (plano.limiteVendasMes === null) return null;
   return Math.max(0, plano.limiteVendasMes - tenant.vendasMesAtual);
+}
+
+
+/** Lista os usuários da equipe do tenant */
+export function listarUsuariosTenant(tenantId = null) {
+  const tId = tenantId || getTenantAtivo()?.id || 'tenant_demo';
+  const usuarios = carregarUsuarios();
+  return usuarios.filter((u) => u.tenantId === tId);
+}
+
+/** Adiciona novo membro à equipe */
+export function adicionarUsuarioTenant(dados) {
+  const usuarios = carregarUsuarios();
+  const tenant = getTenantAtivo();
+  const tenantId = tenant?.id || 'tenant_demo';
+  const celLimpo = (dados.celular || '').replace(/\D/g, '');
+
+  if (dados.email && usuarios.some((u) => u.email?.toLowerCase() === dados.email.toLowerCase() && u.tenantId === tenantId)) {
+    throw new Error('Já existe um membro na equipe com este e-mail.');
+  }
+
+  const novo = {
+    id: 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    tenantId,
+    nome: dados.nome || 'Membro da Equipe',
+    email: dados.email || '',
+    celular: celLimpo,
+    celularFormatado: dados.celular || '',
+    cargo: dados.cargo || 'Operador de Balcão & Caixa',
+    perfil: dados.perfil || 'vendedor',
+    pontos: dados.pontos || ['todos'],
+    status: dados.status || 'ativo',
+    createdAt: new Date().toISOString(),
+  };
+
+  usuarios.push(novo);
+  salvarUsuarios(usuarios);
+  return novo;
+}
+
+/** Atualiza dados de um usuário da equipe */
+export function atualizarUsuarioTenant(id, dados) {
+  const usuarios = carregarUsuarios();
+  const idx = usuarios.findIndex((u) => u.id === id);
+  if (idx === -1) throw new Error('Usuário não encontrado.');
+  usuarios[idx] = { ...usuarios[idx], ...dados };
+  salvarUsuarios(usuarios);
+  return usuarios[idx];
+}
+
+/** Remove um usuário da equipe */
+export function removerUsuarioTenant(id) {
+  let usuarios = carregarUsuarios();
+  const alvo = usuarios.find((u) => u.id === id);
+  if (alvo?.perfil === 'owner') {
+    throw new Error('Não é possível remover o Proprietário principal da conta.');
+  }
+  usuarios = usuarios.filter((u) => u.id !== id);
+  salvarUsuarios(usuarios);
+  return true;
 }

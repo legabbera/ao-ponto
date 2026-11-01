@@ -2,7 +2,7 @@
  * PONTO DE ENTRADA DO APP + ROTEADOR (Ao Ponto Multi-tenant)
  * Rota padrão: Landing Page B2B comercial (#/landing)
  * Rotas públicas: #/login, #/cadastro
- * Rotas do App: #/inicio, #/vendas, #/pedidos, #/estoque, #/clientes, #/planos, #/configuracoes, #/menu
+ * Rotas do App: #/inicio, #/vendas, #/pedidos, #/estoque, #/clientes, #/whatsapp, #/planos, #/configuracoes, #/menu
  */
 import './styles/tokens.css';
 import './styles/components.css';
@@ -20,6 +20,8 @@ import { renderVendas } from './pages/vendas.js';
 import { renderPedidos } from './pages/pedidos.js';
 import { renderEstoque } from './pages/estoque.js';
 import { renderClientes } from './pages/clientes.js';
+import { renderUsuarios } from './pages/usuarios.js';
+import { renderWhatsapp } from './pages/whatsapp.js';
 import { renderEmBreve, renderMenu } from './pages/placeholder.js';
 import { renderPlanos } from './pages/planos.js';
 import { renderConfiguracoes } from './pages/configuracoes.js';
@@ -72,15 +74,17 @@ function render() {
   renderShell(app, hashRota, irPara);
   const conteudo = document.getElementById('conteudo');
 
-  if (hashRota === 'inicio') renderDashboard(conteudo, irPara);
-  else if (hashRota === 'vendas') renderVendas(conteudo, irPara);
-  else if (hashRota === 'pedidos') renderPedidos(conteudo, irPara);
-  else if (hashRota === 'estoque') renderEstoque(conteudo, irPara);
-  else if (hashRota === 'clientes') renderClientes(conteudo, irPara);
-  else if (hashRota === 'planos') renderPlanos(conteudo, irPara);
+  if (hashRota === 'inicio')             renderDashboard(conteudo, irPara);
+  else if (hashRota === 'vendas')        renderVendas(conteudo, irPara);
+  else if (hashRota === 'pedidos')       renderPedidos(conteudo, irPara);
+  else if (hashRota === 'estoque')       renderEstoque(conteudo, irPara);
+  else if (hashRota === 'clientes')      renderClientes(conteudo, irPara);
+  else if (hashRota === 'usuarios')      renderUsuarios(conteudo, irPara);
+  else if (hashRota === 'whatsapp')      renderWhatsapp(conteudo, irPara);
+  else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
   else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
-  else if (hashRota === 'menu') renderMenu(conteudo, irPara);
-  else renderEmBreve(conteudo, hashRota, irPara);
+  else if (hashRota === 'menu')          renderMenu(conteudo, irPara);
+  else                                   renderEmBreve(conteudo, hashRota, irPara);
 }
 
 window.addEventListener('hashchange', render);

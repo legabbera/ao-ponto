@@ -151,7 +151,7 @@ export function renderPedidos(raiz, irPara) {
                   <span class="p-cliente-tel">${icone('telefone', 'mini')} ${p.telefone}</span>
                 </div>
                 <div class="p-cliente-acoes">
-                  <a href="https://wa.me/55${p.telefone.replace(/\D/g, '')}?text=${encodeURIComponent(`Olá ${p.cliente}! Sobre sua reserva no Ao Ponto (#${p.id}): seu pedido de frango assado para ${dataFmt} às ${p.hora}h está confirmado.`)}" target="_blank" class="btn btn-whatsapp btn-sm">
+                  <a href="https://wa.me/55${p.telefone.replace(/\D/g, '')}?text=${encodeURIComponent(`*${store.getWhatsapp()?.config?.nomeEstabelecimento || 'Ao Ponto Assados'}*\nOlá *${p.cliente}*! Sobre sua reserva (#${p.id}): seu pedido de frango assado para ${dataFmt} às ${p.hora}h está confirmado.`)}" target="_blank" class="btn btn-whatsapp btn-sm">
                     ${icone('whatsapp')} WhatsApp
                   </a>
                 </div>

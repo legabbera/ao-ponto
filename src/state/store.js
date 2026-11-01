@@ -1,6 +1,6 @@
 /**
  * "Memória" da sessão — multi-tenant.
- * Guarda: tenant ativo, usuário logado, perfil, filtros, pedidos, vendas, estoque e clientes.
+ * Guarda: tenant ativo, usuário logado, perfil, filtros, pedidos, vendas, estoque, clientes e whatsapp.
  * Persiste no localStorage/sessionStorage.
  */
 import { PERFIS, PEDIDOS_INICIAIS, VENDAS_RECENTES, CLIENTES_INICIAIS } from '../data/mock.js';
@@ -44,6 +44,111 @@ export const ESTOQUE_PADRAO = {
 
 const estoqueSalvo = JSON.parse(localStorage.getItem('fa-estoque') || 'null') || JSON.parse(JSON.stringify(ESTOQUE_PADRAO));
 
+export const WHATSAPP_PADRAO = {
+  config: {
+    modo: 'link', // 'link' (wa.me direto grátis) ou 'instancia' (API conectada)
+    instanciaConectada: true,
+    nomeInstancia: 'Ao Ponto - Central Balcão',
+    nomeEstabelecimento: 'Ao Ponto Assados', // Nome ou apelido do estabelecimento para o cabeçalho das mensagens
+    numeroConectado: '(11) 98888-7777',
+    bateria: 92,
+    gatilhos: {
+      reservaConfirmada: true,
+      entrouPreparo: true,
+      prontoEstufa: true,
+      cupomPdv: true,
+      clubeFrango: true,
+    },
+  },
+  templates: [
+    {
+      id: 'reserva_confirmada',
+      titulo: 'Confirmação de Reserva',
+      categoria: 'pedidos',
+      gatilho: 'reservaConfirmada',
+      descricao: 'Enviado assim que a reserva for cadastrada no sistema',
+      texto: '*{estabelecimento}*\nOlá *{cliente}*! Sua reserva está confirmada.\n\n*Pedido:* #{pedido_id}\n*Retirada:* {data} às {horario}\n*Itens:* {itens}\n*Total:* {total}\n\nEstamos preparando tudo com o maior carinho no braseiro!',
+    },
+    {
+      id: 'pedido_preparo',
+      titulo: 'No Espeto (Assando na Brasa)',
+      categoria: 'pedidos',
+      gatilho: 'entrouPreparo',
+      descricao: 'Enviado quando o pedido vai para o fogo/espeto',
+      texto: '*{estabelecimento}*\nOi *{cliente}*! O seu frango assado acabou de entrar na máquina giratória/braseiro.\n\nLogo logo estará douradinho, suculento e no ponto para o seu almoço!',
+    },
+    {
+      id: 'pedido_pronto',
+      titulo: 'Pronto na Estufa (Retirada)',
+      categoria: 'pedidos',
+      gatilho: 'prontoEstufa',
+      descricao: 'Enviado quando a encomenda atinge o ponto de retirada',
+      texto: '*{estabelecimento}*\n*{cliente}*, seu pedido está quentinho na estufa!\n\nPode vir retirar no balcão (Pedido #{pedido_id}). Bom apetite para você e toda a família!',
+    },
+    {
+      id: 'campanha_domingo',
+      titulo: 'Cardápio & Reservas de Domingo',
+      categoria: 'campanhas',
+      descricao: 'Disparo de sexta/sábado para abrir as encomendas do fim de semana',
+      texto: '*{estabelecimento}*\nBom dia, *{cliente}*!\n\nJá estamos aceitando as reservas para o almoço deste domingo!\n\nDestaques do cardápio:\n- Frango Inteiro Dourado com Farofa Crocante\n- Costelinha Suína e Linguiça Toscana na Brasa\n- Maionese Caseira Tradicional e Batata Bolinha\n\nGaranta a sua encomenda antes que esgotem as fornadas! Responda esta mensagem para reservar o seu.',
+    },
+    {
+      id: 'lembrete_fidelidade',
+      titulo: 'Clube do Frango (Extrato de Selos)',
+      categoria: 'fidelidade',
+      gatilho: 'clubeFrango',
+      descricao: 'Aviso de saldo de pontos e prêmio a retirar',
+      texto: '*{estabelecimento}*\nOlá *{cliente}*!\n\nVocê já tem *{selos}/10 selos* no Clube do Frango do *{estabelecimento}*!\n\n{aviso_premio}\n\nTe esperamos neste fim de semana!',
+    },
+    {
+      id: 'cupom_pdv',
+      titulo: 'Comprovante de Venda Balcão',
+      categoria: 'vendas',
+      gatilho: 'cupomPdv',
+      descricao: 'Recibo digital emitido após fechamento da venda no PDV',
+      texto: '*{estabelecimento} - Comprovante de Venda*\n\nPedido: #{pedido_id}\nCliente: {cliente}\n------------------------------\n{itens}\n------------------------------\n*TOTAL: {total}*\nPagamento: {metodo}\n\nObrigado pela preferência e bom apetite!',
+    },
+  ],
+  historico: [
+    {
+      id: 1,
+      hora: '11:02',
+      data: 'Hoje',
+      cliente: 'Carla Silveira',
+      telefone: '11988887777',
+      template: 'Confirmação de Reserva',
+      tipo: 'automatico',
+      status: 'lido',
+    },
+    {
+      id: 2,
+      hora: '10:45',
+      data: 'Hoje',
+      cliente: 'Cláudio Duarte',
+      telefone: '11999991111',
+      template: 'Pronto na Estufa',
+      tipo: 'automatico',
+      status: 'lido',
+    },
+    {
+      id: 3,
+      hora: '09:15',
+      data: 'Hoje',
+      cliente: 'Dona Neide Santos',
+      telefone: '11977773333',
+      template: 'Cardápio & Reservas de Domingo',
+      tipo: 'campanha',
+      status: 'entregue',
+    },
+  ],
+};
+
+let whatsappSalvo = JSON.parse(localStorage.getItem('fa-whatsapp') || 'null');
+if (!whatsappSalvo || !whatsappSalvo.config?.nomeEstabelecimento || JSON.stringify(whatsappSalvo.templates || []).includes('🍗') || JSON.stringify(whatsappSalvo.templates || []).includes('\uFFFD')) {
+  whatsappSalvo = JSON.parse(JSON.stringify(WHATSAPP_PADRAO));
+  localStorage.setItem('fa-whatsapp', JSON.stringify(whatsappSalvo));
+}
+
 const estado = {
   logado: !!salvo && !!tenantAtivo,
   perfil: salvo?.perfil || 'owner',
@@ -55,6 +160,7 @@ const estado = {
   vendas: vendasSalvas,
   estoque: estoqueSalvo,
   clientes: clientesSalvos,
+  whatsapp: whatsappSalvo,
   // ── Multi-tenant ──
   tenant: tenantAtivo,
   usuario: salvo?.usuario || null,
@@ -148,7 +254,7 @@ export const store = {
     };
     estado.vendas = [venda, ...estado.vendas];
     localStorage.setItem('fa-vendas', JSON.stringify(estado.vendas));
-    
+
     // Dá baixa automática no estoque
     store.baixarEstoqueVenda(nova.itens || []);
 
@@ -403,6 +509,73 @@ export const store = {
     return { ok: true, pontosRestantes: cli.pontosFidelidade };
   },
 
+  /** Importa múltiplos clientes em lote (WhatsApp, CSV, TXT, VCF) */
+  importarClientesEmLote: (lista = []) => {
+    const existentes = estado.clientes || [];
+    const telefonesCadastrados = new Set(
+      existentes.map((c) => (c.telefone || '').replace(/\D/g, '')).filter(Boolean)
+    );
+    const tenantId = (estado.tenant || getTenantAtivo())?.id || 'tenant_demo';
+
+    let adicionados = 0;
+    let duplicados = 0;
+    const novosParaAdicionar = [];
+
+    lista.forEach((item, idx) => {
+      const telLimpo = (item.telefone || '').replace(/\D/g, '');
+      if (!telLimpo && !item.nome) return;
+
+      if (telLimpo && telefonesCadastrados.has(telLimpo)) {
+        duplicados++;
+        return;
+      }
+
+      if (telLimpo) {
+        telefonesCadastrados.add(telLimpo);
+      }
+
+      let nomeCliente = (item.nome || '').trim();
+      if (!nomeCliente) {
+        const ultimosDigitos = telLimpo.slice(-4) || `${idx + 1}`;
+        nomeCliente = `Cliente WhatsApp ${ultimosDigitos}`;
+      }
+
+      let telFormatado = item.telefone || '';
+      if (telLimpo.length === 11) {
+        telFormatado = `(${telLimpo.slice(0, 2)}) ${telLimpo.slice(2, 7)}-${telLimpo.slice(7)}`;
+      } else if (telLimpo.length === 10) {
+        telFormatado = `(${telLimpo.slice(0, 2)}) ${telLimpo.slice(2, 6)}-${telLimpo.slice(6)}`;
+      }
+
+      const novo = {
+        id: `cli-${Date.now()}-${idx}-${Math.random().toString(36).substr(2, 4)}`,
+        tenantId,
+        nome: nomeCliente,
+        telefone: telFormatado,
+        bairro: item.bairro || 'Balcão',
+        tag: 'novo',
+        totalPedidos: 0,
+        totalGasto: 0,
+        ultimaVisita: 'Recém-importado',
+        preferencias: item.preferencias || '',
+        pontosFidelidade: 0,
+        recompensasResgatadas: 0,
+        anotacoes: item.anotacoes || 'Importado via lote do WhatsApp',
+        criadoEm: new Date().toISOString(),
+      };
+
+      novosParaAdicionar.push(novo);
+      adicionados++;
+    });
+
+    if (novosParaAdicionar.length > 0) {
+      estado.clientes = [...novosParaAdicionar, ...existentes];
+      store.salvarClientes();
+    }
+
+    return { adicionados, duplicados, total: lista.length };
+  },
+
   /** Registra compra/reserva feita por um cliente */
   registrarCompraCliente: (nomeOuId, valor = 0, itens = []) => {
     if (!nomeOuId || nomeOuId === 'Balcão') return;
@@ -433,5 +606,51 @@ export const store = {
     else if (cli.totalPedidos >= 3) cli.tag = 'frequente';
 
     store.salvarClientes();
+  },
+
+  // ── Central WhatsApp & Automações ───────────────────────────
+  getWhatsapp: () => estado.whatsapp || WHATSAPP_PADRAO,
+
+  salvarWhatsapp() {
+    localStorage.setItem('fa-whatsapp', JSON.stringify(estado.whatsapp));
+    notificar();
+  },
+
+  atualizarConfigWhatsapp: (novaConfig) => {
+    estado.whatsapp.config = { ...estado.whatsapp.config, ...novaConfig };
+    store.salvarWhatsapp();
+  },
+
+  toggleGatilhoWhatsapp: (gatilhoNome) => {
+    if (!estado.whatsapp.config.gatilhos) estado.whatsapp.config.gatilhos = {};
+    const atual = estado.whatsapp.config.gatilhos[gatilhoNome];
+    estado.whatsapp.config.gatilhos[gatilhoNome] = !atual;
+    store.salvarWhatsapp();
+    return estado.whatsapp.config.gatilhos[gatilhoNome];
+  },
+
+  atualizarTemplateWhatsapp: (templateId, novoTexto) => {
+    const t = (estado.whatsapp.templates || []).find((x) => x.id === templateId);
+    if (t) {
+      t.texto = novoTexto;
+      store.salvarWhatsapp();
+    }
+  },
+
+  registrarEnvioWhatsapp: (envio) => {
+    const item = {
+      id: Date.now(),
+      hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      data: 'Hoje',
+      cliente: envio.cliente || 'Cliente',
+      telefone: envio.telefone || '',
+      template: envio.template || 'Mensagem Avulsa',
+      tipo: envio.tipo || 'manual', // 'automatico', 'campanha', 'manual'
+      status: envio.status || 'lido', // 'enviado', 'entregue', 'lido'
+      texto: envio.texto || '',
+    };
+    estado.whatsapp.historico = [item, ...(estado.whatsapp.historico || [])].slice(0, 50);
+    store.salvarWhatsapp();
+    return item;
   },
 };

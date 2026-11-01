@@ -7,6 +7,7 @@ import { toast, abrirModal } from '../components/ui.js';
 import { store } from '../state/store.js';
 import { PONTOS } from '../data/mock.js';
 import { fmtMoeda } from '../utils/format.js';
+import { abrirModalImportacaoContatos } from '../components/modal-importar-contatos.js';
 
 let filtroTag = 'todos';
 let buscaTexto = '';
@@ -14,8 +15,8 @@ let buscaTexto = '';
 export function renderClientes(raiz, irPara) {
   const st = store.get();
   const perfil = store.perfil();
-  const nomePonto = st.ponto === 'todos' 
-    ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome) 
+  const nomePonto = st.ponto === 'todos'
+    ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome)
     : PONTOS.find((p) => p.id === st.ponto)?.nome;
 
   function desenhar() {
@@ -31,7 +32,7 @@ export function renderClientes(raiz, irPara) {
 
     if (buscaTexto.trim()) {
       const q = buscaTexto.toLowerCase().trim();
-      lista = lista.filter((c) => 
+      lista = lista.filter((c) =>
         (c.nome || '').toLowerCase().includes(q) ||
         (c.telefone || '').includes(q) ||
         (c.bairro || '').toLowerCase().includes(q) ||
@@ -61,6 +62,9 @@ export function renderClientes(raiz, irPara) {
         <div class="clientes-topo-acoes">
           <button class="btn btn-primario" id="btn-novo-cliente">
             ${icone('mais')} Novo Cliente
+          </button>
+          <button class="btn btn-whatsapp" id="btn-importar-contatos-topo">
+            ${icone('whatsapp')} Importar do WhatsApp
           </button>
           <button class="btn btn-contorno" id="btn-regras-fidelidade">
             ${icone('info')} Regras do Clube
@@ -150,21 +154,21 @@ export function renderClientes(raiz, irPara) {
         ` : `
           <div class="grade-clientes">
             ${lista.map((c) => {
-              const selos = Math.min(10, c.pontosFidelidade || 0);
-              const temPremio = (c.pontosFidelidade || 0) >= 10;
-              const iniciais = (c.nome || 'CL')
-                .split(' ')
-                .map((n) => n[0])
-                .slice(0, 2)
-                .join('')
-                .toUpperCase();
+      const selos = Math.min(10, c.pontosFidelidade || 0);
+      const temPremio = (c.pontosFidelidade || 0) >= 10;
+      const iniciais = (c.nome || 'CL')
+        .split(' ')
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
 
-              let tagClass = 'tag-novo';
-              let tagNome = 'Novo Cliente';
-              if (c.tag === 'vip') { tagClass = 'tag-vip'; tagNome = '⭐ VIP'; }
-              else if (c.tag === 'frequente') { tagClass = 'tag-frequente'; tagNome = '🔥 Frequente'; }
+      let tagClass = 'tag-novo';
+      let tagNome = 'Novo Cliente';
+      if (c.tag === 'vip') { tagClass = 'tag-vip'; tagNome = '⭐ VIP'; }
+      else if (c.tag === 'frequente') { tagClass = 'tag-frequente'; tagNome = '🔥 Frequente'; }
 
-              return `
+      return `
               <div class="cliente-card ${temPremio ? 'card-premiado' : ''}">
                 <div class="cliente-card-cabecalho">
                   <div class="cliente-avatar">${iniciais}</div>
@@ -203,13 +207,14 @@ export function renderClientes(raiz, irPara) {
 
                   <div class="selos-grid">
                     ${Array.from({ length: 10 }).map((_, i) => {
-                      const preenchido = i < selos;
-                      return `
-                        <div class="selo-slot ${preenchido ? 'preenchido' : 'vazio'}" title="${preenchido ? `Selo #${i+1} conquistado!` : `Selo #${i+1}`}">
-                          ${preenchido ? '🍗' : (i + 1)}
+        const preenchido = i < selos;
+        const isUltimo = i === 9;
+        return `
+                        <div class="selo-slot ${preenchido ? 'preenchido' : 'vazio'} ${isUltimo ? 'selo-premio' : ''}" title="${preenchido ? (isUltimo ? 'Selo #10 - Frango Grátis Conquistado!' : `Selo #${i + 1} conquistado!`) : (isUltimo ? 'Selo #10 - Frango Grátis!' : `Selo #${i + 1}`)}">
+                          ${preenchido ? (isUltimo ? '🎁' : '🍗') : (isUltimo ? '🎁' : (i + 1))}
                         </div>
                       `;
-                    }).join('')}
+      }).join('')}
                   </div>
 
                   ${temPremio ? `
@@ -254,7 +259,7 @@ export function renderClientes(raiz, irPara) {
                 </div>
               </div>
               `;
-            }).join('')}
+    }).join('')}
           </div>
         `}
       </div>
@@ -268,6 +273,9 @@ export function renderClientes(raiz, irPara) {
     // Topo
     raiz.querySelector('#btn-novo-cliente')?.addEventListener('click', () => abrirModalCliente());
     raiz.querySelector('#btn-novo-cliente-vazio')?.addEventListener('click', () => abrirModalCliente());
+    raiz.querySelector('#btn-importar-contatos-topo')?.addEventListener('click', () => {
+      abrirModalImportacaoContatos(() => desenhar());
+    });
     raiz.querySelector('#btn-regras-fidelidade')?.addEventListener('click', () => abrirModalRegrasClube());
     raiz.querySelector('#btn-filtrar-resgate')?.addEventListener('click', () => {
       filtroTag = 'resgate';
@@ -461,18 +469,19 @@ export function renderClientes(raiz, irPara) {
     const selos = cli.pontosFidelidade || 0;
     const nomeLimpo = (cli.nome || '').split(' ')[0];
 
+    const nomeLoja = store.getWhatsapp()?.config?.nomeEstabelecimento || 'Ao Ponto Assados';
     const templates = [
       {
-        titulo: '📅 Lembrete de Reserva de Domingo',
-        texto: `Olá ${nomeLimpo}! Tudo bem? Passando para te lembrar de reservar o seu frango assado bem douradinho e acompanhamentos para o almoço de domingo aqui no Ao Ponto. Quer que eu já separe o seu antes que esgote? 🍗🔥`
+        titulo: 'Lembrete de Reserva de Domingo',
+        texto: `*${nomeLoja}*\nOlá ${nomeLimpo}! Tudo bem? Passando para te lembrar de reservar o seu frango assado e acompanhamentos para o almoço de domingo aqui no ${nomeLoja}. Quer que eu já separe o seu antes que esgote?`
       },
       {
-        titulo: '🍗 Encomenda Pronta para Retirada',
-        texto: `Olá ${nomeLimpo}! O seu pedido acabou de sair do forno e está douradinho na estufa, pronto para retirada aqui no balcão do Ao Ponto. Pode vir buscar quando quiser! 😋`
+        titulo: 'Encomenda Pronta para Retirada',
+        texto: `*${nomeLoja}*\nOlá ${nomeLimpo}! O seu pedido acabou de sair do forno e está quentinho na estufa, pronto para retirada aqui no balcão do ${nomeLoja}. Pode vir buscar quando quiser!`
       },
       {
-        titulo: '🎁 Saldo de Selos do Clube do Frango',
-        texto: `Olá ${nomeLimpo}! Você já tem ${selos} de 10 selos no Clube do Frango do Ao Ponto. ${selos >= 10 ? 'Você já ganhou 1 frango assado de cortesia! Pode vir retirar!' : `Faltam apenas ${10 - selos} selos para você ganhar um frango assado grátis! 🍗🎉`}`
+        titulo: 'Saldo de Selos do Clube do Frango',
+        texto: `*${nomeLoja}*\nOlá ${nomeLimpo}! Você já tem ${selos} de 10 selos no Clube do Frango do ${nomeLoja}. ${selos >= 10 ? 'Você já ganhou 1 frango assado de cortesia! Pode vir retirar!' : `Faltam apenas ${10 - selos} selos para você ganhar um frango assado grátis!`}`
       }
     ];
 

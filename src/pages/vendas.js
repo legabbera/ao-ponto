@@ -20,8 +20,8 @@ let clienteTelefone = '';
 
 export function renderVendas(raiz, irPara) {
   const st = store.get(), perfil = store.perfil();
-  const nomePonto = st.ponto === 'todos' 
-    ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome) 
+  const nomePonto = st.ponto === 'todos'
+    ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome)
     : PONTOS.find((p) => p.id === st.ponto)?.nome;
 
   function desenhar() {
@@ -130,9 +130,9 @@ export function renderVendas(raiz, irPara) {
                     <span class="item-total">${fmtMoeda(it.total)}</span>
                   </div>
                   <div class="item-sub">
-                    ${it.forma === 'peso' 
-                      ? `<span>${fmtKg(it.pesoKg)} &times; ${fmtMoeda(it.precoKg)}/kg</span>` 
-                      : `<span>${it.qtd} &times; ${fmtMoeda(it.precoUnit)}</span>`}
+                    ${it.forma === 'peso'
+        ? `<span>${fmtKg(it.pesoKg)} &times; ${fmtMoeda(it.precoKg)}/kg</span>`
+        : `<span>${it.qtd} &times; ${fmtMoeda(it.precoUnit)}</span>`}
                     ${it.obs ? `<small class="item-obs-tag">Obs: ${it.obs}</small>` : ''}
                   </div>
                   <div class="item-controles">
@@ -502,17 +502,18 @@ export function renderVendas(raiz, irPara) {
       itens: [...carrinho],
     }, tenantAtivo?.id).catch((err) => console.warn('Supabase sync venda:', err));
 
+    const nomeLoja = store.getWhatsapp()?.config?.nomeEstabelecimento || 'Ao Ponto Assados';
     const msgZap = encodeURIComponent(
-      '🍗 *Frango Assado - Comprovante de Venda*' +
-      '\nPedido: ' + novaVenda.id + ' • Horário: ' + novaVenda.hora +
-      '\nCliente: ' + (clienteNome || 'Balcão') +
+      `*${nomeLoja} - Comprovante de Venda*` +
+      '\nPedido: #' + novaVenda.id + ' | Horario: ' + novaVenda.hora +
+      '\nCliente: ' + (clienteNome || 'Balcao') +
       '\n------------------------------' +
-      carrinho.map((it) => '\n • ' + (it.forma === 'peso' ? it.nome + ' (' + fmtKg(it.pesoKg) + ') - ' + fmtMoeda(it.total) : it.qtd + 'x ' + it.nome + ' - ' + fmtMoeda(it.total))).join('') +
+      carrinho.map((it) => '\n - ' + (it.forma === 'peso' ? it.nome + ' (' + fmtKg(it.pesoKg) + ') - ' + fmtMoeda(it.total) : it.qtd + 'x ' + it.nome + ' - ' + fmtMoeda(it.total))).join('') +
       '\n------------------------------' +
       '\n*TOTAL: ' + fmtMoeda(subtotal) + '*' +
       '\nPagamento: ' + metodoPagamento.toUpperCase() +
       (metodoPagamento === 'dinheiro' && troco > 0 ? '\nTroco: ' + fmtMoeda(troco) : '') +
-      '\n\nObrigado pela preferência e bom apetite! 😋'
+      '\n\nObrigado pela preferencia e bom apetite!'
     );
 
     abrirModal(`
