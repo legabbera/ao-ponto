@@ -16,7 +16,7 @@ export const ROTAS = [
   { id: 'usuarios', rotulo: 'Usuários', icone: 'usuarios', perfis: ['owner', 'admin'], desc: 'Equipe e permissões' },
   { id: 'whatsapp', rotulo: 'WhatsApp', icone: 'conversa', perfis: ['owner', 'admin'], desc: 'Central de atendimento' },
   { id: 'pagamentos', rotulo: 'Pagamentos', icone: 'cartao', perfis: ['owner'], desc: 'Máquinas e provedores' },
-  { id: 'relatorios', rotulo: 'Relatórios', icone: 'grafico', etapa: 3, perfis: ['owner', 'admin'], desc: 'Análises e exportação' },
+  { id: 'relatorios', rotulo: 'Relatórios', icone: 'grafico', perfis: ['owner', 'admin'], desc: 'Análises e exportação' },
   { id: 'planos', rotulo: 'Meu Plano', icone: 'grafico', perfis: ['owner'], desc: 'Planos e limites de uso' },
   { id: 'configuracoes', rotulo: 'Configurações', icone: 'config', perfis: ['owner', 'admin'], desc: 'Domínio e dados do negócio' },
 ];
