@@ -12,7 +12,7 @@ export const ROTAS = [
   { id: 'vendas', rotulo: 'Vendas', icone: 'vendas', principal: true, desc: 'PDV e caixa rápido' },
   { id: 'pedidos', rotulo: 'Pedidos', icone: 'calendario', principal: true, desc: 'Reservas e encomendas' },
   { id: 'estoque', rotulo: 'Estoque', icone: 'pacote', principal: true, desc: 'Frangos e insumos' },
-  { id: 'clientes', rotulo: 'Clientes', icone: 'clientes', etapa: 2, perfis: ['owner', 'admin'], desc: 'Histórico e fidelidade' },
+  { id: 'clientes', rotulo: 'Clientes', icone: 'clientes', perfis: ['owner', 'admin'], desc: 'Histórico e fidelidade' },
   { id: 'usuarios', rotulo: 'Usuários', icone: 'usuarios', etapa: 2, perfis: ['owner', 'admin'], desc: 'Equipe e permissões' },
   { id: 'whatsapp', rotulo: 'WhatsApp', icone: 'conversa', etapa: 3, perfis: ['owner', 'admin'], desc: 'Central de atendimento' },
   { id: 'pagamentos', rotulo: 'Pagamentos', icone: 'cartao', etapa: 3, perfis: ['owner'], desc: 'Máquinas e provedores' },

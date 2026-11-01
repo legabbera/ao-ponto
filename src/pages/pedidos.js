@@ -58,6 +58,7 @@ export function renderPedidos(raiz, irPara) {
         <div class="pedidos-topo-acoes">
           <button class="btn btn-primario" id="btn-nova-reserva">${icone('mais')} Nova Reserva</button>
           <button class="btn btn-contorno" id="btn-ir-pdv">${icone('vendas')} Abrir Caixa PDV</button>
+          <button class="btn btn-contorno" id="btn-ir-clientes">${icone('clientes')} Clientes & Fidelidade</button>
         </div>
       </div>
 
@@ -88,127 +89,121 @@ export function renderPedidos(raiz, irPara) {
       <!-- Filtros e Busca -->
       <div class="pedidos-barra-filtros">
         <div class="campo-caixa busca-box">
-          ${icone('busca')}
-          <input type="text" id="input-busca-pedidos" class="input" placeholder="Buscar por cliente, telefone ou #pedido..." value="${buscaTexto}" />
+          <span class="busca-ic">${icone('busca')}</span>
+          <input type="text" id="input-busca-pedidos" class="input" placeholder="Buscar por cliente, WhatsApp ou #ID..." value="${buscaTexto}" />
         </div>
 
-        <div class="filtros-linha">
-          <!-- Filtro de Data -->
-          <div class="chips" role="group" aria-label="Data">
-            <button class="chip ${filtroData === 'hoje' ? 'ativo' : ''}" data-data="hoje">Hoje</button>
-            <button class="chip ${filtroData === 'amanha' ? 'ativo' : ''}" data-data="amanha">Amanhã</button>
-            <button class="chip ${filtroData === 'domingo' ? 'ativo' : ''}" data-data="domingo">Domingo</button>
-            <button class="chip ${filtroData === 'todas' ? 'ativo' : ''}" data-data="todas">Todas as datas</button>
-          </div>
-
-          <!-- Filtro de Status -->
-          <div class="chips" role="group" aria-label="Status">
-            <button class="chip ${filtroStatus === 'todos' ? 'ativo' : ''}" data-status="todos">Todos (${contagemPorStatus.todos})</button>
-            <button class="chip ${filtroStatus === 'aguardando' ? 'ativo' : ''}" data-status="aguardando">Aguardando (${contagemPorStatus.aguardando})</button>
-            <button class="chip ${filtroStatus === 'confirmado' ? 'ativo' : ''}" data-status="confirmado">Confirmados (${contagemPorStatus.confirmado})</button>
-            <button class="chip ${filtroStatus === 'preparo' ? 'ativo' : ''}" data-status="preparo">Em Preparo (${contagemPorStatus.preparo})</button>
-            <button class="chip ${filtroStatus === 'pronto' ? 'ativo' : ''}" data-status="pronto">Prontos (${contagemPorStatus.pronto})</button>
-            <button class="chip ${filtroStatus === 'entregue' ? 'ativo' : ''}" data-status="entregue">Entregues</button>
-          </div>
+        <div class="filtros-datas">
+          <button class="chip ${filtroData === 'hoje' ? 'ativo' : ''}" data-data="hoje">Hoje</button>
+          <button class="chip ${filtroData === 'amanha' ? 'ativo' : ''}" data-data="amanha">Amanhã</button>
+          <button class="chip ${filtroData === 'domingo' ? 'ativo' : ''}" data-data="domingo">Domingo</button>
+          <button class="chip ${filtroData === 'todas' ? 'ativo' : ''}" data-data="todas">Todas as datas</button>
         </div>
       </div>
 
-      <!-- Grade de Pedidos -->
-      <div class="pedidos-grade">
+      <!-- Abas de Status -->
+      <div class="chips pedidos-status-abas">
+        <button class="chip ${filtroStatus === 'todos' ? 'ativo' : ''}" data-status="todos">Todos (${contagemPorStatus.todos})</button>
+        <button class="chip ${filtroStatus === 'aguardando' ? 'ativo' : ''}" data-status="aguardando">Aguardando (${contagemPorStatus.aguardando})</button>
+        <button class="chip ${filtroStatus === 'confirmado' ? 'ativo' : ''}" data-status="confirmado">Confirmados (${contagemPorStatus.confirmado})</button>
+        <button class="chip ${filtroStatus === 'preparo' ? 'ativo' : ''}" data-status="preparo">No Espeto (${contagemPorStatus.preparo})</button>
+        <button class="chip ${filtroStatus === 'pronto' ? 'ativo' : ''}" data-status="pronto">Prontos (${contagemPorStatus.pronto})</button>
+        <button class="chip ${filtroStatus === 'entregue' ? 'ativo' : ''}" data-status="entregue">Entregues (${contagemPorStatus.entregue})</button>
+      </div>
+
+      <!-- Lista de Pedidos -->
+      <div class="pedidos-lista">
         ${lista.length === 0 ? `
-          <div class="card pedidos-vazio">
-            <div class="vazio-icone">${icone('calendario')}</div>
+          <div class="pedidos-vazio">
+            <div class="pedidos-vazio-ic">${icone('calendario')}</div>
             <h3>Nenhum pedido encontrado</h3>
-            <p>Não há encomendas para os filtros selecionados.</p>
-            <button class="btn btn-primario" id="btn-vazio-novo">${icone('mais')} Cadastrar Nova Reserva</button>
+            <p>Não há reservas correspondentes aos filtros selecionados.</p>
+            <button class="btn btn-primario" id="btn-vazio-novo">${icone('mais')} Fazer Nova Reserva</button>
           </div>
         ` : lista.map((p) => {
           const stInfo = STATUS_PEDIDO.find((s) => s.id === p.status) || STATUS_PEDIDO[0];
-          const telLimpo = p.telefone.replace(/\D/g, '');
-          const msgZap = encodeURIComponent(
-            `Olá ${p.cliente}! Passando para avisar que sua encomenda #${p.id} no Frango Assado está: *${stInfo.nome.toUpperCase()}* 🍗\nRetirada prevista: ${p.hora}h.\nEstamos à disposição!`
-          );
+          const isPago = p.pagamento?.status === 'pago';
+          const horaFmt = `${p.hora}h`;
+          const dataFmt = p.data === 'hoje' ? 'Hoje' : p.data === 'amanha' ? 'Amanhã' : 'Domingo';
 
           return `
-            <div class="pedido-card status-${p.status}">
-              <div class="pedido-cabecalho">
-                <div class="pedido-hora-id">
-                  <span class="pedido-badge-hora">${icone('relogio', 'mini')} ${p.hora}h</span>
-                  <span class="pedido-id">#${p.id}</span>
-                  <span class="pedido-data-tag">${p.data.toUpperCase()}</span>
-                </div>
-                <div class="status-pill status-${p.status}">
-                  <span>${stInfo.emoji}</span> ${stInfo.nome}
-                </div>
+          <div class="pedido-card ${p.status}">
+            <div class="pedido-card-topo">
+              <div class="pedido-id-linha">
+                <span class="pedido-id">#${p.id}</span>
+                <span class="pedido-data-badge">${dataFmt} &bull; ${horaFmt}</span>
+                <span class="badge-status-ped" style="background:${stInfo.cor}; color:#333;">
+                  ${stInfo.emoji} ${stInfo.nome}
+                </span>
               </div>
+              <div class="pedido-valor-topo">
+                <strong>${fmtMoeda(p.total)}</strong>
+                <span class="badge ${isPago ? 'badge-pago' : 'badge-pendente'}">
+                  ${isPago ? '✓ Pago' : 'Pagar na retirada'}
+                </span>
+              </div>
+            </div>
 
-              <div class="pedido-corpo">
-                <div class="pedido-cliente-linha">
-                  <div>
-                    <strong class="cliente-nome">${p.cliente}</strong>
-                    <span class="cliente-tel">${p.telefone}</span>
-                  </div>
-                  <a href="https://wa.me/55${telLimpo}?text=${msgZap}" target="_blank" class="btn-zap-icone" title="Conversar no WhatsApp">
-                    ${icone('whatsapp')}
+            <div class="pedido-corpo">
+              <div class="pedido-cliente-dados">
+                <div class="p-cliente-nome">
+                  <strong>${p.cliente}</strong>
+                  <span class="p-cliente-tel">${icone('telefone', 'mini')} ${p.telefone}</span>
+                </div>
+                <div class="p-cliente-acoes">
+                  <a href="https://wa.me/55${p.telefone.replace(/\D/g, '')}?text=${encodeURIComponent(`Olá ${p.cliente}! Sobre sua reserva no Ao Ponto (#${p.id}): seu pedido de frango assado para ${dataFmt} às ${p.hora}h está confirmado.`)}" target="_blank" class="btn btn-whatsapp btn-sm">
+                    ${icone('whatsapp')} WhatsApp
                   </a>
                 </div>
-
-                <div class="pedido-itens-lista">
-                  ${p.itens.map((it) => `
-                    <div class="pedido-item-linha">
-                      <span>${it.pesoKg ? `${it.nome} (${fmtKg(it.pesoKg)})` : `${it.qtd}x ${it.nome}`}</span>
-                      <strong>${fmtMoeda(it.precoUnit * (it.pesoKg || it.qtd))}</strong>
-                      ${it.obs ? `<small class="pedido-item-obs">Obs: ${it.obs}</small>` : ''}
-                    </div>
-                  `).join('')}
-                </div>
-
-                <div class="pedido-rodape-info">
-                  <div class="pedido-pagamento-status">
-                    ${p.pagamento.status === 'pago' 
-                      ? `<span class="tag-pago">✅ Pago (${p.pagamento.metodo.toUpperCase()})</span>`
-                      : `<span class="tag-pendente">⏳ Pagar na retirada</span>`}
-                  </div>
-                  <div class="pedido-total-valor">
-                    <span>Total:</span>
-                    <strong>${fmtMoeda(p.total)}</strong>
-                  </div>
-                </div>
               </div>
 
-              <!-- Ações de Avanço do Pedido -->
-              <div class="pedido-acoes-botoes">
+              <div class="pedido-itens-resumo">
+                <ul class="itens-ped-lista">
+                  ${p.itens.map((it) => `
+                    <li>
+                      <span>${it.qtd}x ${it.nome} ${it.pesoKg ? `(${fmtKg(it.pesoKg)})` : ''}</span>
+                      <small>${fmtMoeda(it.precoUnit * it.qtd)}</small>
+                      ${it.obs ? `<div class="item-obs-nota">Obs: ${it.obs}</div>` : ''}
+                    </li>
+                  `).join('')}
+                </ul>
+              </div>
+            </div>
+
+            <div class="pedido-rodape-acoes">
+              <div class="fluxo-botoes">
                 ${p.status === 'aguardando' ? `
-                  <button class="btn btn-primario btn-sm btn-bloco" data-avancar="${p.id}" data-novo-status="confirmado">
-                    ${icone('ok')} Confirmar Reserva
+                  <button class="btn btn-primario btn-sm" data-avancar="${p.id}" data-novo-status="confirmado">
+                    ${icone('check')} Confirmar Reserva
                   </button>
                 ` : ''}
 
                 ${p.status === 'confirmado' ? `
-                  <button class="btn btn-primario btn-sm btn-bloco" style="background:#D9481C" data-avancar="${p.id}" data-novo-status="preparo">
-                    🔥 Colocar no Espeto / Preparo
+                  <button class="btn btn-escuro btn-sm" data-avancar="${p.id}" data-novo-status="preparo">
+                    🔥 Colocar no Espeto
                   </button>
                 ` : ''}
 
                 ${p.status === 'preparo' ? `
-                  <button class="btn btn-primario btn-sm btn-bloco" style="background:#7A4FB0" data-avancar="${p.id}" data-novo-status="pronto">
-                    🍗 Marcar Pronto p/ Retirada
+                  <button class="btn btn-primario btn-sm" data-avancar="${p.id}" data-novo-status="pronto">
+                    🍗 Pronto na Estufa
                   </button>
                 ` : ''}
 
                 ${p.status === 'pronto' ? `
-                  <button class="btn btn-primario btn-sm btn-bloco" style="background:#2E8B57" data-avancar="${p.id}" data-novo-status="entregue">
-                    📦 Marcar como Entregue
+                  <button class="btn btn-sucesso btn-sm" data-avancar="${p.id}" data-novo-status="entregue">
+                    ${icone('check')} Entregar / Finalizar
                   </button>
                 ` : ''}
 
                 ${p.status !== 'entregue' && p.status !== 'cancelado' ? `
-                  <button class="btn btn-fantasma btn-sm" data-cancelar="${p.id}" title="Cancelar pedido">
-                    ${icone('fechar')} Cancelar
+                  <button class="btn btn-texto btn-sm btn-cancelar" data-cancelar="${p.id}">
+                    Cancelar
                   </button>
                 ` : ''}
               </div>
             </div>
+          </div>
           `;
         }).join('')}
       </div>
@@ -222,6 +217,7 @@ export function renderPedidos(raiz, irPara) {
     raiz.querySelector('#btn-nova-reserva')?.addEventListener('click', abrirModalNovaReserva);
     raiz.querySelector('#btn-vazio-novo')?.addEventListener('click', abrirModalNovaReserva);
     raiz.querySelector('#btn-ir-pdv')?.addEventListener('click', () => irPara('vendas'));
+    raiz.querySelector('#btn-ir-clientes')?.addEventListener('click', () => irPara('clientes'));
 
     // Busca
     const inputBusca = raiz.querySelector('#input-busca-pedidos');
@@ -293,13 +289,18 @@ export function renderPedidos(raiz, irPara) {
       obs: '',
     }));
 
+    const todosClientes = store.getClientes();
+
     abrirModal(`
       <h2>Nova Reserva / Encomenda 🍗</h2>
       <p>Cadastre uma reserva antecipada para retirada.</p>
 
       <div class="campo">
         <label for="nr-cliente">Nome do Cliente *</label>
-        <input type="text" id="nr-cliente" class="input" placeholder="Ex: Roberto Carlos" required />
+        <input type="text" id="nr-cliente" class="input" list="nr-clientes-sugestoes" placeholder="Ex: Roberto Carlos" required />
+        <datalist id="nr-clientes-sugestoes">
+          ${todosClientes.map((c) => `<option value="${c.nome}">${c.telefone ? `${c.telefone} • ` : ''}${c.preferencias || ''}</option>`).join('')}
+        </datalist>
       </div>
 
       <div class="campo">
@@ -367,6 +368,20 @@ export function renderPedidos(raiz, irPara) {
         <button class="btn btn-fantasma btn-bloco" data-fechar>Cancelar</button>
       </div>
     `, (modal, fechar) => {
+      const inpCli = modal.querySelector('#nr-cliente');
+      const inpTel = modal.querySelector('#nr-telefone');
+      const inpObs = modal.querySelector('#nr-obs');
+
+      inpCli?.addEventListener('input', () => {
+        const match = todosClientes.find(
+          (c) => c.nome.toLowerCase().trim() === inpCli.value.toLowerCase().trim()
+        );
+        if (match) {
+          if (match.telefone) inpTel.value = match.telefone;
+          if (match.preferencias && !inpObs.value) inpObs.value = match.preferencias;
+        }
+      });
+
       modal.querySelectorAll('[data-nr-mais]').forEach((b) => {
         b.addEventListener('click', () => {
           const idx = Number(b.dataset.nrMais);

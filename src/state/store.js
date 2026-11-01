@@ -1,9 +1,9 @@
 /**
  * "Memória" da sessão — multi-tenant.
- * Guarda: tenant ativo, usuário logado, perfil, filtros, pedidos, vendas e estoque.
+ * Guarda: tenant ativo, usuário logado, perfil, filtros, pedidos, vendas, estoque e clientes.
  * Persiste no localStorage/sessionStorage.
  */
-import { PERFIS, PEDIDOS_INICIAIS, VENDAS_RECENTES } from '../data/mock.js';
+import { PERFIS, PEDIDOS_INICIAIS, VENDAS_RECENTES, CLIENTES_INICIAIS } from '../data/mock.js';
 import { getTenantAtivo, getPlanoAtivo, vendasRestantes } from '../data/tenants.js';
 
 const salvo = JSON.parse(sessionStorage.getItem('fa-sessao') || 'null');
@@ -11,6 +11,7 @@ const tenantAtivo = getTenantAtivo();
 
 const pedidosSalvos = JSON.parse(localStorage.getItem('fa-pedidos') || 'null') || PEDIDOS_INICIAIS;
 const vendasSalvas = JSON.parse(localStorage.getItem('fa-vendas') || 'null') || VENDAS_RECENTES;
+const clientesSalvos = JSON.parse(localStorage.getItem('fa-clientes') || 'null') || CLIENTES_INICIAIS;
 
 export const ESTOQUE_PADRAO = {
   frangos: {
@@ -53,6 +54,7 @@ const estado = {
   pedidos: pedidosSalvos,
   vendas: vendasSalvas,
   estoque: estoqueSalvo,
+  clientes: clientesSalvos,
   // ── Multi-tenant ──
   tenant: tenantAtivo,
   usuario: salvo?.usuario || null,
@@ -79,54 +81,62 @@ export const store = {
     notificar();
   },
 
-  assinar(fn) {
+  subscrever: (fn) => {
     ouvintes.add(fn);
     return () => ouvintes.delete(fn);
   },
 
-  pontosPermitidos: () => PERFIS[estado.perfil].pontos,
-
-  // ── Tenant helpers ──────────────────────────────────────────
+  // ── Multi-tenant helpers ────────────────────────────────────
   getTenant: () => estado.tenant || getTenantAtivo(),
-  getPlano: () => getPlanoAtivo(),
-  getVendasRestantes: () => vendasRestantes(),
-
-  /** Atualiza tenant no estado (ex: após upgrade ou config) */
-  refreshTenant() {
-    const t = getTenantAtivo();
-    estado.tenant = t;
-    notificar();
+  getPlano: () => getPlanoAtivo(estado.tenant),
+  vendasRestantes: () => vendasRestantes(estado.tenant, estado.vendas),
+  limiteVendasAtingido: () => {
+    const vr = vendasRestantes(estado.tenant, estado.vendas);
+    return vr !== null && vr <= 0;
   },
 
   // ── Pedidos & Reservas ──────────────────────────────────────
   getPedidos: () => {
-    const tid = (estado.tenant || getTenantAtivo())?.id || 'tenant_demo';
+    const tid = (estado.tenant || getTenantAtivo())?.id;
+    if (!tid) return estado.pedidos;
     return estado.pedidos.filter((p) => !p.tenantId || p.tenantId === tid);
+  },
+  salvarPedidos() {
+    localStorage.setItem('fa-pedidos', JSON.stringify(estado.pedidos));
+    notificar();
   },
   adicionarPedido: (novo) => {
     const pedido = {
       id: Math.floor(1000 + Math.random() * 9000),
-      criadoEm: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-      status: 'confirmado',
       tenantId: (estado.tenant || getTenantAtivo())?.id || 'tenant_demo',
       ...novo,
     };
     estado.pedidos = [pedido, ...estado.pedidos];
-    localStorage.setItem('fa-pedidos', JSON.stringify(estado.pedidos));
-    notificar();
+    store.salvarPedidos();
+
+    // Se tiver cliente vinculado, registra movimentação
+    if (pedido.cliente) {
+      store.registrarCompraCliente(pedido.cliente, pedido.total, pedido.itens);
+    }
+
     return pedido;
   },
-  atualizarStatusPedido: (pedidoId, novoStatus) => {
-    estado.pedidos = estado.pedidos.map((p) =>
-      p.id === pedidoId ? { ...p, status: novoStatus } : p
-    );
-    localStorage.setItem('fa-pedidos', JSON.stringify(estado.pedidos));
-    notificar();
+  atualizarStatusPedido: (id, novoStatus) => {
+    const p = estado.pedidos.find((x) => x.id === id);
+    if (!p) return;
+    p.status = novoStatus;
+    if (novoStatus === 'entregue') {
+      p.pagamento = { ...p.pagamento, status: 'pago' };
+      // Ao entregar, dá baixa correspondente de estoque
+      store.baixarEstoqueVenda(p.itens || []);
+    }
+    store.salvarPedidos();
   },
 
-  // ── Vendas (PDV) ────────────────────────────────────────────
+  // ── Vendas & PDV ────────────────────────────────────────────
   getVendas: () => {
-    const tid = (estado.tenant || getTenantAtivo())?.id || 'tenant_demo';
+    const tid = (estado.tenant || getTenantAtivo())?.id;
+    if (!tid) return estado.vendas;
     return estado.vendas.filter((v) => !v.tenantId || v.tenantId === tid);
   },
   adicionarVenda: (nova) => {
@@ -141,6 +151,11 @@ export const store = {
     
     // Dá baixa automática no estoque
     store.baixarEstoqueVenda(nova.itens || []);
+
+    // Atualiza histórico do cliente se identificado
+    if (nova.cliente && nova.cliente !== 'Balcão') {
+      store.registrarCompraCliente(nova.cliente, nova.total, nova.itens);
+    }
 
     notificar();
     return venda;
@@ -158,7 +173,7 @@ export const store = {
   moverEstoqueFrango: (origem, destino, quantidade) => {
     const qtd = Math.max(1, parseInt(quantidade, 10) || 1);
     if (!estado.estoque.frangos[origem] || estado.estoque.frangos[origem] < qtd) {
-      throw new Error(`Quantidade insuficiente em "${origem}". Disponível: ${estado.estoque.frangos[origem] || 0}`);
+      return { ok: false, erro: `Quantidade insuficiente em "${origem}". Disponível: ${estado.estoque.frangos[origem] || 0}` };
     }
 
     estado.estoque.frangos[origem] -= qtd;
@@ -176,6 +191,7 @@ export const store = {
       `${qtd} frangos movidos de ${rotulos[origem] || origem} para ${rotulos[destino] || destino}`
     );
     store.salvarEstoque();
+    return { ok: true };
   },
 
   /** Dá entrada de novos frangos comprados (chegada do frigorífico) */
@@ -186,13 +202,14 @@ export const store = {
     const extra = fornecedor ? ` (${fornecedor})` : '';
     store.adicionarHistoricoEstoque('entrada', `Chegada de +${qtd} frangos crus em câmara fria${extra}`);
     store.salvarEstoque();
+    return { ok: true };
   },
 
   /** Registra perda / quebra / queima de frango */
   registrarPerdaFrango: (origem, quantidade, motivo = 'Queima no fogo') => {
     const qtd = Math.max(1, parseInt(quantidade, 10) || 1);
     if (!estado.estoque.frangos[origem] || estado.estoque.frangos[origem] < qtd) {
-      throw new Error(`Quantidade insuficiente em "${origem}" para registrar perda.`);
+      return { ok: false, erro: `Quantidade insuficiente em "${origem}" para registrar perda.` };
     }
 
     estado.estoque.frangos[origem] -= qtd;
@@ -200,6 +217,7 @@ export const store = {
 
     store.adicionarHistoricoEstoque('perda', `Perda de ${qtd} frangos em "${origem}": ${motivo}`);
     store.salvarEstoque();
+    return { ok: true };
   },
 
   /** Atualiza quantidade de insumo/guarnição */
@@ -235,10 +253,10 @@ export const store = {
     const perfil = store.perfil();
     const item = {
       id: Date.now(),
-      hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       tipo,
       desc,
-      autor: (perfil?.nome || 'Operador').split(' ')[0],
+      operador: (perfil?.nome || 'Operador').split(' ')[0],
     };
     estado.estoque.historico = [item, ...(estado.estoque.historico || [])].slice(0, 30);
   },
@@ -313,9 +331,107 @@ export const store = {
       const sac = estado.estoque.insumos.find((i) => i.id === 'ins-sacola');
       if (sac) sac.qtd = Math.max(0, sac.qtd - Math.ceil(embalagensBaixadas));
 
-      store.adicionarHistoricoEstoque('saida', `Baixa de PDV: ${frangosBaixados} frangos retirados da estufa`);
+      store.adicionarHistoricoEstoque('venda', `Baixa de PDV: ${frangosBaixados} frangos retirados da estufa`);
     }
 
     store.salvarEstoque();
+  },
+
+  // ── Módulo de Clientes, CRM & Fidelidade ─────────────────────
+  getClientes: () => {
+    const tid = (estado.tenant || getTenantAtivo())?.id;
+    if (!tid) return estado.clientes || [];
+    return (estado.clientes || []).filter((c) => !c.tenantId || c.tenantId === tid);
+  },
+
+  salvarClientes() {
+    localStorage.setItem('fa-clientes', JSON.stringify(estado.clientes));
+    notificar();
+  },
+
+  adicionarCliente: (dados) => {
+    const novo = {
+      id: `cli-${Date.now()}`,
+      tenantId: (estado.tenant || getTenantAtivo())?.id || 'tenant_demo',
+      nome: dados.nome || 'Cliente',
+      telefone: dados.telefone || '',
+      bairro: dados.bairro || 'Balcão',
+      tag: dados.tag || 'novo',
+      preferencias: dados.preferencias || '',
+      pontosFidelidade: parseInt(dados.pontosFidelidade, 10) || 0,
+      totalPedidos: 0,
+      totalGasto: 0,
+      ultimaVisita: 'Hoje',
+      anotacoes: dados.anotacoes || '',
+      criadoEm: new Date().toLocaleDateString('pt-BR'),
+    };
+    estado.clientes = [novo, ...(estado.clientes || [])];
+    store.salvarClientes();
+    return novo;
+  },
+
+  atualizarCliente: (id, dadosAtualizados) => {
+    const cli = (estado.clientes || []).find((c) => c.id === id);
+    if (!cli) return null;
+    Object.assign(cli, dadosAtualizados);
+    store.salvarClientes();
+    return cli;
+  },
+
+  removerCliente: (id) => {
+    estado.clientes = (estado.clientes || []).filter((c) => c.id !== id);
+    store.salvarClientes();
+  },
+
+  adicionarPontoFidelidade: (id, qtd = 1) => {
+    const cli = (estado.clientes || []).find((c) => c.id === id);
+    if (!cli) return null;
+    cli.pontosFidelidade = (cli.pontosFidelidade || 0) + qtd;
+    store.salvarClientes();
+    return cli;
+  },
+
+  resgatarFidelidade: (id) => {
+    const cli = (estado.clientes || []).find((c) => c.id === id);
+    if (!cli) return { ok: false, erro: 'Cliente não encontrado' };
+    if ((cli.pontosFidelidade || 0) < 10) {
+      return { ok: false, erro: 'Pontos insuficientes para resgate (mínimo 10 selos)' };
+    }
+    cli.pontosFidelidade -= 10;
+    cli.recompensasResgatadas = (cli.recompensasResgatadas || 0) + 1;
+    store.salvarClientes();
+    return { ok: true, pontosRestantes: cli.pontosFidelidade };
+  },
+
+  /** Registra compra/reserva feita por um cliente */
+  registrarCompraCliente: (nomeOuId, valor = 0, itens = []) => {
+    if (!nomeOuId || nomeOuId === 'Balcão') return;
+    const nomeLimpo = String(nomeOuId).toLowerCase().trim();
+    const cli = (estado.clientes || []).find(
+      (c) => c.id === nomeOuId || c.nome.toLowerCase().trim() === nomeLimpo
+    );
+    if (!cli) return;
+
+    cli.totalPedidos = (cli.totalPedidos || 0) + 1;
+    cli.totalGasto = +((cli.totalGasto || 0) + (parseFloat(valor) || 0)).toFixed(2);
+    cli.ultimaVisita = 'Hoje';
+
+    // Se comprou frango inteiro ou meio frango, credita pontos de fidelidade
+    let frangos = 0;
+    itens.forEach((it) => {
+      const n = (it.nome || '').toLowerCase();
+      if (n.includes('inteiro')) frangos += (it.qtd || 1);
+      else if (n.includes('meio')) frangos += (it.qtd || 1) * 0.5;
+    });
+
+    if (frangos > 0) {
+      cli.pontosFidelidade = (cli.pontosFidelidade || 0) + Math.round(frangos);
+    }
+
+    // Promove tag se passar de 5 pedidos
+    if (cli.totalPedidos >= 8) cli.tag = 'vip';
+    else if (cli.totalPedidos >= 3) cli.tag = 'frequente';
+
+    store.salvarClientes();
   },
 };

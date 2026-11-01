@@ -269,3 +269,77 @@ export const VENDAS_RECENTES = [
     cliente: 'Dona Neide'
   }
 ];
+
+
+export const CLIENTES_INICIAIS = [
+  {
+    id: 'cli-1',
+    tenantId: 'tenant_demo',
+    nome: 'Cláudio Duarte',
+    telefone: '11999991111',
+    bairro: 'Jardim Paulista',
+    tag: 'vip',
+    preferencias: 'Frango bem dourado/tostado. Cortar em 4 partes. Caprichar na farofa.',
+    pontosFidelidade: 8,
+    totalPedidos: 12,
+    totalGasto: 642.50,
+    ultimaVisita: 'Hoje',
+    anotacoes: 'Cliente fiel todo domingo às 12h. Família grande.'
+  },
+  {
+    id: 'cli-2',
+    tenantId: 'tenant_demo',
+    nome: 'Carla Silveira',
+    telefone: '11988887777',
+    bairro: 'Centro',
+    tag: 'frequente',
+    preferencias: 'Frango suculento sem queimar as asas. Farofa separada.',
+    pontosFidelidade: 10,
+    totalPedidos: 10,
+    totalGasto: 489.00,
+    ultimaVisita: 'Hoje',
+    anotacoes: 'Gosta de pagar via Pix na retirada.'
+  },
+  {
+    id: 'cli-3',
+    tenantId: 'tenant_demo',
+    nome: 'Dona Neide Santos',
+    telefone: '11977773333',
+    bairro: 'Vila Mariana',
+    tag: 'vip',
+    preferencias: 'Prefere linguiça bem fatiada e batata bolinha com pouco alho.',
+    pontosFidelidade: 9,
+    totalPedidos: 15,
+    totalGasto: 520.00,
+    ultimaVisita: 'Ontem',
+    anotacoes: 'Sempre pede porção de maionese caseira junto.'
+  },
+  {
+    id: 'cli-4',
+    tenantId: 'tenant_demo',
+    nome: 'Marcos Pereira',
+    telefone: '11966664444',
+    bairro: 'Bela Vista',
+    tag: 'frequente',
+    preferencias: 'Frango inteiro com bastante molho do assado.',
+    pontosFidelidade: 4,
+    totalPedidos: 4,
+    totalGasto: 215.00,
+    ultimaVisita: '24/10',
+    anotacoes: 'Costuma retirar aos sábados às 11h30.'
+  },
+  {
+    id: 'cli-5',
+    tenantId: 'tenant_demo',
+    nome: 'Rodrigo Alencar',
+    telefone: '11955552222',
+    bairro: 'Pinheiros',
+    tag: 'novo',
+    preferencias: 'Primeira compra: pediu recomendação do assado com farofa.',
+    pontosFidelidade: 1,
+    totalPedidos: 1,
+    totalGasto: 55.00,
+    ultimaVisita: '28/10',
+    anotacoes: 'Chegou por indicação no WhatsApp.'
+  }
+];

@@ -33,6 +33,10 @@ export function renderVendas(raiz, irPara) {
     const totalItens = carrinho.reduce((acc, it) => acc + (it.forma === 'peso' ? 1 : it.qtd), 0);
     const troco = Math.max(0, valorRecebido - subtotal);
     const vendasRecentes = store.getVendas();
+    const todosClientes = store.getClientes();
+    const clienteEncontrado = todosClientes.find(
+      (c) => c.nome.toLowerCase().trim() === clienteNome.toLowerCase().trim()
+    );
 
     raiz.innerHTML = `
     <div class="pdv-container">
@@ -43,6 +47,7 @@ export function renderVendas(raiz, irPara) {
         </div>
         <div class="pdv-topo-acoes">
           <button class="btn btn-contorno" id="btn-ir-pedidos">${icone('calendario')} Encomendas / Reservas</button>
+          <button class="btn btn-contorno" id="btn-ir-clientes">${icone('clientes')} Clientes & Fidelidade</button>
         </div>
       </div>
 
@@ -147,8 +152,35 @@ export function renderVendas(raiz, irPara) {
             </div>
 
             <div class="pdv-cliente-box">
-              <input type="text" id="pdv-cliente-nome" class="input input-sm" placeholder="Nome do cliente (opcional)" value="${clienteNome}" />
-              <input type="tel" id="pdv-cliente-tel" class="input input-sm" placeholder="WhatsApp (ex: 11999998888)" value="${clienteTelefone}" />
+              <input 
+                type="text" 
+                id="pdv-cliente-nome" 
+                class="input input-sm" 
+                list="pdv-clientes-lista" 
+                placeholder="Nome do cliente (ou selecione da base)" 
+                value="${clienteNome}" 
+              />
+              <datalist id="pdv-clientes-lista">
+                ${todosClientes.map((c) => `<option value="${c.nome}">${c.telefone ? `${c.telefone} • ` : ''}${c.preferencias || ''}</option>`).join('')}
+              </datalist>
+
+              <input 
+                type="tel" 
+                id="pdv-cliente-tel" 
+                class="input input-sm" 
+                placeholder="WhatsApp (ex: 11999998888)" 
+                value="${clienteTelefone}" 
+              />
+
+              ${clienteEncontrado ? `
+                <div class="pdv-cliente-destaque-info" style="grid-column: 1 / -1; background: #FFFBF5; border: 1px solid #FED7AA; border-radius: 8px; padding: 6px 10px; font-size: 11px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color: #C2410C;">🍗 Clube do Frango: ${clienteEncontrado.pontosFidelidade || 0}/10 selos</strong>
+                    <span class="badge ${clienteEncontrado.tag === 'vip' ? 'tag-vip' : 'badge-demo'}">${clienteEncontrado.tag.toUpperCase()}</span>
+                  </div>
+                  ${clienteEncontrado.preferencias ? `<span style="color: var(--texto-suave); display:block; margin-top:2px;">Obs: <i>"${clienteEncontrado.preferencias}"</i></span>` : ''}
+                </div>
+              ` : ''}
             </div>
 
             <div class="pdv-pagamento">
@@ -173,50 +205,39 @@ export function renderVendas(raiz, irPara) {
                     <button class="chip chip-sm" data-nota="100">R$ 100</button>
                     <button class="chip chip-sm" data-nota="200">R$ 200</button>
                   </div>
-                  <div class="troco-linha ${troco > 0 ? 'tem-troco' : ''}">
-                    <strong>Troco:</strong>
+                  <div class="troco-linha">
+                    <span>Troco a devolver:</span>
                     <strong>${fmtMoeda(troco)}</strong>
                   </div>
                 </div>
               ` : ''}
-
-              ${metodoPagamento === 'pix' ? `
-                <div class="detalhes-pix">
-                  <div class="pix-simulacao">
-                    <div class="pix-qrcode-caixa">${icone('qrcode')}</div>
-                    <div>
-                      <strong>Chave Pix da Loja:</strong>
-                      <code class="pix-chave">pix@frangoassado.com.br</code>
-                    </div>
-                  </div>
-                </div>
-              ` : ''}
             </div>
 
-            <div class="pdv-totais">
-              <div class="total-linha">
-                <span>Subtotal:</span>
+            <div class="pdv-resumo">
+              <div class="resumo-linha">
+                <span>Subtotal</span>
+                <span>${fmtMoeda(subtotal)}</span>
+              </div>
+              <div class="resumo-linha total">
+                <span>Total a pagar</span>
                 <strong>${fmtMoeda(subtotal)}</strong>
               </div>
-              <div class="total-linha destaque">
-                <span>Total a Pagar:</span>
-                <strong>${fmtMoeda(subtotal)}</strong>
-              </div>
-              <button class="btn btn-primario btn-bloco btn-finalizar" id="btn-finalizar-venda" ${carrinho.length === 0 ? 'disabled' : ''}>
-                ${icone('ok')} Finalizar Venda (${fmtMoeda(subtotal)})
-              </button>
             </div>
+
+            <button class="btn btn-primario btn-bloco btn-lg btn-finalizar" id="btn-finalizar-venda" ${carrinho.length === 0 ? 'disabled' : ''}>
+              ${icone('ok')} Finalizar Venda (${fmtMoeda(subtotal)})
+            </button>
           </div>
         </div>
       </div>
     </div>
     `;
 
-    ligarEventos();
+    vincularEventos();
   }
 
-  function ligarEventos() {
-    raiz.querySelectorAll('[data-cat]').forEach((b) => {
+  function vincularEventos() {
+    raiz.querySelectorAll('.chips button').forEach((b) => {
       b.addEventListener('click', () => {
         categoriaAtiva = b.dataset.cat;
         desenhar();
@@ -224,6 +245,7 @@ export function renderVendas(raiz, irPara) {
     });
 
     raiz.querySelector('#btn-ir-pedidos')?.addEventListener('click', () => irPara('pedidos'));
+    raiz.querySelector('#btn-ir-clientes')?.addEventListener('click', () => irPara('clientes'));
 
     raiz.querySelectorAll('.btn-add-prod').forEach((b) => {
       b.addEventListener('click', () => {
@@ -283,7 +305,16 @@ export function renderVendas(raiz, irPara) {
     });
 
     const inputNome = raiz.querySelector('#pdv-cliente-nome');
-    inputNome?.addEventListener('input', (e) => { clienteNome = e.target.value; });
+    inputNome?.addEventListener('input', (e) => {
+      clienteNome = e.target.value;
+      const match = store.getClientes().find(
+        (c) => c.nome.toLowerCase().trim() === clienteNome.toLowerCase().trim()
+      );
+      if (match) {
+        clienteTelefone = match.telefone || clienteTelefone;
+        desenhar();
+      }
+    });
 
     const inputTel = raiz.querySelector('#pdv-cliente-tel');
     inputTel?.addEventListener('input', (e) => { clienteTelefone = e.target.value; });
@@ -334,7 +365,7 @@ export function renderVendas(raiz, irPara) {
       const existe = carrinho.find((it) => it.id === prod.id && it.obs === obs);
       if (existe) {
         existe.qtd += qtd;
-        existe.total = existe.qtd * existe.precoUnit;
+        existe.total = existe.qtd * prod.preco;
       } else {
         carrinho.push({
           id: prod.id,
@@ -353,20 +384,26 @@ export function renderVendas(raiz, irPara) {
   }
 
   function abrirModalPeso(prod, editIdx = null) {
-    let gramasAtual = editIdx !== null ? Math.round(carrinho[editIdx].pesoKg * 1000) : prod.gramasMedia;
-    let obsAtual = editIdx !== null ? (carrinho[editIdx].obs || '') : '';
+    const gramasAtual = editIdx !== null ? Math.round(carrinho[editIdx].pesoKg * 1000) : prod.gramasMedia;
+    const obsAtual = editIdx !== null ? (carrinho[editIdx].obs || '') : '';
 
     abrirModal(`
-      <h2>Pesar ${prod.nome} ${prod.emoji}</h2>
-      <p>Preço: <strong>${fmtMoeda(prod.precoKg)} / kg</strong>. Digite o peso em gramas ou selecione:</p>
-      
-      <div class="peso-atalhos">
-        ${[300, 400, 500, 600, 800, 1000].map((g) => `
-          <button class="chip chip-peso ${gramasAtual === g ? 'ativo' : ''}" data-g="${g}">${g}g (${fmtKg(g / 1000)})</button>
-        `).join('')}
+      <h2>${prod.emoji} Pesar ${prod.nome}</h2>
+      <p>Preço por kg: <strong>${fmtMoeda(prod.precoKg)}/kg</strong></p>
+
+      <div class="pesos-atalhos">
+        <label>Pesos rápidos comuns:</label>
+        <div class="chips-pesos">
+          <button class="chip chip-peso" data-g="300">300g</button>
+          <button class="chip chip-peso" data-g="400">400g</button>
+          <button class="chip chip-peso" data-g="500">500g</button>
+          <button class="chip chip-peso" data-g="600">600g</button>
+          <button class="chip chip-peso" data-g="800">800g</button>
+          <button class="chip chip-peso" data-g="1000">1kg</button>
+        </div>
       </div>
 
-      <div class="campo" style="margin-top:14px">
+      <div class="campo">
         <label for="input-peso-gramas">Peso exato em gramas (g):</label>
         <div class="campo-caixa">
           <input type="number" id="input-peso-gramas" class="input" value="${gramasAtual}" min="50" max="5000" step="10" />
