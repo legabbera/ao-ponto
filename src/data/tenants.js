@@ -38,12 +38,113 @@ export const PLANOS = {
     cor: '--brasa',
     destaque: true,
   },
+  'plano-02': {
+    id: 'plano-02',
+    nome: 'Redes & Franquias',
+    preco: 149.0,
+    precoFormatado: 'R$ 149,00/mês',
+    limiteVendasMes: null,
+    recursos: [
+      'Tudo do plano Balcão',
+      'Múltiplos pontos de venda',
+      'WhatsApp sem limites',
+      'Suporte VIP',
+    ],
+    cor: '--azul',
+    destaque: false,
+  },
 };
 
 // ── Mock de tenants cadastrados ─────────────────────────────
 const TENANTS_MOCK = [
   {
     id: 'tenant_demo',
+    slug: 'frango-demo',
+    nome: 'Ao Ponto Assados & Brasa',
+    responsavel: 'Carlos Mendes',
+    celular: '(11) 98765-4321',
+    cidade: 'São Paulo - SP',
+    cnpj: '12.345.678/0001-90',
+    plano: 'plano-01',
+    planoAtivadoEm: '2026-10-01',
+    status: 'ativo',
+    mensalidadeStatus: 'em_dia',
+    valorMensalidade: 79.0,
+    diaVencimento: 10,
+    vendasMesAtual: 142,
+    createdAt: '2026-10-01T12:00:00Z',
+  },
+  {
+    id: 'tenant_frangaria',
+    slug: 'frangaria-villa',
+    nome: 'Frangaria da Villa',
+    responsavel: 'Roberto Camargo',
+    celular: '(19) 99123-4567',
+    cidade: 'Campinas - SP',
+    cnpj: '23.456.789/0001-01',
+    plano: 'plano-01',
+    planoAtivadoEm: '2026-09-15',
+    status: 'ativo',
+    mensalidadeStatus: 'em_dia',
+    valorMensalidade: 79.0,
+    diaVencimento: 15,
+    vendasMesAtual: 310,
+    createdAt: '2026-09-15T10:00:00Z',
+  },
+  {
+    id: 'tenant_brasa',
+    slug: 'brasa-nobre',
+    nome: 'Brasa Nobre Rotisserie',
+    responsavel: 'Marcos Vinícius',
+    celular: '(41) 98877-6655',
+    cidade: 'Curitiba - PR',
+    cnpj: '34.567.890/0001-12',
+    plano: 'plano-02',
+    planoAtivadoEm: '2026-08-01',
+    status: 'ativo',
+    mensalidadeStatus: 'em_dia',
+    valorMensalidade: 149.0,
+    diaVencimento: 5,
+    vendasMesAtual: 520,
+    createdAt: '2026-08-01T08:00:00Z',
+  },
+  {
+    id: 'tenant_galeto',
+    slug: 'galeto-dourado',
+    nome: 'Galeto Dourado do Bairro',
+    responsavel: 'Antônio Silva',
+    celular: '(13) 99765-4321',
+    cidade: 'Santos - SP',
+    cnpj: null,
+    plano: 'plano-00',
+    planoAtivadoEm: '2026-10-20',
+    status: 'ativo',
+    mensalidadeStatus: 'gratis',
+    valorMensalidade: 0,
+    diaVencimento: 20,
+    vendasMesAtual: 9,
+    createdAt: '2026-10-20T14:00:00Z',
+  },
+  {
+    id: 'tenant_inadimplente',
+    slug: 'assados-povo',
+    nome: 'Assados do Povo',
+    responsavel: 'Cláudio Pereira',
+    celular: '(31) 98432-1098',
+    cidade: 'Belo Horizonte - MG',
+    cnpj: '45.678.901/0001-23',
+    plano: 'plano-01',
+    planoAtivadoEm: '2026-07-10',
+    status: 'bloqueado',
+    mensalidadeStatus: 'atrasado',
+    bloqueioMotivo: 'Mensalidade vencida há mais de 10 dias (Fatura R$ 79,00 pendente)',
+    valorMensalidade: 79.0,
+    diaVencimento: 10,
+    vendasMesAtual: 68,
+    createdAt: '2026-07-10T11:00:00Z',
+  },
+  {
+    id: 'tenant_demo_old',
     slug: 'frango-demo',
     nome: 'Frango Assado Demo',
     cnpj: null,
@@ -365,4 +466,120 @@ export function removerUsuarioTenant(id) {
   usuarios = usuarios.filter((u) => u.id !== id);
   salvarUsuarios(usuarios);
   return true;
+}
+
+
+// ── FUNÇÕES DO DONO DA PLATAFORMA (SUPERADMIN / SAAS MASTER) ──
+
+/** Lista todas as assadeiras/estabelecimentos clientes cadastrados */
+export function listarTodosTenants() {
+  return carregarTenants();
+}
+
+/** Bloqueia o acesso de um estabelecimento (ex: por falta de pagamento) */
+export function bloquearTenant(id, motivo = 'Mensalidade da plataforma pendente de pagamento.') {
+  const tenants = carregarTenants();
+  const t = tenants.find((x) => x.id === id);
+  if (!t) throw new Error('Estabelecimento não encontrado.');
+  t.status = 'bloqueado';
+  t.mensalidadeStatus = 'atrasado';
+  t.bloqueioMotivo = motivo;
+  salvarTenants(tenants);
+  return t;
+}
+
+/** Desbloqueia e reativa o acesso de um estabelecimento */
+export function desbloquearTenant(id) {
+  const tenants = carregarTenants();
+  const t = tenants.find((x) => x.id === id);
+  if (!t) throw new Error('Estabelecimento não encontrado.');
+  t.status = 'ativo';
+  t.mensalidadeStatus = t.plano === 'plano-00' ? 'gratis' : 'em_dia';
+  t.bloqueioMotivo = null;
+  salvarTenants(tenants);
+  return t;
+}
+
+/** Altera ou amplia o plano de um cliente */
+export function alterarPlanoTenant(id, novoPlanoId, novoLimite = null) {
+  const tenants = carregarTenants();
+  const t = tenants.find((x) => x.id === id);
+  if (!t) throw new Error('Estabelecimento não encontrado.');
+  t.plano = novoPlanoId;
+  t.valorMensalidade = PLANOS[novoPlanoId]?.preco || 0;
+  if (novoLimite !== null) t.limiteCustomizado = novoLimite;
+  salvarTenants(tenants);
+  return t;
+}
+
+/** Cadastra uma nova assadeira manualmente pelo painel master */
+export function cadastrarTenantManual(dados) {
+  const tenants = carregarTenants();
+  const id = 'tenant_' + Date.now();
+  const slug = (dados.slug || dados.nome.toLowerCase().replace(/[^a-z0-9]/g, '-')).replace(/-+/g, '-');
+  
+  const novo = {
+    id,
+    slug,
+    nome: dados.nome,
+    responsavel: dados.responsavel || 'Proprietário',
+    celular: dados.celular || '',
+    cidade: dados.cidade || 'São Paulo - SP',
+    cnpj: dados.cnpj || null,
+    plano: dados.plano || 'plano-01',
+    planoAtivadoEm: new Date().toISOString().slice(0, 10),
+    status: 'ativo',
+    mensalidadeStatus: dados.plano === 'plano-00' ? 'gratis' : 'em_dia',
+    valorMensalidade: PLANOS[dados.plano || 'plano-01']?.preco || 79.0,
+    diaVencimento: dados.diaVencimento || 10,
+    vendasMesAtual: 0,
+    createdAt: new Date().toISOString(),
+  };
+
+  tenants.unshift(novo);
+  salvarTenants(tenants);
+  return novo;
+}
+
+/** Permite ao Dono da Plataforma acessar a loja do cliente para suporte técnico */
+export function impersonarTenant(id) {
+  const tenants = carregarTenants();
+  const t = tenants.find((x) => x.id === id);
+  if (!t) throw new Error('Estabelecimento não encontrado.');
+  sessionStorage.setItem(CHAVE_TENANT_ATIVO, t.id);
+  return t;
+}
+
+/** Calcula métricas consolidadas do SaaS para o Dono da Plataforma */
+export function obterMetricasSaaS() {
+  const tenants = carregarTenants();
+  let mrr = 0;
+  let totalVendasSaaS = 0;
+  let ativos = 0;
+  let atrasados = 0;
+  let bloqueados = 0;
+
+  tenants.forEach((t) => {
+    const preco = PLANOS[t.plano]?.preco || 0;
+    if (t.status === 'ativo') {
+      mrr += preco;
+      ativos++;
+    } else if (t.status === 'bloqueado') {
+      bloqueados++;
+    }
+    if (t.mensalidadeStatus === 'atrasado') {
+      atrasados++;
+    }
+    totalVendasSaaS += t.vendasMesAtual || 0;
+  });
+
+  return {
+    totalTenants: tenants.length,
+    ativos,
+    bloqueados,
+    atrasados,
+    mrr,
+    totalVendasSaaS,
+    tenants,
+  };
 }

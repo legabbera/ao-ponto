@@ -27,6 +27,8 @@ import { renderRelatorios, destruirRelatorios } from './pages/relatorios.js';
 import { renderEmBreve, renderMenu } from './pages/placeholder.js';
 import { renderPlanos } from './pages/planos.js';
 import { renderConfiguracoes } from './pages/configuracoes.js';
+import { renderMaster } from './pages/master.js';
+import { renderBloqueioMensalidade } from './pages/bloqueio.js';
 
 const app = document.getElementById('app');
 
@@ -66,9 +68,15 @@ function render() {
     return (location.hash = '#/login');
   }
 
+  // ── Verificação de Bloqueio por Mensalidade (SaaS) ───────────
+  const tenantAtual = store.getTenant();
+  if (tenantAtual?.status === 'bloqueado' && store.get().perfil !== 'superadmin') {
+    return renderBloqueioMensalidade(app, irPara);
+  }
+
   // ── Validação de rota pelo perfil ────────────────────────────
   const rotasPermitidas = rotasDoPerfil().map((r) => r.id);
-  const rotasEspeciais = ['menu', 'inicio', 'planos', 'configuracoes'];
+  const rotasEspeciais = ['menu', 'inicio', 'planos', 'configuracoes', 'master'];
   if (!rotasEspeciais.includes(hashRota) && !rotasPermitidas.includes(hashRota)) {
     hashRota = 'inicio';
   }
@@ -86,6 +94,7 @@ function render() {
   else if (hashRota === 'whatsapp')      renderWhatsapp(conteudo, irPara);
   else if (hashRota === 'pagamentos')    renderPagamentos(conteudo, irPara);
   else if (hashRota === 'relatorios')    renderRelatorios(conteudo, irPara);
+  else if (hashRota === 'master')        renderMaster(conteudo, irPara);
   else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
   else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
   else if (hashRota === 'menu')          renderMenu(conteudo, irPara);

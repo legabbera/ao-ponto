@@ -9,7 +9,7 @@ import { PLANOS, logoutTenant } from '../data/tenants.js';
 
 export const ROTAS = [
   { id: 'inicio', rotulo: 'Início', icone: 'home', principal: true },
-  { id: 'vendas', rotulo: 'Vendas', icone: 'vendas', principal: true, desc: 'PDV e caixa rápido' },
+  { id: 'vendas', rotulo: 'Vendas', icone: 'vendas', principal: true, desc: 'Controle de vendas e balcão' },
   { id: 'pedidos', rotulo: 'Pedidos', icone: 'calendario', principal: true, desc: 'Reservas e encomendas' },
   { id: 'estoque', rotulo: 'Estoque', icone: 'pacote', principal: true, desc: 'Frangos e insumos' },
   { id: 'clientes', rotulo: 'Clientes', icone: 'clientes', perfis: ['owner', 'admin'], desc: 'Histórico e fidelidade' },
@@ -17,6 +17,7 @@ export const ROTAS = [
   { id: 'whatsapp', rotulo: 'WhatsApp', icone: 'conversa', perfis: ['owner', 'admin'], desc: 'Central de atendimento' },
   { id: 'pagamentos', rotulo: 'Pagamentos', icone: 'cartao', perfis: ['owner'], desc: 'Máquinas e provedores' },
   { id: 'relatorios', rotulo: 'Relatórios', icone: 'grafico', perfis: ['owner', 'admin'], desc: 'Análises e exportação' },
+  { id: 'master', rotulo: 'Painel Master', icone: 'grafico', perfis: ['superadmin'], desc: 'Gestão do SaaS e mensalidades' },
   { id: 'planos', rotulo: 'Meu Plano', icone: 'grafico', perfis: ['owner'], desc: 'Planos e limites de uso' },
   { id: 'configuracoes', rotulo: 'Configurações', icone: 'config', perfis: ['owner', 'admin'], desc: 'Domínio e dados do negócio' },
 ];
@@ -45,6 +46,9 @@ export function renderShell(raiz, rotaAtual, irPara) {
         ${tenant ? `<div class="sb-plano-badge" data-ir="planos" title="Meu Plano">${icone('grafico')}<span>${PLANOS[tenant.plano]?.nome || 'Grátis'}</span></div>` : ''}
         <a href="/manual.html" target="_blank" class="sb-item" style="text-decoration:none" title="Manual do Usuário (PDF / Impressão)">${icone('info')}<span>Manual do Usuário</span></a>
         <a href="/treinamento-video.html" target="_blank" class="sb-item" style="text-decoration:none" title="Vídeo Treinamento Full HD 1080p">${icone('grafico')}<span>Vídeo Treinamento</span></a>
+        <button class="sb-item" data-ir="master" style="color: #EA580C; font-weight: 700; background: #FFF7ED; border-radius: 8px; margin: 4px 8px; border: 1px solid #FFEDD5;" title="Painel Master do Dono da Plataforma SaaS">
+          <span style="font-size: 16px;">👑</span><span>Painel Master (SaaS)</span>
+        </button>
         <button class="sb-item" data-acao="landing" title="Ver Apresentação B2B">${icone('globo')}<span>Apresentação B2B</span></button>
         <button class="sb-item" data-acao="perfil" title="Trocar perfil (demo)">${icone('trocar')}<span>Trocar perfil (demo)</span></button>
         <button class="sb-item" data-acao="sair" title="Sair">${icone('sair')}<span>Sair</span></button>

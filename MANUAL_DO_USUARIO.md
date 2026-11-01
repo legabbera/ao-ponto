@@ -309,7 +309,44 @@ Gerencia os colaboradores do estabelecimento e seus níveis de permissão.
 
 ---
 
+# Módulo Exclusivo: Painel Master do Dono da Plataforma (SaaS SuperAdmin) 👑
+
+Este módulo destina-se **exclusivamente a você**, proprietário do negócio Ao Ponto, que comercializa o sistema para donos de assadeiras e frangarias em todo o país.
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│ PAINEL MASTER - GESTÃO DO SAAS AO PONTO 👑                            │
+│ ┌───────────────────┐ ┌───────────────────┐ ┌────────────────────────┐ │
+│ │ MRR Recorrente    │ │ Assadeiras Ativas │ │ Inadimplência / Atraso │ │
+│ │ R$ 386,00/mês     │ │ 4 ativas (5 total)│ │ 1 pendente ⚠️          │ │
+│ └───────────────────┘ └───────────────────┘ └────────────────────────┘ │
+│                                                                        │
+│ Tabela de Clientes (Assadeiras):                                       │
+│ • Ao Ponto Assados & Brasa | Plano Balcão (R$ 79) | [Em Dia]  | [Ações]│
+│ • Frangaria da Villa       | Plano Balcão (R$ 79) | [Em Dia]  | [Ações]│
+│ • Brasa Nobre Rotisserie   | Plano Redes  (R$ 149)| [Em Dia]  | [Ações]│
+│ • Galeto Dourado do Bairro | Plano Grátis (R$ 0)  | [Grátis]  | [Ações]│
+│ • Assados do Povo          | Plano Balcão (R$ 79) | [BLOQUEADO]🛑      │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+## 7.1. KPIs Executivos do SaaS:
+1. **MRR (Receita Recorrente Mensal):** Soma de todas as mensalidades ativas recebidas no mês.
+2. **Total de Assadeiras Cadastradas:** Número de lojas ativas, gratuitas e bloqueadas.
+3. **Inadimplência / Atrasos:** Identificação imediata de lojistas com pagamentos pendentes de mensalidade.
+4. **Volume Transacionado no SaaS:** Total de vendas processadas por todos os seus clientes reunidos.
+
+## 7.2. Ferramentas de Controle de Clientes e Mensalidades:
+* **Botão `🛑 Bloquear Acesso`:** Suspende imediatamente o uso da plataforma pela assadeira em atraso. O lojista vê uma tela de bloqueio informando o motivo e um link para regularizar a mensalidade via WhatsApp com você.
+* **Botão `✅ Desbloquear`:** Restabelece o acesso imediato da assadeira assim que a fatura for quitada.
+* **Botão `🚀 Alterar / Ampliar Plano`:** Permite ao Dono da Plataforma fazer upgrades (ex.: mudar de Grátis para Balcão ou Redes), definir limites de vendas customizados e alterar a data de vencimento.
+* **Botão `👁️ Acessar Loja (Suporte Técnico)`:** Permite a você entrar na conta do lojista com 1 clique para prestar assistência, configurar produtos ou tirar dúvidas operacionais.
+* **Botão `+ Cadastrar Nova Assadeira`:** Para cadastrar manualmente novos clientes que fecharam contrato diretamente pelo seu WhatsApp comercial.
+
+---
+
 ## Orientações de Impressão e Suporte
 
 * **Impressão do Manual em PDF:** Abra a versão online deste manual no navegador e pressione as teclas `Ctrl + P` (ou clique no botão **Imprimir / Salvar em PDF**). O arquivo já possui regras de estilo de impressão dedicadas que removem barras de rolagem e ajustam as quebras de página com qualidade gráfica impecável.
 * **Suporte e Atendimento Técnico:** Em caso de dúvidas operacionais ou suporte com maquininhas de cartão, consulte a Central de Ajuda interna no menu lateral ou entre em contato com o suporte da plataforma Ao Ponto.
+
