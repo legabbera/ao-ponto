@@ -22,6 +22,7 @@ import { renderEstoque } from './pages/estoque.js';
 import { renderClientes } from './pages/clientes.js';
 import { renderUsuarios } from './pages/usuarios.js';
 import { renderWhatsapp } from './pages/whatsapp.js';
+import { renderPagamentos } from './pages/pagamentos.js';
 import { renderEmBreve, renderMenu } from './pages/placeholder.js';
 import { renderPlanos } from './pages/planos.js';
 import { renderConfiguracoes } from './pages/configuracoes.js';
@@ -81,6 +82,7 @@ function render() {
   else if (hashRota === 'clientes')      renderClientes(conteudo, irPara);
   else if (hashRota === 'usuarios')      renderUsuarios(conteudo, irPara);
   else if (hashRota === 'whatsapp')      renderWhatsapp(conteudo, irPara);
+  else if (hashRota === 'pagamentos')    renderPagamentos(conteudo, irPara);
   else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
   else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
   else if (hashRota === 'menu')          renderMenu(conteudo, irPara);

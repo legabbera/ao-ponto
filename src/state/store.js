@@ -143,11 +143,54 @@ export const WHATSAPP_PADRAO = {
   ],
 };
 
+export const PAGAMENTOS_PADRAO = {
+  provedorAtivo: 'mercadopago', // 'mercadopago', 'stone', 'pagbank', 'cielo', 'manual'
+  maquininhas: [
+    {
+      id: 'maq-1',
+      nome: 'Maquininha Balcão Principal',
+      modelo: 'Mercado Pago Point Pro 2',
+      serial: 'PAX-D200-8841',
+      ponto: 'todos',
+      status: 'online', // 'online', 'offline'
+      bateria: 88,
+      tipoConexao: 'Wi-Fi / 4G',
+    },
+    {
+      id: 'maq-2',
+      nome: 'Maquininha Retirada Rápida',
+      modelo: 'Stone Smart POS S920',
+      serial: 'STN-8921-2044',
+      ponto: 'todos',
+      status: 'online',
+      bateria: 95,
+      tipoConexao: 'Wi-Fi',
+    },
+  ],
+  taxas: {
+    debito: 1.19, // %
+    creditoVista: 2.89, // %
+    creditoParcelado: 3.99, // %
+    pix: 0.00, // %
+    prazoRecebimento: 'D+1', // 'Na hora', 'D+1', 'D+30'
+  },
+  pix: {
+    tipoChave: 'cnpj', // 'cnpj', 'cpf', 'email', 'telefone', 'aleatoria'
+    chave: '12.345.678/0001-90',
+    titular: 'Ao Ponto Assados & Rotisserie Ltda',
+    cidade: 'São Paulo',
+    qrcodeExemplo: '00020126360014BR.GOV.BCB.PIX0114123456780001905204000053039865802BR5925Ao Ponto Assados Ltda6009SAO PAULO62070503***6304E2CA',
+  },
+  modoOperacao: 'tef_smartpos', // 'tef_smartpos' (envio automático p/ tela da máquina) ou 'manual'
+};
+
 let whatsappSalvo = JSON.parse(localStorage.getItem('fa-whatsapp') || 'null');
 if (!whatsappSalvo || !whatsappSalvo.config?.nomeEstabelecimento || JSON.stringify(whatsappSalvo.templates || []).includes('🍗') || JSON.stringify(whatsappSalvo.templates || []).includes('\uFFFD')) {
   whatsappSalvo = JSON.parse(JSON.stringify(WHATSAPP_PADRAO));
   localStorage.setItem('fa-whatsapp', JSON.stringify(whatsappSalvo));
 }
+
+const pagamentosSalvos = JSON.parse(localStorage.getItem('fa-pagamentos') || 'null') || JSON.parse(JSON.stringify(PAGAMENTOS_PADRAO));
 
 const estado = {
   logado: !!salvo && !!tenantAtivo,
@@ -161,6 +204,7 @@ const estado = {
   estoque: estoqueSalvo,
   clientes: clientesSalvos,
   whatsapp: whatsappSalvo,
+  pagamentos: pagamentosSalvos,
   // ── Multi-tenant ──
   tenant: tenantAtivo,
   usuario: salvo?.usuario || null,
@@ -652,5 +696,71 @@ export const store = {
     estado.whatsapp.historico = [item, ...(estado.whatsapp.historico || [])].slice(0, 50);
     store.salvarWhatsapp();
     return item;
+  },
+
+  // ── Módulo de Pagamentos, Provedores & Maquininhas ──────────
+  getPagamentos: () => estado.pagamentos || PAGAMENTOS_PADRAO,
+
+  salvarPagamentos() {
+    localStorage.setItem('fa-pagamentos', JSON.stringify(estado.pagamentos));
+    notificar();
+  },
+
+  atualizarConfigPagamentos: (novos) => {
+    estado.pagamentos = { ...estado.pagamentos, ...novos };
+    store.salvarPagamentos();
+  },
+
+  adicionarMaquininha: (dados) => {
+    const nova = {
+      id: `maq-${Date.now()}`,
+      nome: dados.nome || 'Nova Maquininha',
+      modelo: dados.modelo || 'Smart POS',
+      serial: dados.serial || `SN-${Math.floor(1000 + Math.random() * 9000)}`,
+      ponto: dados.ponto || 'todos',
+      status: 'online',
+      bateria: 100,
+      tipoConexao: dados.tipoConexao || 'Wi-Fi / 4G',
+    };
+    if (!estado.pagamentos.maquininhas) estado.pagamentos.maquininhas = [];
+    estado.pagamentos.maquininhas.push(nova);
+    store.salvarPagamentos();
+    return nova;
+  },
+
+  atualizarMaquininha: (id, dados) => {
+    const maq = (estado.pagamentos.maquininhas || []).find((m) => m.id === id);
+    if (!maq) return null;
+    Object.assign(maq, dados);
+    store.salvarPagamentos();
+    return maq;
+  },
+
+  removerMaquininha: (id) => {
+    estado.pagamentos.maquininhas = (estado.pagamentos.maquininhas || []).filter((m) => m.id !== id);
+    store.salvarPagamentos();
+  },
+
+  calcularTaxaELiquido: (valorBruto = 0, metodo = 'dinheiro') => {
+    const taxas = estado.pagamentos?.taxas || PAGAMENTOS_PADRAO.taxas;
+    const v = parseFloat(valorBruto) || 0;
+    let taxaPercentual = 0;
+
+    const m = (metodo || '').toLowerCase();
+    if (m === 'debito') taxaPercentual = taxas.debito || 0;
+    else if (m === 'credito') taxaPercentual = taxas.creditoVista || 0;
+    else if (m.includes('parcelado')) taxaPercentual = taxas.creditoParcelado || 0;
+    else if (m === 'pix') taxaPercentual = taxas.pix || 0;
+    else taxaPercentual = 0; // dinheiro
+
+    const valorTaxa = +(v * (taxaPercentual / 100)).toFixed(2);
+    const valorLiquido = +(v - valorTaxa).toFixed(2);
+
+    return {
+      valorBruto: v,
+      taxaPercentual,
+      valorTaxa,
+      valorLiquido,
+    };
   },
 };
