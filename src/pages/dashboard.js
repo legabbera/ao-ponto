@@ -179,7 +179,8 @@ export function renderDashboard(raiz, irPara) {
     $('#desc-periodo').textContent = per.descricao;
     raiz.querySelectorAll('[data-met]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.met === opcoes.produtoMetrica)));
     raiz.querySelectorAll('[data-ag]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.ag === opcoes.agrupMes)));
-    $('#tg-mes').style.display = s.periodo === 'mes' ? 'inline-flex' : 'none';
+    const tgMes = $('#tg-mes');
+    if (tgMes) tgMes.style.display = s.periodo === 'mes' ? 'inline-flex' : 'none';
 
     $('#painel').classList.add('carregando');
     const id = ++requisicao;

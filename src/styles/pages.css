@@ -156,6 +156,29 @@
   gap: 16px;
 }
 
+@media (min-width: 900px) {
+  .grade {
+    grid-template-columns: 1.6fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .card.largo {
+    grid-column: 1;
+  }
+  .card:not(.largo) {
+    grid-column: 2;
+  }
+  #card-pontos {
+    grid-column: 1 / -1;
+  }
+  .kpis {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+  .kpi.destaque {
+    grid-column: span 2;
+  }
+}
+
 .grafico-caixa {
   position: relative;
   height: 240px;

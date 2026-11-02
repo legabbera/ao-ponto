@@ -23,10 +23,10 @@ export const ROTAS = [
 ];
 
 export const ROTAS_SAAS = [
-  { id: 'master-inicio', subAba: 'inicio', rotulo: 'Início (KPIs)', icone: 'home', desc: 'KPIs do SaaS e Associados' },
+  { id: 'master-inicio', subAba: 'inicio', rotulo: 'Início com KPIs', icone: 'home', desc: 'KPIs do SaaS e Associados' },
   { id: 'master-vendas', subAba: 'vendas', rotulo: 'Vendas dos Associados', icone: 'vendas', desc: 'Venda de cada associado por período' },
-  { id: 'master-empresas', subAba: 'empresas', rotulo: 'Empresas (CNPJs)', icone: 'clientes', desc: 'CNPJs e localização geográfica' },
-  { id: 'master-whatsapp', subAba: 'whatsapp', rotulo: 'WhatsApp da Rede', icone: 'conversa', desc: 'Contato e disparo no WhatsApp com 1 clique' },
+  { id: 'master-empresas', subAba: 'empresas', rotulo: 'Cadastro de Empresas', icone: 'clientes', desc: 'CNPJs e localização geográfica' },
+  { id: 'master-whatsapp', subAba: 'whatsapp', rotulo: 'WhatsApp das Empresas', icone: 'conversa', desc: 'Contato e disparo no WhatsApp com 1 clique' },
   { id: 'master-pagamentos', subAba: 'pagamentos', rotulo: 'Cobrança & Mensalidades', icone: 'cartao', desc: 'Pix, boletos, planos e gráficos' },
 ];
 
@@ -92,9 +92,9 @@ export function renderShell(raiz, rotaAtual, irPara) {
       <a href="/treinamento-video.html" target="_blank" class="sb-item" style="text-decoration:none" title="Vídeo Treinamento Full HD 1080p">${icone('grafico')}<span>Vídeo Treinamento</span></a>
       <button class="sb-item" data-ir="configuracoes" ${rotaAtual === 'configuracoes' ? 'aria-current="page"' : ''} title="Configurações da Plataforma">${icone('config')}<span>Configurações</span></button>
       
-      <div style="margin: 10px 4px 6px;">
-        <button class="sb-item" data-acao="visao-loja" style="background: #FFF7ED; border: 1px solid #FFEDD5; color: #C2410C; font-weight: 700; font-size: 13px; border-radius: 8px; width: 100%; min-height: 40px; padding: 0 10px;" title="Alternar para ver a visão de uma assadeira">
-          <span style="font-size: 16px; margin-right: 2px;">🏪</span><span>Visão da Assadeira</span>
+      <div style="margin: 8px 4px 6px;">
+        <button class="sb-item" data-acao="visao-loja" style="background: #FFF7ED; border: 1px solid #FFEDD5; color: #C2410C; font-weight: 700; font-size: 11.5px; border-radius: 8px; width: 100%; min-height: 38px; padding: 0 8px;" title="Alternar para ver a visão de uma assadeira">
+          <span style="font-size: 14px; margin-right: 2px;">🏪</span><span>Visão da Assadeira</span>
         </button>
       </div>
       <button class="sb-item" data-acao="landing" title="Ver Apresentação B2B">${icone('globo')}<span>Apresentação B2B</span></button>
@@ -111,8 +111,8 @@ export function renderShell(raiz, rotaAtual, irPara) {
         </div>
       </div>
       <div style="margin: 4px 4px 8px;">
-        <button class="sb-item" data-acao="visao-saas" style="color: #EA580C; font-weight: 700; font-size: 13px; background: #FFF7ED; border-radius: 8px; border: 1px solid #FFEDD5; width: 100%; min-height: 40px; padding: 0 10px;" title="Painel Master do Dono da Plataforma SaaS">
-          <span style="font-size: 16px; margin-right: 2px;">👑</span><span>Painel Master (SaaS)</span>
+        <button class="sb-item" data-acao="visao-saas" style="color: #EA580C; font-weight: 700; font-size: 11.5px; background: #FFF7ED; border-radius: 8px; border: 1px solid #FFEDD5; width: 100%; min-height: 38px; padding: 0 8px;" title="Painel Master do Dono da Plataforma SaaS">
+          <span style="font-size: 14px; margin-right: 2px;">👑</span><span>Painel Master (SaaS)</span>
         </button>
       </div>
       <button class="btn btn-primario sb-nova" data-acao="nova-venda" title="Nova venda">${icone('mais')}<span>Nova venda</span></button>

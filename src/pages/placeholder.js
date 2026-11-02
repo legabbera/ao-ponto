@@ -6,15 +6,7 @@ import { ROTAS, rotasDoPerfil, modalPerfil, sair } from '../components/shell.js'
 import { store } from '../state/store.js';
 
 export function renderEmBreve(raiz, rotaId, irPara) {
-  const r = ROTAS.find((x) => x.id === rotaId);
-  raiz.innerHTML = `
-  <div class="card em-breve"><div class="vazio">
-    <div class="vazio-icone">${icone(r.icone)}</div>
-    <h3>${r.rotulo} — em construção</h3>
-    <p>Esta tela será criada na <strong>Etapa ${r.etapa}</strong>, depois da sua aprovação do visual e do dashboard.</p>
-    <button class="btn btn-primario" id="btn-voltar-inicio" style="margin-top:12px">${icone('home')} Voltar ao início</button>
-  </div></div>`;
-  raiz.querySelector('#btn-voltar-inicio').addEventListener('click', () => irPara('inicio'));
+  irPara('inicio');
 }
 
 export function renderMenu(raiz, irPara) {

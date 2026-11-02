@@ -162,7 +162,7 @@ svg.ic {
 }
 
 /* ---------- Cards ---------- */
-.card {
+.card, .cartao, .kpi-card {
   background: var(--branco);
   border-radius: var(--raio);
   box-shadow: var(--sombra);

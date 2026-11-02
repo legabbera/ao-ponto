@@ -41,7 +41,8 @@ export function irPara(rota) {
 const ROTAS_PUBLICAS = ['login', 'cadastro'];
 
 function render() {
-  let hashRota = location.hash.replace('#/', '').trim();
+  const hashLimpa = (location.hash || '').replace(/^#\/?/, '').replace(/\/+$/, '').split('?')[0].trim();
+  let hashRota = hashLimpa;
   try { destruirDashboard(); } catch (_) {}
   try { destruirRelatorios(); } catch (_) {}
   try { destruirMaster(); } catch (_) {}
@@ -79,7 +80,8 @@ function render() {
   const rotasPermitidas = rotasDoPerfil().map((r) => r.id);
   const rotasEspeciais = [
     'menu', 'inicio', 'planos', 'configuracoes', 'master',
-    'master-inicio', 'master-vendas', 'master-empresas', 'master-whatsapp', 'master-pagamentos'
+    'master-inicio', 'master-vendas', 'master-empresas', 'master-whatsapp', 'master-pagamentos',
+    'vendas', 'pedidos', 'estoque', 'clientes', 'usuarios', 'whatsapp', 'pagamentos', 'relatorios'
   ];
   if (!rotasEspeciais.includes(hashRota) && !rotasPermitidas.includes(hashRota)) {
     hashRota = 'inicio';
@@ -110,7 +112,7 @@ function render() {
   else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
   else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
   else if (hashRota === 'menu')          renderMenu(conteudo, irPara);
-  else                                   renderEmBreve(conteudo, hashRota, irPara);
+  else                                   renderDashboard(conteudo, irPara);
 }
 
 window.addEventListener('hashchange', render);
