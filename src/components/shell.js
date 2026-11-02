@@ -50,7 +50,7 @@ export function renderShell(raiz, rotaAtual, irPara) {
           <span style="font-size: 16px;">👑</span><span>Painel Master (SaaS)</span>
         </button>
         <button class="sb-item" data-acao="landing" title="Ver Apresentação B2B">${icone('globo')}<span>Apresentação B2B</span></button>
-        <button class="sb-item" data-acao="perfil" title="Trocar perfil (demo)">${icone('trocar')}<span>Trocar perfil (demo)</span></button>
+        ${(!st.usuario || st.usuario.id === 'user_demo') ? `<button class="sb-item" data-acao="perfil" title="Trocar perfil (demo)">${icone('trocar')}<span>Trocar perfil (demo)</span></button>` : ''}
         <button class="sb-item" data-acao="sair" title="Sair">${icone('sair')}<span>Sair</span></button>
     </aside>
 

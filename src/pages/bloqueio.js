@@ -53,3 +53,4 @@ export function renderBloqueioMensalidade(raiz, irPara) {
     sair(irPara);
   });
 }
+
