@@ -238,6 +238,14 @@ export const store = {
 
   // ── Multi-tenant helpers ────────────────────────────────────
   getTenant: () => estado.tenant || getTenantAtivo(),
+  isDemo: () => {
+    const u = estado.usuario;
+    const t = estado.tenant || getTenantAtivo();
+    if (!u && !t) return true;
+    if (u && (u.id === 'user_demo' || u.username === 'demo')) return true;
+    if (t && (t.id === 'tenant_demo' || t.slug === 'frango-demo')) return true;
+    return false;
+  },
   getPlano: () => getPlanoAtivo(estado.tenant),
   vendasRestantes: () => vendasRestantes(estado.tenant, estado.vendas),
   limiteVendasAtingido: () => {

@@ -26,11 +26,12 @@ export function renderCadastro(raiz, irPara) {
         <div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div>
         <div><div class="logo-nome">Ao Ponto</div></div>
       </div>
-      <h1>Comece grátis em segundos.</h1>
-      <p>Crie sua conta e tenha <strong>10 vendas por mês sem pagar nada</strong>. Sem cartão de crédito.</p>
+      <h1>Comece grátis por 30 dias.</h1>
+      <p>Crie sua conta e use a plataforma com <strong>todas as funcionalidades liberadas por 30 dias</strong>. Após 30 dias: apenas R$ 79,00/mês no dia 10.</p>
       <div class="login-destaques">
-        <div>${icone('grafico')}<span>Dashboard em tempo real</span></div>
-        <div>${icone('pedidos')}<span>Pedidos e reservas</span></div>
+        <div>${icone('calendario')}<span>30 dias de teste grátis ilimitado</span></div>
+        <div>${icone('grafico')}<span>Dashboard e controle em tempo real</span></div>
+        <div>${icone('pedidos')}<span>Pedidos e reservas pelo WhatsApp</span></div>
         <div>${icone('local')}<span>Seu link exclusivo: <em>voce.aoponto.app</em></span></div>
       </div>
     </section>
@@ -38,7 +39,7 @@ export function renderCadastro(raiz, irPara) {
     <section class="login-form-area">
       <form class="login-form" novalidate id="form-cadastro">
         <h2>Criar conta grátis</h2>
-        <p class="sub">10 vendas/mês grátis. Rápido e descomplicado.</p>
+        <p class="sub">30 dias grátis &bull; depois R$ 79,00/mês no dia 10.</p>
 
         <div class="alerta-erro" id="cad-erro" role="alert">${icone('alerta')}<span></span></div>
 
@@ -95,7 +96,7 @@ export function renderCadastro(raiz, irPara) {
         </div>
 
         <button class="btn btn-primario btn-bloco" id="btn-cadastrar" type="submit" style="min-height:54px;font-size:16px">
-          Criar conta grátis — 10 vendas/mês
+          Criar conta — 30 dias grátis
         </button>
 
         <div class="divisor">já tem conta?</div>

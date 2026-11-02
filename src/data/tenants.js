@@ -10,15 +10,20 @@
 export const PLANOS = {
   'plano-00': {
     id: 'plano-00',
-    nome: 'Comece Grátis',
+    nome: 'Comece Grátis (30 dias)',
     preco: 0,
-    precoFormatado: 'Grátis',
-    limiteVendasMes: 10,
+    precoFormatado: 'Grátis por 30 dias',
+    diasTrial: 30,
+    valorMensalidadeAposTrial: 79.0,
+    diaVencimento: 10,
+    limiteVendasMes: null, // Ilimitado durante o período de 30 dias de teste
     recursos: [
-      'Dashboard de vendas',
-      'Registro de pedidos',
-      'Até 10 vendas por mês',
-      'Subdomínio automático',
+      '30 dias de teste grátis com vendas ilimitadas',
+      'Dashboard e controle de vendas em tempo real',
+      'Gestão de pedidos e encomendas',
+      'Controle de estoque de frangos e insumos',
+      'Subdomínio exclusivo (voce.aoponto.app)',
+      'Após 30 dias: R$ 79,00/mês (vence todo dia 10)',
     ],
     cor: '--verde',
     destaque: false,
@@ -28,12 +33,14 @@ export const PLANOS = {
     nome: 'Balcão',
     preco: 79.0,
     precoFormatado: 'R$ 79,00/mês',
+    diaVencimento: 10,
     limiteVendasMes: null, // ilimitado
     recursos: [
-      'Tudo do plano gratuito',
-      'Vendas ilimitadas',
-      'Domínio personalizado',
-      'Suporte por e-mail',
+      'Tudo do plano de teste',
+      'Vendas e pedidos ilimitados',
+      'Cobrança mensal no dia 10 de cada mês',
+      'Domínio personalizado (seunegocio.com.br)',
+      'Suporte prioritário via WhatsApp e e-mail',
     ],
     cor: '--brasa',
     destaque: true,
@@ -185,6 +192,10 @@ export function cadastrarEstabelecimento({ nomeEstabelecimento, slug, celular, e
     cnpj: null,
     plano: 'plano-00',
     planoAtivadoEm: agora.slice(0, 10),
+    trialDias: 30,
+    trialExpiraEm: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+    diaVencimento: 10,
+    valorMensalidade: 79.0,
     dominioCustom: null,
     dominioCustomStatus: null,
     vendasMesAtual: 0,
@@ -304,7 +315,21 @@ export function vendasRestantes() {
   const plano = getPlanoAtivo();
   if (!tenant || !plano) return null;
   if (plano.limiteVendasMes === null) return null;
-  return Math.max(0, plano.limiteVendasMes - tenant.vendasMesAtual);
+  return Math.max(0, plano.limiteVendasMes - (tenant.vendasMesAtual || 0));
+}
+
+/** Retorna quantos dias de teste gratuito ainda restam */
+export function diasTrialRestantes(tenant = null) {
+  const t = tenant || getTenantAtivo();
+  if (!t || t.plano !== 'plano-00') return 0;
+  if (t.trialExpiraEm) {
+    const diff = Math.ceil((new Date(t.trialExpiraEm) - new Date()) / (1000 * 60 * 60 * 24));
+    return Math.max(0, diff);
+  }
+  const criacao = t.createdAt ? new Date(t.createdAt) : new Date();
+  const expira = new Date(criacao.getTime() + 30 * 24 * 60 * 60 * 1000);
+  const diff = Math.ceil((expira - new Date()) / (1000 * 60 * 60 * 24));
+  return Math.max(0, diff);
 }
 
 

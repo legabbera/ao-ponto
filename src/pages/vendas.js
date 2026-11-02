@@ -42,7 +42,7 @@ export function renderVendas(raiz, irPara) {
     <div class="pdv-container">
       <div class="pdv-topo">
         <div class="pdv-topo-info">
-          <h1>PDV &bull; Caixa Rápido 🍗</h1>
+          <h1>Controle de Vendas & Balcão 🍗</h1>
           <p><span class="badge badge-demo">${icone('local', 'mini')} ${nomePonto}</span> &bull; Registro e fechamento ágil de vendas</p>
         </div>
         <div class="pdv-topo-acoes">

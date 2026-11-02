@@ -66,6 +66,8 @@ export function destruirDashboard() {
 
 export function renderDashboard(raiz, irPara) {
   const st = store.get(), perfil = store.perfil();
+  const isDemo = store.isDemo ? store.isDemo() : (!st.usuario || st.usuario.id === 'user_demo');
+  const nomeExibicao = (!isDemo && st.usuario?.nome) ? st.usuario.nome : perfil.nome;
   const permitidos = perfil.pontos;
   const multi = perfil.consolidado && permitidos.length > 1;
   if (!multi && st.ponto === 'todos') st.ponto = permitidos.length === 1 ? permitidos[0] : 'todos';
@@ -76,8 +78,8 @@ export function renderDashboard(raiz, irPara) {
   raiz.innerHTML = `
   <section class="dash-topo">
     <div class="saudacao">
-      <h1>${saud}, ${perfil.nome.split(' ')[0]}! 👋</h1>
-      <p><span id="desc-periodo"></span> <span class="badge badge-demo">${icone('info', 'mini')} Dados fictícios</span></p>
+      <h1>${saud}, ${nomeExibicao.split(' ')[0]}! 👋</h1>
+      <p><span id="desc-periodo"></span> ${isDemo ? `<span class="badge badge-demo">${icone('info', 'mini')} Dados fictícios</span>` : ''}</p>
     </div>
     <div class="acoes-rapidas">
       <button class="btn btn-primario" id="btn-nova-venda">${icone('vendas')} Nova venda</button>
@@ -143,7 +145,7 @@ export function renderDashboard(raiz, irPara) {
         <div class="pontos-lista" id="lista-pontos"></div>
       </article>` : ''}
     </section>
-    <p class="rodape-demo">Protótipo · Etapa 1 · Todos os valores são fictícios e reiniciam ao recarregar.</p>
+    ${isDemo ? '<p class="rodape-demo">Ambiente demonstrativo · Dados fictícios para simulação de vendas e balcão.</p>' : ''}
   </div>`;
 
   const $ = (s) => raiz.querySelector(s);
