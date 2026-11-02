@@ -98,6 +98,14 @@ function render() {
     renderMaster(conteudo, irPara, subAba);
   }
   else if (hashRota === 'inicio')        renderDashboard(conteudo, irPara);
+  else if (hashRota === 'vendas')        renderVendas(conteudo, irPara);
+  else if (hashRota === 'pedidos')       renderPedidos(conteudo, irPara);
+  else if (hashRota === 'estoque')       renderEstoque(conteudo, irPara);
+  else if (hashRota === 'clientes')      renderClientes(conteudo, irPara);
+  else if (hashRota === 'usuarios')      renderUsuarios(conteudo, irPara);
+  else if (hashRota === 'whatsapp')      renderWhatsapp(conteudo, irPara);
+  else if (hashRota === 'pagamentos')    renderPagamentos(conteudo, irPara);
+  else if (hashRota === 'relatorios')    renderRelatorios(conteudo, irPara);
   else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
   else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
   else if (hashRota === 'menu')          renderMenu(conteudo, irPara);

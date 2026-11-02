@@ -30,7 +30,11 @@ export const ROTAS_SAAS = [
   { id: 'master-pagamentos', subAba: 'pagamentos', rotulo: 'Pagamento (Mensalidade)', icone: 'cartao', desc: 'Pix, boletos, planos e gráficos' },
 ];
 
-export const rotasDoPerfil = () => ROTAS.filter((r) => !r.perfis || r.perfis.includes(store.get().perfil));
+export const rotasDoPerfil = () => {
+  const p = store.get().perfil;
+  if (p === 'superadmin') return ROTAS;
+  return ROTAS.filter((r) => !r.perfis || r.perfis.includes(p));
+};
 
 export function renderShell(raiz, rotaAtual, irPara) {
   const st = store.get(), perfil = PERFIS[st.perfil] || PERFIS.owner;
