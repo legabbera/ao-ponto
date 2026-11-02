@@ -79,8 +79,8 @@ export function abrirModalTermos() {
 
       <h3>2. Planos e Condições de Uso</h3>
       <ul>
-        <li><strong>Plano Comece Grátis:</strong> permite o registro de até 10 vendas por mês sem qualquer custo ou exigência de dados bancários/cartão de crédito.</li>
-        <li><strong>Planos Pagos (Balcão / Ilimitado):</strong> conferem número ilimitado de vendas mensais, suporte prioritário e possibilidade de vincular domínio próprio de internet, mediante pagamento mensal contratado.</li>
+        <li><strong>Período de Teste Grátis (30 Dias):</strong> permite o uso completo da plataforma com registro ilimitado de pedidos e vendas por 30 dias a partir da data de cadastro, sem exigência prévia de cartão de crédito.</li>
+        <li><strong>Assinatura Mensal (R$ 79,00/mês):</strong> após os 30 dias de teste grátis, confere acesso contínuo com vendas ilimitadas, relatórios, backup e suporte prioritário, com vencimento em todo dia 10 do mês via Pix, Boleto ou Cartão.</li>
       </ul>
 
       <h3>3. Responsabilidades do Usuário</h3>

@@ -95,14 +95,22 @@ export function renderCadastro(raiz, irPara) {
           <span class="campo-erro">${icone('alerta')}<span></span></span>
         </div>
 
+        <div class="campo" id="campo-aceite" style="margin: 12px 0 16px 0;">
+          <label style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--texto);cursor:pointer;line-height:1.4;">
+            <input type="checkbox" id="cad-aceite-termos" style="margin-top:2px;width:17px;height:17px;accent-color:var(--brasa);cursor:pointer;" />
+            <span>Li e aceito os <a href="javascript:void(0)" id="link-termos" style="color:var(--brasa);font-weight:600;text-decoration:underline;">Termos de Uso</a> e a <a href="javascript:void(0)" id="link-lgpd" style="color:var(--brasa);font-weight:600;text-decoration:underline;">Política de Privacidade (LGPD)</a>.</span>
+          </label>
+          <span class="campo-erro">${icone('alerta')}<span></span></span>
+        </div>
+
         <button class="btn btn-primario btn-bloco" id="btn-cadastrar" type="submit" style="min-height:54px;font-size:16px">
-          Criar conta — 30 dias grátis
+          Comece grátis por 30 dias
         </button>
 
         <div class="divisor">já tem conta?</div>
         <button type="button" class="btn btn-contorno btn-bloco" id="btn-ir-login">Entrar na minha conta</button>
 
-        <p class="termos-texto">Ao criar sua conta, você concorda com os <a href="javascript:void(0)" id="link-termos">Termos de Uso</a> e com a <a href="javascript:void(0)" id="link-lgpd">Política de Privacidade (LGPD)</a>.</p>
+
       </form>
     </section>
   </main>`;
@@ -216,6 +224,14 @@ export function renderCadastro(raiz, irPara) {
       marcarErro('#campo-senha');
     }
 
+    const aceiteTermos = $('#cad-aceite-termos')?.checked;
+    if (!aceiteTermos) {
+      marcarErro('#campo-aceite', 'É obrigatório aceitar os Termos de Uso e a Política de Privacidade.');
+      ok = false;
+    } else {
+      marcarErro('#campo-aceite');
+    }
+
     if (!ok) return;
 
     const btn = $('#btn-cadastrar');
@@ -246,7 +262,7 @@ export function renderCadastro(raiz, irPara) {
       erroGeral.querySelector('span').textContent = err.message;
       erroGeral.classList.add('visivel');
       btn.disabled = false;
-      btn.innerHTML = 'Criar conta grátis — 10 vendas/mês';
+      btn.innerHTML = 'Comece grátis por 30 dias';
     }
   });
 }

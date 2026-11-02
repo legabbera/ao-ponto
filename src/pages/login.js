@@ -64,7 +64,7 @@ export function renderLogin(raiz, irPara) {
         <button class="btn btn-primario btn-bloco" id="btn-entrar" type="submit" style="min-height:54px;font-size:16px">Entrar</button>
 
         <div class="divisor">não tem conta?</div>
-        <button type="button" class="btn btn-contorno btn-bloco" id="btn-ir-cadastro">Criar conta grátis — 10 vendas/mês</button>
+        <button type="button" class="btn btn-contorno btn-bloco" id="btn-ir-cadastro">Comece grátis por 30 dias</button>
 
         <div class="divisor">ou entre direto como</div>
         <div class="atalhos-perfil">
