@@ -55,7 +55,7 @@ export function renderClientes(raiz, irPara) {
         <div class="clientes-topo-info">
           <h1>Clientes &bull; CRM & Clube do Frango 👥🍗</h1>
           <p>
-            <span class="badge badge-demo">${icone('local', 'mini')} ${nomePonto}</span>
+            <span class="badge" style="background:#FFF7ED;color:#EA580C;border:1px solid #FFEDD5;font-size:12px;padding:3px 8px;border-radius:12px;">${icone('local', 'mini')} ${nomePonto}</span>
             &bull; Gestão de fidelidade, preferências de assados e contato rápido
           </p>
         </div>

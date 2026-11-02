@@ -218,6 +218,46 @@ export function renderShell(raiz, rotaAtual, irPara) {
 
 export function modalPerfil(irPara) {
   const st = store.get();
+  const isDemo = !st.usuario || st.usuario.id === 'user_demo';
+
+  if (!isDemo) {
+    const u = st.usuario;
+    const t = store.getTenant();
+    const plano = PLANOS[t?.plano]?.nome || 'Comece Grátis';
+    abrirModal(`
+      <h2>Meu Perfil</h2>
+      <p style="color:var(--texto-suave);margin-bottom:16px">Informações da sua conta cadastrada no Ao Ponto</p>
+      <div style="background:#F8FAFC;border:1px solid var(--borda);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid #E2E8F0;padding-bottom:8px;">
+          <span style="color:var(--texto-suave)">Nome:</span>
+          <strong>${u.nome || 'Proprietário'}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid #E2E8F0;padding-bottom:8px;">
+          <span style="color:var(--texto-suave)">Estabelecimento:</span>
+          <strong>${t?.nome || 'Minha Assadeira'}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid #E2E8F0;padding-bottom:8px;">
+          <span style="color:var(--texto-suave)">WhatsApp:</span>
+          <strong>${u.celular || u.celularFormatado || 'Não informado'}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid #E2E8F0;padding-bottom:8px;">
+          <span style="color:var(--texto-suave)">E-mail:</span>
+          <strong>${u.email || 'Não informado'}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;">
+          <span style="color:var(--texto-suave)">Plano Atual:</span>
+          <strong style="color:var(--brasa)">${plano}</strong>
+        </div>
+      </div>
+      <div class="modal-acoes">
+        <button class="btn btn-contorno btn-bloco" data-sair>${icone('sair')} Sair da conta</button>
+        <button class="btn btn-fantasma btn-bloco" data-fechar>Fechar</button>
+      </div>`, (m, fechar) => {
+      m.querySelector('[data-sair]').addEventListener('click', () => { fechar(); sair(irPara); });
+    });
+    return;
+  }
+
   abrirModal(`
     <h2>Trocar perfil (demonstração)</h2>
     <p>Veja como o menu e o dashboard mudam para cada tipo de usuário. <strong>Simulação visual - não é segurança real.</strong></p>
