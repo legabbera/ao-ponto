@@ -23,11 +23,11 @@ export const ROTAS = [
 ];
 
 export const ROTAS_SAAS = [
-  { id: 'master-inicio', subAba: 'inicio', rotulo: 'Início com KPIs', icone: 'home', desc: 'KPIs do SaaS e Associados' },
+  { id: 'master-inicio', subAba: 'inicio', rotulo: 'Início (KPIs)', icone: 'home', desc: 'KPIs do SaaS e Associados' },
   { id: 'master-vendas', subAba: 'vendas', rotulo: 'Vendas dos Associados', icone: 'vendas', desc: 'Venda de cada associado por período' },
-  { id: 'master-empresas', subAba: 'empresas', rotulo: 'Cadastro das Empresas', icone: 'clientes', desc: 'CNPJs e localização geográfica' },
-  { id: 'master-whatsapp', subAba: 'whatsapp', rotulo: 'WhatsApp das Empresas', icone: 'conversa', desc: 'Contato e disparo no WhatsApp com 1 clique' },
-  { id: 'master-pagamentos', subAba: 'pagamentos', rotulo: 'Pagamento (Mensalidade)', icone: 'cartao', desc: 'Pix, boletos, planos e gráficos' },
+  { id: 'master-empresas', subAba: 'empresas', rotulo: 'Empresas (CNPJs)', icone: 'clientes', desc: 'CNPJs e localização geográfica' },
+  { id: 'master-whatsapp', subAba: 'whatsapp', rotulo: 'WhatsApp da Rede', icone: 'conversa', desc: 'Contato e disparo no WhatsApp com 1 clique' },
+  { id: 'master-pagamentos', subAba: 'pagamentos', rotulo: 'Cobrança & Mensalidades', icone: 'cartao', desc: 'Pix, boletos, planos e gráficos' },
 ];
 
 export const rotasDoPerfil = () => {
@@ -50,12 +50,12 @@ export function renderShell(raiz, rotaAtual, irPara) {
   const ativo = (id) => (id === rotaAtual || (id === 'menu' && !atual?.principal && rotaAtual !== 'inicio') ? 'aria-current="page"' : '');
 
   const rotasSaasNomes = {
-    'master': 'Início com KPIs (SaaS)',
-    'master-inicio': 'Início com KPIs (SaaS)',
+    'master': 'Início (KPIs SaaS)',
+    'master-inicio': 'Início (KPIs SaaS)',
     'master-vendas': 'Vendas dos Associados (SaaS)',
-    'master-empresas': 'Cadastro das Empresas (CNPJs)',
-    'master-whatsapp': 'WhatsApp das Empresas',
-    'master-pagamentos': 'Pagamentos & Mensalidades (SaaS)',
+    'master-empresas': 'Empresas & Localização (CNPJs)',
+    'master-whatsapp': 'WhatsApp da Rede de Associados',
+    'master-pagamentos': 'Cobrança & Mensalidades (SaaS)',
     'configuracoes': 'Configurações da Plataforma',
   };
   const tituloHeader = isModoSaas ? (rotasSaasNomes[rotaAtual] || 'Painel Master (SaaS)') : (atual?.rotulo === 'Início' ? 'Ao Ponto' : atual?.rotulo || 'Menu');
@@ -92,9 +92,9 @@ export function renderShell(raiz, rotaAtual, irPara) {
       <a href="/treinamento-video.html" target="_blank" class="sb-item" style="text-decoration:none" title="Vídeo Treinamento Full HD 1080p">${icone('grafico')}<span>Vídeo Treinamento</span></a>
       <button class="sb-item" data-ir="configuracoes" ${rotaAtual === 'configuracoes' ? 'aria-current="page"' : ''} title="Configurações da Plataforma">${icone('config')}<span>Configurações</span></button>
       
-      <div style="margin: 12px 8px 6px;">
-        <button class="sb-item" data-acao="visao-loja" style="background: #FFF7ED; border: 1px solid #FFEDD5; color: #C2410C; font-weight: 700; border-radius: 8px; width: 100%;" title="Alternar para ver a visão de uma assadeira">
-          <span style="font-size: 16px;">🏪</span><span>Visão da Assadeira</span>
+      <div style="margin: 10px 4px 6px;">
+        <button class="sb-item" data-acao="visao-loja" style="background: #FFF7ED; border: 1px solid #FFEDD5; color: #C2410C; font-weight: 700; font-size: 13px; border-radius: 8px; width: 100%; min-height: 40px; padding: 0 10px;" title="Alternar para ver a visão de uma assadeira">
+          <span style="font-size: 16px; margin-right: 2px;">🏪</span><span>Visão da Assadeira</span>
         </button>
       </div>
       <button class="sb-item" data-acao="landing" title="Ver Apresentação B2B">${icone('globo')}<span>Apresentação B2B</span></button>
@@ -110,9 +110,11 @@ export function renderShell(raiz, rotaAtual, irPara) {
           <div style="font-size: 10px; font-weight: 700; color: var(--texto-suave);">Assadeira & Balcão</div>
         </div>
       </div>
-      <button class="sb-item" data-acao="visao-saas" style="color: #EA580C; font-weight: 700; background: #FFF7ED; border-radius: 8px; margin: 4px 8px 8px; border: 1px solid #FFEDD5;" title="Painel Master do Dono da Plataforma SaaS">
-        <span style="font-size: 16px;">👑</span><span>Painel Master (SaaS)</span>
-      </button>
+      <div style="margin: 4px 4px 8px;">
+        <button class="sb-item" data-acao="visao-saas" style="color: #EA580C; font-weight: 700; font-size: 13px; background: #FFF7ED; border-radius: 8px; border: 1px solid #FFEDD5; width: 100%; min-height: 40px; padding: 0 10px;" title="Painel Master do Dono da Plataforma SaaS">
+          <span style="font-size: 16px; margin-right: 2px;">👑</span><span>Painel Master (SaaS)</span>
+        </button>
+      </div>
       <button class="btn btn-primario sb-nova" data-acao="nova-venda" title="Nova venda">${icone('mais')}<span>Nova venda</span></button>
       <div class="sb-secao">Principal</div>
       ${rotas.filter((r) => r.principal).map(itemSb).join('')}

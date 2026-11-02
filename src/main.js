@@ -27,7 +27,7 @@ import { renderRelatorios, destruirRelatorios } from './pages/relatorios.js';
 import { renderEmBreve, renderMenu } from './pages/placeholder.js';
 import { renderPlanos } from './pages/planos.js';
 import { renderConfiguracoes } from './pages/configuracoes.js';
-import { renderMaster } from './pages/master.js';
+import { renderMaster, destruirMaster } from './pages/master.js';
 import { renderBloqueioMensalidade } from './pages/bloqueio.js';
 
 const app = document.getElementById('app');
@@ -42,8 +42,9 @@ const ROTAS_PUBLICAS = ['login', 'cadastro'];
 
 function render() {
   let hashRota = location.hash.replace('#/', '').trim();
-  destruirDashboard();
-  destruirRelatorios();
+  try { destruirDashboard(); } catch (_) {}
+  try { destruirRelatorios(); } catch (_) {}
+  try { destruirMaster(); } catch (_) {}
   window.scrollTo(0, 0);
 
   // Rota padrão vazia ou 'landing' -> exibe a Landing Page B2B

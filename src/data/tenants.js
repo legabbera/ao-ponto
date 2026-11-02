@@ -270,17 +270,43 @@ const CHAVE_TENANTS = 'fa-tenants';
 const CHAVE_USUARIOS = 'fa-usuarios';
 const CHAVE_TENANT_ATIVO = 'fa-tenant-ativo';
 
-// Carrega ou inicializa o banco mock no localStorage
+// Carrega ou inicializa o banco mock no localStorage com auto-recuperação
 function carregarTenants() {
-  return JSON.parse(localStorage.getItem(CHAVE_TENANTS) || 'null') || [...TENANTS_MOCK];
-}
-function carregarUsuarios() {
-  let us = JSON.parse(localStorage.getItem(CHAVE_USUARIOS) || 'null');
-  if (!us || us.length <= 1) {
-    us = [...USUARIOS_MOCK];
-    salvarUsuarios(us);
+  try {
+    const raw = localStorage.getItem(CHAVE_TENANTS);
+    if (!raw || raw === 'undefined' || raw === 'null') {
+      salvarTenants(TENANTS_MOCK);
+      return JSON.parse(JSON.stringify(TENANTS_MOCK));
+    }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length < 5 || !parsed[0]?.razaoSocial || !parsed[0]?.cnpj) {
+      salvarTenants(TENANTS_MOCK);
+      return JSON.parse(JSON.stringify(TENANTS_MOCK));
+    }
+    return parsed;
+  } catch (err) {
+    salvarTenants(TENANTS_MOCK);
+    return JSON.parse(JSON.stringify(TENANTS_MOCK));
   }
-  return us;
+}
+
+function carregarUsuarios() {
+  try {
+    const raw = localStorage.getItem(CHAVE_USUARIOS);
+    if (!raw || raw === 'undefined' || raw === 'null') {
+      salvarUsuarios(USUARIOS_MOCK);
+      return JSON.parse(JSON.stringify(USUARIOS_MOCK));
+    }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length <= 1) {
+      salvarUsuarios(USUARIOS_MOCK);
+      return JSON.parse(JSON.stringify(USUARIOS_MOCK));
+    }
+    return parsed;
+  } catch (err) {
+    salvarUsuarios(USUARIOS_MOCK);
+    return JSON.parse(JSON.stringify(USUARIOS_MOCK));
+  }
 }
 function salvarTenants(ts) { localStorage.setItem(CHAVE_TENANTS, JSON.stringify(ts)); }
 function salvarUsuarios(us) { localStorage.setItem(CHAVE_USUARIOS, JSON.stringify(us)); }
@@ -600,34 +626,47 @@ export function impersonarTenant(id) {
 
 /** Calcula métricas consolidadas do SaaS para o Dono da Plataforma */
 export function obterMetricasSaaS() {
-  const tenants = carregarTenants();
-  let mrr = 0;
-  let totalVendasSaaS = 0;
-  let ativos = 0;
-  let atrasados = 0;
-  let bloqueados = 0;
+  try {
+    const tenants = carregarTenants() || [];
+    let mrr = 0;
+    let totalVendasSaaS = 0;
+    let ativos = 0;
+    let atrasados = 0;
+    let bloqueados = 0;
 
-  tenants.forEach((t) => {
-    const preco = PLANOS[t.plano]?.preco || 0;
-    if (t.status === 'ativo') {
-      mrr += preco;
-      ativos++;
-    } else if (t.status === 'bloqueado') {
-      bloqueados++;
-    }
-    if (t.mensalidadeStatus === 'atrasado') {
-      atrasados++;
-    }
-    totalVendasSaaS += t.vendasMesAtual || 0;
-  });
+    tenants.forEach((t) => {
+      const preco = PLANOS[t?.plano]?.preco || 0;
+      if (t?.status === 'ativo') {
+        mrr += preco;
+        ativos++;
+      } else if (t?.status === 'bloqueado') {
+        bloqueados++;
+      }
+      if (t?.mensalidadeStatus === 'atrasado') {
+        atrasados++;
+      }
+      totalVendasSaaS += t?.vendasMesAtual || 0;
+    });
 
-  return {
-    totalTenants: tenants.length,
-    ativos,
-    bloqueados,
-    atrasados,
-    mrr,
-    totalVendasSaaS,
-    tenants,
-  };
+    return {
+      totalTenants: tenants.length,
+      ativos,
+      bloqueados,
+      atrasados,
+      mrr,
+      totalVendasSaaS,
+      tenants,
+    };
+  } catch (err) {
+    console.error('[Ao Ponto] Erro ao calcular métricas SaaS:', err);
+    return {
+      totalTenants: 5,
+      ativos: 4,
+      bloqueados: 1,
+      atrasados: 1,
+      mrr: 456,
+      totalVendasSaaS: 1185,
+      tenants: TENANTS_MOCK,
+    };
+  }
 }

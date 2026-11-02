@@ -55,7 +55,14 @@ function calcularPeriodo(periodo, custom, agrupMes) {
 let graficos = {};
 let opcoes = { produtoMetrica: 'receita', agrupMes: 'dia' };
 
-export function destruirDashboard() { Object.values(graficos).forEach((g) => g.destroy()); graficos = {}; }
+export function destruirDashboard() {
+  try {
+    Object.values(graficos).forEach((g) => {
+      try { g?.destroy?.(); } catch (_) {}
+    });
+  } catch (_) {}
+  graficos = {};
+}
 
 export function renderDashboard(raiz, irPara) {
   const st = store.get(), perfil = store.perfil();

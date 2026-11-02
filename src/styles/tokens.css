@@ -51,7 +51,7 @@
 
   /* Medidas */
   --toque: 48px;             /* altura mínima de botões */
-  --sidebar: 248px;
+  --sidebar: 264px;
   --sidebar-recolhida: 76px;
   --bottom-nav: 68px;
   --transicao: 180ms cubic-bezier(.4, 0, .2, 1);
