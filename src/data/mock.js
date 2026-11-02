@@ -34,7 +34,6 @@ export const PRODUTOS = [
 ];
 
 export const PERFIS = {
-  superadmin: { id: 'superadmin', nome: 'Dono da Plataforma', papel: 'Gestor Master SaaS (Dono do Ao Ponto)', emoji: '👑', pontos: ['todos'], consolidado: true },
   owner: { id: 'owner', nome: 'Carlos Mendes', papel: 'Dono / Administrador técnico', emoji: '👨‍💼', pontos: ['centro', 'feira', 'jardim'], consolidado: true },
   admin: { id: 'admin', nome: 'Juliana Rocha', papel: 'Administradora do negócio', emoji: '👩‍💼', pontos: ['centro', 'jardim'], consolidado: true },
   vendedor: { id: 'vendedor', nome: 'Zé Batista', papel: 'Frangueiro / Vendedor', emoji: '👨‍🍳', pontos: ['centro'], consolidado: false },

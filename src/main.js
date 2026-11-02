@@ -24,11 +24,9 @@ import { renderUsuarios } from './pages/usuarios.js';
 import { renderWhatsapp } from './pages/whatsapp.js';
 import { renderPagamentos } from './pages/pagamentos.js';
 import { renderRelatorios, destruirRelatorios } from './pages/relatorios.js';
-import { renderEmBreve, renderMenu } from './pages/placeholder.js';
+import { renderMenu } from './pages/placeholder.js';
 import { renderPlanos } from './pages/planos.js';
 import { renderConfiguracoes } from './pages/configuracoes.js';
-import { renderMaster, destruirMaster } from './pages/master.js';
-import { renderBloqueioMensalidade } from './pages/bloqueio.js';
 
 const app = document.getElementById('app');
 
@@ -45,7 +43,6 @@ function render() {
   let hashRota = hashLimpa;
   try { destruirDashboard(); } catch (_) {}
   try { destruirRelatorios(); } catch (_) {}
-  try { destruirMaster(); } catch (_) {}
   window.scrollTo(0, 0);
 
   // Rota padrão vazia ou 'landing' -> exibe a Landing Page B2B
@@ -70,37 +67,21 @@ function render() {
     return (location.hash = '#/login');
   }
 
-  // ── Verificação de Bloqueio por Mensalidade (SaaS) ───────────
-  const tenantAtual = store.getTenant();
-  if (tenantAtual?.status === 'bloqueado' && store.get().perfil !== 'superadmin') {
-    return renderBloqueioMensalidade(app, irPara);
-  }
-
   // ── Validação de rota pelo perfil ────────────────────────────
   const rotasPermitidas = rotasDoPerfil().map((r) => r.id);
   const rotasEspeciais = [
-    'menu', 'inicio', 'planos', 'configuracoes', 'master',
-    'master-inicio', 'master-vendas', 'master-empresas', 'master-whatsapp', 'master-pagamentos',
+    'menu', 'inicio', 'planos', 'configuracoes',
     'vendas', 'pedidos', 'estoque', 'clientes', 'usuarios', 'whatsapp', 'pagamentos', 'relatorios'
   ];
   if (!rotasEspeciais.includes(hashRota) && !rotasPermitidas.includes(hashRota)) {
     hashRota = 'inicio';
   }
 
-  // Se rota for do SaaS, garante modo saas no store
-  if (hashRota.startsWith('master') && store.get().modo !== 'saas') {
-    store.set({ modo: 'saas' });
-  }
-
   // ── Shell ────────────────────────────────────────────────────
   renderShell(app, hashRota, irPara);
   const conteudo = document.getElementById('conteudo');
 
-  if (hashRota.startsWith('master')) {
-    const subAba = hashRota === 'master' ? 'inicio' : hashRota.replace('master-', '');
-    renderMaster(conteudo, irPara, subAba);
-  }
-  else if (hashRota === 'inicio')        renderDashboard(conteudo, irPara);
+  if (hashRota === 'inicio')             renderDashboard(conteudo, irPara);
   else if (hashRota === 'vendas')        renderVendas(conteudo, irPara);
   else if (hashRota === 'pedidos')       renderPedidos(conteudo, irPara);
   else if (hashRota === 'estoque')       renderEstoque(conteudo, irPara);
