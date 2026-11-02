@@ -35,10 +35,10 @@ export function destruirMaster() {
   graficosMaster = {};
 }
 
-export function renderMaster(raiz, irPara) {
+export function renderMaster(raiz, irPara, abaInicial = 'inicio') {
   destruirMaster();
 
-  let abaAtiva = 'inicio'; // 'inicio', 'vendas', 'empresas', 'whatsapp', 'pagamentos'
+  let abaAtiva = abaInicial || 'inicio'; // 'inicio', 'vendas', 'empresas', 'whatsapp', 'pagamentos'
   let filtroPeriodoVendas = 'mes'; // 'dia', 'semana', 'mes'
   let termoBusca = '';
 
@@ -1014,11 +1014,11 @@ export function renderMaster(raiz, irPara) {
   }
 
   function atribuirEventos() {
-    // Alternância de Abas Master
+    // Alternância de Abas Master sincronizada com a URL e Menu Lateral
     raiz.querySelectorAll('.wa-aba-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
-        abaAtiva = btn.dataset.aba;
-        desenhar();
+        const novaAba = btn.dataset.aba;
+        irPara(`master-${novaAba}`);
       });
     });
 

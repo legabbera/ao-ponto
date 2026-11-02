@@ -101,3 +101,4 @@ No seu dia a dia como Dono da Plataforma:
 
 * **Posso cadastrar meus próprios dados bancários?**
   * Sim. O saldo acumulado no Mercado Pago pode ser transferido gratuitamente via TED/Pix para qualquer banco da sua preferência a qualquer momento.
+

@@ -76,25 +76,28 @@ function render() {
 
   // ── Validação de rota pelo perfil ────────────────────────────
   const rotasPermitidas = rotasDoPerfil().map((r) => r.id);
-  const rotasEspeciais = ['menu', 'inicio', 'planos', 'configuracoes', 'master'];
+  const rotasEspeciais = [
+    'menu', 'inicio', 'planos', 'configuracoes', 'master',
+    'master-inicio', 'master-vendas', 'master-empresas', 'master-whatsapp', 'master-pagamentos'
+  ];
   if (!rotasEspeciais.includes(hashRota) && !rotasPermitidas.includes(hashRota)) {
     hashRota = 'inicio';
+  }
+
+  // Se rota for do SaaS, garante modo saas no store
+  if (hashRota.startsWith('master') && store.get().modo !== 'saas') {
+    store.set({ modo: 'saas' });
   }
 
   // ── Shell ────────────────────────────────────────────────────
   renderShell(app, hashRota, irPara);
   const conteudo = document.getElementById('conteudo');
 
-  if (hashRota === 'inicio')             renderDashboard(conteudo, irPara);
-  else if (hashRota === 'vendas')        renderVendas(conteudo, irPara);
-  else if (hashRota === 'pedidos')       renderPedidos(conteudo, irPara);
-  else if (hashRota === 'estoque')       renderEstoque(conteudo, irPara);
-  else if (hashRota === 'clientes')      renderClientes(conteudo, irPara);
-  else if (hashRota === 'usuarios')      renderUsuarios(conteudo, irPara);
-  else if (hashRota === 'whatsapp')      renderWhatsapp(conteudo, irPara);
-  else if (hashRota === 'pagamentos')    renderPagamentos(conteudo, irPara);
-  else if (hashRota === 'relatorios')    renderRelatorios(conteudo, irPara);
-  else if (hashRota === 'master')        renderMaster(conteudo, irPara);
+  if (hashRota.startsWith('master')) {
+    const subAba = hashRota === 'master' ? 'inicio' : hashRota.replace('master-', '');
+    renderMaster(conteudo, irPara, subAba);
+  }
+  else if (hashRota === 'inicio')        renderDashboard(conteudo, irPara);
   else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
   else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
   else if (hashRota === 'menu')          renderMenu(conteudo, irPara);

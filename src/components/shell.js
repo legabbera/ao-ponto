@@ -21,37 +21,129 @@ export const ROTAS = [
   { id: 'planos', rotulo: 'Meu Plano', icone: 'grafico', perfis: ['owner'], desc: 'Planos e limites de uso' },
   { id: 'configuracoes', rotulo: 'Configurações', icone: 'config', perfis: ['owner', 'admin'], desc: 'Domínio e dados do negócio' },
 ];
+
+export const ROTAS_SAAS = [
+  { id: 'master-inicio', subAba: 'inicio', rotulo: 'Início com KPIs', icone: 'home', desc: 'KPIs do SaaS e Associados' },
+  { id: 'master-vendas', subAba: 'vendas', rotulo: 'Vendas dos Associados', icone: 'vendas', desc: 'Venda de cada associado por período' },
+  { id: 'master-empresas', subAba: 'empresas', rotulo: 'Cadastro das Empresas', icone: 'clientes', desc: 'CNPJs e localização geográfica' },
+  { id: 'master-whatsapp', subAba: 'whatsapp', rotulo: 'WhatsApp das Empresas', icone: 'conversa', desc: 'Contato e disparo no WhatsApp com 1 clique' },
+  { id: 'master-pagamentos', subAba: 'pagamentos', rotulo: 'Pagamento (Mensalidade)', icone: 'cartao', desc: 'Pix, boletos, planos e gráficos' },
+];
+
 export const rotasDoPerfil = () => ROTAS.filter((r) => !r.perfis || r.perfis.includes(store.get().perfil));
 
 export function renderShell(raiz, rotaAtual, irPara) {
-  const st = store.get(), perfil = PERFIS[st.perfil];
+  const st = store.get(), perfil = PERFIS[st.perfil] || PERFIS.owner;
   const tenant = store.getTenant();
   const rotas = rotasDoPerfil();
-  const iniciais = perfil.nome.split(' ').map((p) => p[0]).slice(0, 2).join('');
+  const iniciais = (perfil.nome || 'AP').split(' ').map((p) => p[0]).slice(0, 2).join('');
   const nomePonto = st.ponto === 'todos' 
-    ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome) 
-    : PONTOS.find((p) => p.id === st.ponto)?.nome;
+    ? (perfil.pontos?.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos?.[0])?.nome || 'Matriz') 
+    : PONTOS.find((p) => p.id === st.ponto)?.nome || 'Matriz';
+  
+  const isModoSaas = rotaAtual.startsWith('master') || (st.modo === 'saas' && rotaAtual === 'configuracoes') || st.perfil === 'superadmin';
   const atual = ROTAS.find((r) => r.id === rotaAtual);
   const ativo = (id) => (id === rotaAtual || (id === 'menu' && !atual?.principal && rotaAtual !== 'inicio') ? 'aria-current="page"' : '');
 
-  raiz.innerHTML = `
-  <div class="app ${st.sidebarRecolhida ? 'recolhido' : ''}">
-    <aside class="sidebar" aria-label="Menu principal">
-      <div class="logo"><div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div><div><div class="logo-nome">Ao Ponto</div></div></div>
+  const rotasSaasNomes = {
+    'master': 'Início com KPIs (SaaS)',
+    'master-inicio': 'Início com KPIs (SaaS)',
+    'master-vendas': 'Vendas dos Associados (SaaS)',
+    'master-empresas': 'Cadastro das Empresas (CNPJs)',
+    'master-whatsapp': 'WhatsApp das Empresas',
+    'master-pagamentos': 'Pagamentos & Mensalidades (SaaS)',
+    'configuracoes': 'Configurações da Plataforma',
+  };
+  const tituloHeader = isModoSaas ? (rotasSaasNomes[rotaAtual] || 'Painel Master (SaaS)') : (atual?.rotulo === 'Início' ? 'Ao Ponto' : atual?.rotulo || 'Menu');
+  const subtituloHeader = isModoSaas ? '👑 Gestor Master da Rede de Assadeiras' : `${icone('local', 'mini')} ${nomePonto}`;
+
+  function itemSaas(r) {
+    const isAtivo = rotaAtual === r.id || (rotaAtual === 'master' && r.subAba === 'inicio');
+    return `<button class="sb-item" data-ir="${r.id}" ${isAtivo ? 'aria-current="page"' : ''} title="${r.rotulo}">
+      ${icone(r.icone)}<span>${r.rotulo}</span>
+    </button>`;
+  }
+
+  function itemSb(r) {
+    return `<button class="sb-item" data-ir="${r.id}" ${r.id === rotaAtual ? 'aria-current="page"' : ''} title="${r.rotulo}">
+      ${icone(r.icone)}<span>${r.rotulo}</span>${r.etapa ? `<span class="tag-breve">Etapa ${r.etapa}</span>` : ''}
+    </button>`;
+  }
+
+  // Montagem da Sidebar conforme o Modo
+  let sidebarHtml = '';
+  if (isModoSaas) {
+    sidebarHtml = `
+      <div class="logo">
+        <div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div>
+        <div>
+          <div class="logo-nome">Ao Ponto</div>
+          <div style="font-size: 10px; font-weight: 800; color: #EA580C; letter-spacing: 0.5px; text-transform: uppercase;">Modelo SaaS (Master)</div>
+        </div>
+      </div>
+      <div class="sb-secao">Gestão dos CNPJs (SaaS)</div>
+      ${ROTAS_SAAS.map(itemSaas).join('')}
+      <div class="sb-secao">Plataforma & Apoio</div>
+      <a href="/manual.html" target="_blank" class="sb-item" style="text-decoration:none" title="Manual do Usuário (PDF / Impressão)">${icone('info')}<span>Manual do Usuário</span></a>
+      <a href="/treinamento-video.html" target="_blank" class="sb-item" style="text-decoration:none" title="Vídeo Treinamento Full HD 1080p">${icone('grafico')}<span>Vídeo Treinamento</span></a>
+      <button class="sb-item" data-ir="configuracoes" ${rotaAtual === 'configuracoes' ? 'aria-current="page"' : ''} title="Configurações da Plataforma">${icone('config')}<span>Configurações</span></button>
+      
+      <div style="margin: 12px 8px 6px;">
+        <button class="sb-item" data-acao="visao-loja" style="background: #FFF7ED; border: 1px solid #FFEDD5; color: #C2410C; font-weight: 700; border-radius: 8px; width: 100%;" title="Alternar para ver a visão de uma assadeira">
+          <span style="font-size: 16px;">🏪</span><span>Visão da Assadeira</span>
+        </button>
+      </div>
+      <button class="sb-item" data-acao="landing" title="Ver Apresentação B2B">${icone('globo')}<span>Apresentação B2B</span></button>
+      ${(!st.usuario || st.usuario.id === 'user_demo') ? `<button class="sb-item" data-acao="perfil" title="Trocar perfil (demo)">${icone('trocar')}<span>Trocar perfil (demo)</span></button>` : ''}
+      <button class="sb-item" data-acao="sair" title="Sair">${icone('sair')}<span>Sair</span></button>
+    `;
+  } else {
+    sidebarHtml = `
+      <div class="logo">
+        <div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div>
+        <div>
+          <div class="logo-nome">Ao Ponto</div>
+          <div style="font-size: 10px; font-weight: 700; color: var(--texto-suave);">Assadeira & Balcão</div>
+        </div>
+      </div>
+      <button class="sb-item" data-acao="visao-saas" style="color: #EA580C; font-weight: 700; background: #FFF7ED; border-radius: 8px; margin: 4px 8px 8px; border: 1px solid #FFEDD5;" title="Painel Master do Dono da Plataforma SaaS">
+        <span style="font-size: 16px;">👑</span><span>Painel Master (SaaS)</span>
+      </button>
       <button class="btn btn-primario sb-nova" data-acao="nova-venda" title="Nova venda">${icone('mais')}<span>Nova venda</span></button>
       <div class="sb-secao">Principal</div>
       ${rotas.filter((r) => r.principal).map(itemSb).join('')}
       <div class="sb-secao">Gestão</div>
       ${rotas.filter((r) => !r.principal).map(itemSb).join('')}
-        ${tenant ? `<div class="sb-plano-badge" data-ir="planos" title="Meu Plano">${icone('grafico')}<span>${PLANOS[tenant.plano]?.nome || 'Grátis'}</span></div>` : ''}
-        <a href="/manual.html" target="_blank" class="sb-item" style="text-decoration:none" title="Manual do Usuário (PDF / Impressão)">${icone('info')}<span>Manual do Usuário</span></a>
-        <a href="/treinamento-video.html" target="_blank" class="sb-item" style="text-decoration:none" title="Vídeo Treinamento Full HD 1080p">${icone('grafico')}<span>Vídeo Treinamento</span></a>
-        <button class="sb-item" data-ir="master" style="color: #EA580C; font-weight: 700; background: #FFF7ED; border-radius: 8px; margin: 4px 8px; border: 1px solid #FFEDD5;" title="Painel Master do Dono da Plataforma SaaS">
-          <span style="font-size: 16px;">👑</span><span>Painel Master (SaaS)</span>
-        </button>
-        <button class="sb-item" data-acao="landing" title="Ver Apresentação B2B">${icone('globo')}<span>Apresentação B2B</span></button>
-        ${(!st.usuario || st.usuario.id === 'user_demo') ? `<button class="sb-item" data-acao="perfil" title="Trocar perfil (demo)">${icone('trocar')}<span>Trocar perfil (demo)</span></button>` : ''}
-        <button class="sb-item" data-acao="sair" title="Sair">${icone('sair')}<span>Sair</span></button>
+      ${tenant ? `<div class="sb-plano-badge" data-ir="planos" title="Meu Plano">${icone('grafico')}<span>${PLANOS[tenant.plano]?.nome || 'Grátis'}</span></div>` : ''}
+      <a href="/manual.html" target="_blank" class="sb-item" style="text-decoration:none" title="Manual do Usuário (PDF / Impressão)">${icone('info')}<span>Manual do Usuário</span></a>
+      <a href="/treinamento-video.html" target="_blank" class="sb-item" style="text-decoration:none" title="Vídeo Treinamento Full HD 1080p">${icone('grafico')}<span>Vídeo Treinamento</span></a>
+      <button class="sb-item" data-acao="landing" title="Ver Apresentação B2B">${icone('globo')}<span>Apresentação B2B</span></button>
+      ${(!st.usuario || st.usuario.id === 'user_demo') ? `<button class="sb-item" data-acao="perfil" title="Trocar perfil (demo)">${icone('trocar')}<span>Trocar perfil (demo)</span></button>` : ''}
+      <button class="sb-item" data-acao="sair" title="Sair">${icone('sair')}<span>Sair</span></button>
+    `;
+  }
+
+  // Navegação Mobile Bottom
+  const isAba = (sub) => (rotaAtual === `master-${sub}` || (rotaAtual === 'master' && sub === 'inicio'));
+  const bottomNavHtml = isModoSaas ? `
+    <nav class="bottom-nav" aria-label="Navegação SaaS">
+      <button class="bn-item" data-ir="master-inicio" ${isAba('inicio') ? 'aria-current="page"' : ''} id="nav-saas-inicio">${icone('home')}<span>Início</span></button>
+      <button class="bn-item" data-ir="master-vendas" ${isAba('vendas') ? 'aria-current="page"' : ''} id="nav-saas-vendas">${icone('vendas')}<span>Vendas</span></button>
+      <button class="bn-item" data-ir="master-empresas" ${isAba('empresas') ? 'aria-current="page"' : ''} id="nav-saas-empresas">${icone('clientes')}<span>Empresas</span></button>
+      <button class="bn-item" data-ir="master-whatsapp" ${isAba('whatsapp') ? 'aria-current="page"' : ''} id="nav-saas-whatsapp">${icone('conversa')}<span>WhatsApp</span></button>
+      <button class="bn-item" data-ir="master-pagamentos" ${isAba('pagamentos') ? 'aria-current="page"' : ''} id="nav-saas-pagamentos">${icone('cartao')}<span>Pagamentos</span></button>
+    </nav>` : `
+    <nav class="bottom-nav" aria-label="Navegação">
+      ${rotas.filter((r) => r.principal).map((r) => `<button class="bn-item" data-ir="${r.id}" ${ativo(r.id)} id="nav-${r.id}">${icone(r.icone)}<span>${r.rotulo}</span></button>`).join('')}
+      <button class="bn-item" data-ir="menu" ${ativo('menu')} id="nav-menu">${icone('menu')}<span>Menu</span></button>
+    </nav>`;
+
+  const fabHtml = isModoSaas ? '' : `<button class="fab" aria-expanded="false" aria-label="Ações rápidas" id="btn-fab">${icone('mais')}</button>`;
+
+  raiz.innerHTML = `
+  <div class="app ${st.sidebarRecolhida ? 'recolhido' : ''}">
+    <aside class="sidebar" aria-label="Menu principal">
+      ${sidebarHtml}
     </aside>
 
     <div class="principal">
@@ -59,8 +151,8 @@ export function renderShell(raiz, rotaAtual, irPara) {
         <button class="topo-btn btn-menu-lateral" data-acao="recolher" aria-label="Recolher ou expandir menu">${icone('painel')}</button>
         <div class="logo-marca"><img src="/icon.png" alt="Logo" class="logo-img" /></div>
         <div class="topo-titulo">
-          <strong>${atual?.rotulo === 'Início' ? 'Ao Ponto' : atual?.rotulo || 'Menu'}</strong>
-          <small>${icone('local', 'mini')} ${nomePonto}</small>
+          <strong>${tituloHeader}</strong>
+          <small>${subtituloHeader}</small>
         </div>
         <button class="topo-btn" data-acao="notificacoes" aria-label="Notificações">${icone('sino')}<span class="ponto-notif"></span></button>
         <button class="avatar" data-acao="perfil" aria-label="Perfil de ${perfil.nome}">${iniciais}</button>
@@ -68,11 +160,8 @@ export function renderShell(raiz, rotaAtual, irPara) {
       <main class="conteudo" id="conteudo"></main>
     </div>
 
-    <nav class="bottom-nav" aria-label="Navegação">
-      ${rotas.filter((r) => r.principal).map((r) => `<button class="bn-item" data-ir="${r.id}" ${ativo(r.id)} id="nav-${r.id}">${icone(r.icone)}<span>${r.rotulo}</span></button>`).join('')}
-      <button class="bn-item" data-ir="menu" ${ativo('menu')} id="nav-menu">${icone('menu')}<span>Menu</span></button>
-    </nav>
-    <button class="fab" aria-expanded="false" aria-label="Ações rápidas" id="btn-fab">${icone('mais')}</button>
+    ${bottomNavHtml}
+    ${fabHtml}
   </div>`;
 
   function itemSb(r) {
@@ -101,6 +190,16 @@ export function renderShell(raiz, rotaAtual, irPara) {
 
   const acoes = {
     'landing': () => irPara('landing'),
+    'visao-saas': () => {
+      store.set({ modo: 'saas', perfil: 'superadmin' });
+      toast('Você entrou no Modo SaaS (Dono da Plataforma).', 'info');
+      irPara('master-inicio');
+    },
+    'visao-loja': () => {
+      store.set({ modo: 'loja', perfil: 'owner' });
+      toast('Você alternou para a Visão da Assadeira (Loja).', 'info');
+      irPara('inicio');
+    },
     'nova-venda': () => irPara('vendas'),
     'novo-pedido': () => irPara('pedidos'),
     recolher: () => { store.set({ sidebarRecolhida: !store.get().sidebarRecolhida }); raiz.querySelector('.app').classList.toggle('recolhido'); },
