@@ -60,6 +60,14 @@ svg.ic {
   stroke-linejoin: round;
 }
 
+/* Modificadores de cor para ícones no sistema Ao Ponto */
+svg.ic.ic-brasa { color: var(--brasa) !important; }
+svg.ic.ic-viva  { color: #F07A3E !important; }
+svg.ic.ic-ambar { color: var(--ambar) !important; }
+svg.ic.ic-verde { color: var(--verde) !important; }
+svg.ic.ic-azul  { color: var(--azul) !important; }
+svg.ic.ic-suave { color: var(--texto-suave) !important; }
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -214,11 +222,19 @@ svg.ic {
 .campo-caixa>span:first-child>svg.ic {
   position: absolute;
   left: 14px;
-  color: var(--texto-suave);
+  color: var(--brasa);
   pointer-events: none;
   display: inline-flex;
   align-items: center;
   z-index: 2;
+  transition: all var(--transicao);
+}
+
+.campo-caixa:focus-within>svg.ic,
+.campo-caixa:focus-within>.campo-icone-esq,
+.campo-caixa:focus-within>span:first-child>svg.ic {
+  color: #F07A3E;
+  filter: drop-shadow(0 0 4px rgba(240, 122, 62, 0.4));
 }
 
 .input {

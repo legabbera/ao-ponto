@@ -121,3 +121,32 @@
   .topo { padding: 12px 24px; }
   .conteudo { padding: 24px; }
 }
+
+
+/* Ícones da Sidebar no estilo Brasa / Ao Ponto */
+.sb-item svg.ic {
+  color: #E26A3B;
+  transition: all var(--transicao);
+}
+.sb-item:hover svg.ic {
+  color: #F07A3E;
+  filter: drop-shadow(0 0 6px rgba(240, 122, 62, 0.5));
+  transform: scale(1.08);
+}
+.sb-item[aria-current="page"] svg.ic {
+  color: #FFFFFF;
+  filter: drop-shadow(0 0 8px rgba(240, 122, 62, 0.75));
+}
+
+/* Ícones do Bottom Navigation */
+.bn-item svg.ic {
+  color: #A99C90;
+  transition: all var(--transicao);
+}
+.bn-item:hover svg.ic {
+  color: #E26A3B;
+}
+.bn-item[aria-current="page"] svg.ic {
+  color: var(--brasa);
+  filter: drop-shadow(0 0 6px rgba(217, 72, 28, 0.6));
+}
