@@ -6,3 +6,27 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# ============================================================
+# CABEÇALHOS DE SEGURANÇA HTTP (SECURITY HEADERS)
+# ============================================================
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Impede Clickjacking (embutir em iframes maliciosos)
+    X-Frame-Options = "DENY"
+    
+    # Impede ataques de interpretação errônea de arquivos (MIME-sniffing)
+    X-Content-Type-Options = "nosniff"
+    
+    # Proteção de navegador contra XSS
+    X-XSS-Protection = "1; mode=block"
+    
+    # Protege dados e URLs confidenciais em cliques externos
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+    # Bloqueia acessos indevidos a hardware (câmera, microfone, geolocalização)
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    
+    # Força navegação 100% criptografada via HTTPS (HSTS)
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
