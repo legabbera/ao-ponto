@@ -84,6 +84,7 @@ export function renderDashboard(raiz, irPara) {
     <div class="acoes-rapidas">
       <button class="btn btn-primario" id="btn-nova-venda">${icone('vendas')} Nova venda</button>
       <button class="btn btn-escuro" id="btn-novo-pedido">${icone('calendario')} Novo pedido</button>
+      <button class="btn btn-escuro" id="btn-ir-calculadora" style="border:1px solid rgba(217,72,28,0.5);color:#F07A3E;" title="Calculadora de Preços e Lucro Real">${icone('dinheiro', 'ic-viva')} Formar Preço</button>
     </div>
     <div class="filtros">
       <label class="sr-only" for="sel-ponto">Ponto de venda</label>
@@ -172,6 +173,7 @@ export function renderDashboard(raiz, irPara) {
   raiz.querySelectorAll('[data-ag]').forEach((b) => b.addEventListener('click', () => { opcoes.agrupMes = b.dataset.ag; atualizar(); }));
   $('#btn-nova-venda').addEventListener('click', () => { toast('A tela de Nova venda chega na Etapa 2.', 'info'); irPara('vendas'); });
   $('#btn-novo-pedido').addEventListener('click', () => { toast('O formulário de Novo pedido chega na Etapa 2.', 'info'); irPara('pedidos'); });
+  $('#btn-ir-calculadora')?.addEventListener('click', () => irPara('precificacao'));
 
   let requisicao = 0;
   async function atualizar() {

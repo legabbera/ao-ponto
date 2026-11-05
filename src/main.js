@@ -27,6 +27,7 @@ import { renderRelatorios, destruirRelatorios } from './pages/relatorios.js';
 import { renderMenu } from './pages/placeholder.js';
 import { renderPlanos } from './pages/planos.js';
 import { renderConfiguracoes } from './pages/configuracoes.js';
+import { renderCalculadora } from './pages/calculadora.js';
 
 const app = document.getElementById('app');
 
@@ -70,7 +71,7 @@ function render() {
   // ── Validação de rota pelo perfil ────────────────────────────
   const rotasPermitidas = rotasDoPerfil().map((r) => r.id);
   const rotasEspeciais = [
-    'menu', 'inicio', 'planos', 'configuracoes',
+    'menu', 'inicio', 'planos', 'configuracoes', 'precificacao', 'calculadora',
     'vendas', 'pedidos', 'estoque', 'clientes', 'usuarios', 'whatsapp', 'pagamentos', 'relatorios'
   ];
   if (!rotasEspeciais.includes(hashRota) && !rotasPermitidas.includes(hashRota)) {
@@ -92,6 +93,7 @@ function render() {
   else if (hashRota === 'relatorios')    renderRelatorios(conteudo, irPara);
   else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
   else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
+  else if (hashRota === 'precificacao' || hashRota === 'calculadora') renderCalculadora(conteudo, irPara);
   else if (hashRota === 'menu')          renderMenu(conteudo, irPara);
   else                                   renderDashboard(conteudo, irPara);
 }
