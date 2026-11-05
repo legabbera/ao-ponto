@@ -17,6 +17,38 @@ function formatarCelular(v) {
   return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
 }
 
+// ── BLINDAGEM ANTI-FORÇA BRUTA (RATE LIMITING CLIENT-SIDE) ──────
+const CHAVE_TENTATIVAS_LOGIN = 'ao-login-seguranca';
+const LIMITE_TENTATIVAS = 5;
+const TEMPO_BLOQUEIO_MS = 15 * 60 * 1000; // 15 minutos
+
+function getStatusTentativas() {
+  try {
+    const s = localStorage.getItem(CHAVE_TENTATIVAS_LOGIN);
+    if (!s) return { falhas: 0, bloqueadoAte: null };
+    const dados = JSON.parse(s);
+    if (dados.bloqueadoAte && Date.now() > dados.bloqueadoAte) {
+      localStorage.removeItem(CHAVE_TENTATIVAS_LOGIN);
+      return { falhas: 0, bloqueadoAte: null };
+    }
+    return dados;
+  } catch (_) {
+    return { falhas: 0, bloqueadoAte: null };
+  }
+}
+
+function registrarFalhaLogin() {
+  const st = getStatusTentativas();
+  const falhas = (st.falhas || 0) + 1;
+  const bloqueadoAte = falhas >= LIMITE_TENTATIVAS ? Date.now() + TEMPO_BLOQUEIO_MS : null;
+  localStorage.setItem(CHAVE_TENTATIVAS_LOGIN, JSON.stringify({ falhas, bloqueadoAte }));
+  return { falhas, bloqueadoAte };
+}
+
+function limparTentativasLogin() {
+  localStorage.removeItem(CHAVE_TENTATIVAS_LOGIN);
+}
+
 export function renderLogin(raiz, irPara) {
   raiz.innerHTML = `
   <main class="login">
@@ -89,7 +121,20 @@ export function renderLogin(raiz, irPara) {
   const marcarErro = (id, msg) => { 
     const c = $(id); 
     c.classList.toggle('erro', !!msg); 
-    c.querySelector('.campo-erro span').textContent = msg || ''; 
+    c.querySelector('.campo-erro span').textContent = msg || '';
+  };
+
+  // Verificação inicial de bloqueio por força bruta
+  const stMontagem = getStatusTentativas();
+  if (stMontagem.bloqueadoAte && Date.now() < stMontagem.bloqueadoAte) {
+    const minsRest = Math.ceil((stMontagem.bloqueadoAte - Date.now()) / 60000);
+    erroGeral.querySelector('span').textContent = `🔒 Muitas tentativas com falha. Acesso bloqueado por segurança. Tente novamente em ${minsRest} minuto(s) ou recupere o acesso abaixo.`;
+    erroGeral.classList.add('visivel');
+    const btnEntrar = $('#btn-entrar');
+    if (btnEntrar) {
+      btnEntrar.disabled = true;
+      btnEntrar.textContent = `Bloqueado (${minsRest}m)`;
+    } 
   };
 
   // Detecção inteligente e máscara dinâmica no campo de login
@@ -156,6 +201,15 @@ export function renderLogin(raiz, irPara) {
       marcarErro('#campo-senha');
     }
 
+    // Verifica bloqueio anti-força bruta
+    const stAtual = getStatusTentativas();
+    if (stAtual.bloqueadoAte && Date.now() < stAtual.bloqueadoAte) {
+      const minsRest = Math.ceil((stAtual.bloqueadoAte - Date.now()) / 60000);
+      erroGeral.querySelector('span').textContent = `🔒 Muitas tentativas com falha. Acesso bloqueado por segurança. Tente novamente em ${minsRest} minuto(s) ou use a recuperação abaixo.`;
+      erroGeral.classList.add('visivel');
+      return;
+    }
+
     if (!ok) return;
 
     const btn = $('#btn-entrar');
@@ -164,9 +218,21 @@ export function renderLogin(raiz, irPara) {
 
     try {
       const resultado = await loginDemo(u, s);
+      limparTentativasLogin();
       entrar('owner', resultado?.usuario, resultado?.tenant);
     } catch (err) {
-      erroGeral.querySelector('span').textContent = err.message;
+      const { falhas, bloqueadoAte } = registrarFalhaLogin();
+      if (bloqueadoAte) {
+        const mins = Math.ceil(TEMPO_BLOQUEIO_MS / 60000);
+        erroGeral.querySelector('span').textContent = `🔒 Limite de 5 tentativas atingido. Acesso bloqueado por ${mins} minutos por segurança contra invasão.`;
+        btn.disabled = true;
+        btn.textContent = `Bloqueado (${mins}m)`;
+      } else {
+        const restantes = LIMITE_TENTATIVAS - falhas;
+        erroGeral.querySelector('span').textContent = `${err.message} Restam ${restantes} tentativa(s) antes do bloqueio de segurança.`;
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+      }
       erroGeral.classList.add('visivel');
       btn.disabled = false; 
       btn.textContent = 'Entrar';
