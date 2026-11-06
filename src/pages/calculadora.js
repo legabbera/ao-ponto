@@ -4,6 +4,7 @@
  */
 import { icone } from '../components/icons.js';
 import { toast, abrirModal } from '../components/ui.js';
+import { escapeHtml, sanitizarNome, sanitizarTexto } from '../utils/sanitizar.js';
 
 const CHAVE_FICHAS = 'ao-ponto-fichas-tecnicas';
 
@@ -186,7 +187,7 @@ export function renderCalculadora(raiz, irPara) {
           <span class="text-xs font-bold text-[#A99C90] uppercase tracking-wider">Modelos Rápidos:</span>
           ${fichas.map((f) => `
             <button class="btn btn-pequeno ${f.nome === estado.nome ? 'btn-primario' : 'btn-fantasma'}" data-carregar-ficha="${f.id || f.nome}">
-              ${f.nome.includes('Frango') ? '🍗' : (f.nome.includes('Espeto') ? '🍢' : (f.nome.includes('Maionese') ? '🥗' : '📋'))} ${f.nome.split('(')[0].trim()}
+              ${f.nome.includes('Frango') ? '🍗' : (f.nome.includes('Espeto') ? '🍢' : (f.nome.includes('Maionese') ? '🥗' : '📋'))} ${escapeHtml(f.nome.split('(')[0].trim())}
             </button>
           `).join('')}
           <button class="btn btn-pequeno btn-escuro" id="btn-nova-ficha">
@@ -209,7 +210,7 @@ export function renderCalculadora(raiz, irPara) {
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div class="sm:col-span-2">
                 <label class="rotulo text-xs font-semibold text-[#6E625A]">Nome do Produto</label>
-                <input class="input" id="inp-nome-produto" type="text" value="${estado.nome}" placeholder="Ex: Frango Inteiro com Farofa" />
+                <input class="input" id="inp-nome-produto" type="text" value="${escapeHtml(estado.nome)}" placeholder="Ex: Frango Inteiro com Farofa" />
               </div>
               <div>
                 <label class="rotulo text-xs font-semibold text-[#6E625A]">Rendimento (Receita)</label>
@@ -238,7 +239,7 @@ export function renderCalculadora(raiz, irPara) {
                 return `
                 <div class="p-3 rounded-xl bg-[#FBF6EE] border border-[#E8DDCD] relative group hover:border-[#D9481C]/40 transition space-y-2" data-idx="${idx}">
                   <div class="flex items-center justify-between gap-2">
-                    <input class="input font-semibold text-sm bg-white" data-campo="nome" value="${ins.nome}" placeholder="Nome do insumo..." style="min-height:40px;" />
+                    <input class="input font-semibold text-sm bg-white" data-campo="nome" value="${escapeHtml(ins.nome)}" placeholder="Nome do insumo..." style="min-height:40px;" />
                     <button class="btn btn-fantasma text-[#C0392B] p-2 hover:bg-[#FBE4E1] rounded-lg" data-remover-insumo="${idx}" title="Remover Insumo">
                       ${icone('lixeira')}
                     </button>
@@ -424,7 +425,7 @@ export function renderCalculadora(raiz, irPara) {
   function vincularEventos() {
     // 1. Inputs básicos do produto
     raiz.querySelector('#inp-nome-produto')?.addEventListener('input', (e) => {
-      estado.nome = e.target.value;
+      estado.nome = sanitizarNome(e.target.value);
     });
 
     raiz.querySelector('#inp-rendimento')?.addEventListener('input', (e) => {
@@ -469,7 +470,7 @@ export function renderCalculadora(raiz, irPara) {
         if (!row) return;
         const idx = parseInt(row.dataset.idx, 10);
         const campo = e.target.dataset.campo;
-        estado.insumos[idx][campo] = e.target.value;
+        estado.insumos[idx][campo] = campo === 'nome' ? sanitizarNome(e.target.value) : e.target.value;
         atualizarTotaisRapido();
       });
     });

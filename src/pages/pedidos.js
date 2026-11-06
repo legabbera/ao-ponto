@@ -9,6 +9,7 @@ import { PRODUTOS, STATUS_PEDIDO, PONTOS } from '../data/mock.js';
 import { fmtMoeda, fmtKg } from '../utils/format.js';
 import { salvarPedidoNoBanco } from '../services/api.js';
 import { executarComIdempotencia, gerarIdempotencyKey } from '../utils/idempotencia.js';
+import { escapeHtml, sanitizarNome, sanitizarTelefone, sanitizarTexto } from '../utils/sanitizar.js';
 
 let filtroStatus = 'todos';
 let filtroData = 'hoje';
@@ -148,11 +149,11 @@ export function renderPedidos(raiz, irPara) {
             <div class="pedido-corpo">
               <div class="pedido-cliente-dados">
                 <div class="p-cliente-nome">
-                  <strong>${p.cliente}</strong>
-                  <span class="p-cliente-tel">${icone('telefone', 'mini')} ${p.telefone}</span>
+                  <strong>${escapeHtml(p.cliente)}</strong>
+                  <span class="p-cliente-tel">${icone('telefone', 'mini')} ${escapeHtml(p.telefone)}</span>
                 </div>
                 <div class="p-cliente-acoes">
-                  <a href="https://wa.me/55${p.telefone.replace(/\D/g, '')}?text=${encodeURIComponent(`*${store.getWhatsapp()?.config?.nomeEstabelecimento || 'Ao Ponto Assados'}*\nOlá *${p.cliente}*! Sobre sua reserva (#${p.id}): seu pedido de frango assado para ${dataFmt} às ${p.hora}h está confirmado.`)}" target="_blank" class="btn btn-whatsapp btn-sm">
+                  <a href="https://wa.me/55${sanitizarTelefone(p.telefone)}?text=${encodeURIComponent(`*${store.getWhatsapp()?.config?.nomeEstabelecimento || 'Ao Ponto Assados'}*\nOlá *${p.cliente}*! Sobre sua reserva (#${p.id}): seu pedido de frango assado para ${dataFmt} às ${p.hora}h está confirmado.`)}" target="_blank" class="btn btn-whatsapp btn-sm">
                     ${icone('whatsapp')} WhatsApp
                   </a>
                 </div>
@@ -162,9 +163,9 @@ export function renderPedidos(raiz, irPara) {
                 <ul class="itens-ped-lista">
                   ${p.itens.map((it) => `
                     <li>
-                      <span>${it.qtd}x ${it.nome} ${it.pesoKg ? `(${fmtKg(it.pesoKg)})` : ''}</span>
+                      <span>${it.qtd}x ${escapeHtml(it.nome)} ${it.pesoKg ? `(${fmtKg(it.pesoKg)})` : ''}</span>
                       <small>${fmtMoeda(it.precoUnit * it.qtd)}</small>
-                      ${it.obs ? `<div class="item-obs-nota">Obs: ${it.obs}</div>` : ''}
+                      ${it.obs ? `<div class="item-obs-nota">Obs: ${escapeHtml(it.obs)}</div>` : ''}
                     </li>
                   `).join('')}
                 </ul>
@@ -405,11 +406,11 @@ export function renderPedidos(raiz, irPara) {
       modal.querySelector('#btn-salvar-reserva').addEventListener('click', async () => {
         if (processandoReserva) return;
         const btnSalvar = modal.querySelector('#btn-salvar-reserva');
-        const cliente = modal.querySelector('#nr-cliente').value.trim();
-        const telefone = modal.querySelector('#nr-telefone').value.trim();
+        const cliente = sanitizarNome(modal.querySelector('#nr-cliente').value);
+        const telefone = sanitizarTelefone(modal.querySelector('#nr-telefone').value);
         const data = modal.querySelector('#nr-data').value;
         const hora = modal.querySelector('#nr-hora').value;
-        const obsGeral = modal.querySelector('#nr-obs').value.trim();
+        const obsGeral = sanitizarTexto(modal.querySelector('#nr-obs').value, 200);
         const pagMetodo = modal.querySelector('#nr-pagamento').value;
 
         if (!cliente) return toast('Informe o nome do cliente.', 'erro');

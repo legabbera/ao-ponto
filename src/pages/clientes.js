@@ -8,6 +8,7 @@ import { store } from '../state/store.js';
 import { PONTOS } from '../data/mock.js';
 import { fmtMoeda } from '../utils/format.js';
 import { abrirModalImportacaoContatos } from '../components/modal-importar-contatos.js';
+import { escapeHtml, sanitizarNome, sanitizarTelefone, sanitizarTexto } from '../utils/sanitizar.js';
 
 let filtroTag = 'todos';
 let buscaTexto = '';
@@ -173,10 +174,10 @@ export function renderClientes(raiz, irPara) {
                 <div class="cliente-card-cabecalho">
                   <div class="cliente-avatar">${iniciais}</div>
                   <div class="cliente-titulos">
-                    <strong class="cliente-nome">${c.nome}</strong>
+                    <strong class="cliente-nome">${escapeHtml(c.nome)}</strong>
                     <div class="cliente-meta-linha">
                       <span class="cliente-tag ${tagClass}">${tagNome}</span>
-                      <span class="cliente-bairro">${icone('local', 'mini')} ${c.bairro || 'Balcão'}</span>
+                      <span class="cliente-bairro">${icone('local', 'mini')} ${escapeHtml(c.bairro || 'Balcão')}</span>
                     </div>
                   </div>
                   <div class="cliente-topo-acoes">
@@ -192,7 +193,7 @@ export function renderClientes(raiz, irPara) {
                     <span>${icone('fogo', 'mini')} Como o cliente gosta do assado:</span>
                   </div>
                   <div class="pref-texto">
-                    "${c.preferencias || 'Nenhuma preferência específica informada.'}"
+                    "${escapeHtml(c.preferencias || 'Nenhuma preferência específica informada.')}"
                   </div>
                 </div>
 
@@ -421,13 +422,13 @@ export function renderClientes(raiz, irPara) {
         el.querySelector('#btn-cancelar-cli').onclick = fechar;
 
         el.querySelector('#btn-salvar-cli').onclick = () => {
-          const nome = el.querySelector('#cli-nome').value.trim();
-          const telefone = el.querySelector('#cli-telefone').value.trim();
-          const bairro = el.querySelector('#cli-bairro').value.trim();
+          const nome = sanitizarNome(el.querySelector('#cli-nome').value);
+          const telefone = sanitizarTelefone(el.querySelector('#cli-telefone').value);
+          const bairro = sanitizarNome(el.querySelector('#cli-bairro').value, 50);
           const tag = el.querySelector('#cli-tag').value;
-          const preferencias = el.querySelector('#cli-preferencias').value.trim();
+          const preferencias = sanitizarTexto(el.querySelector('#cli-preferencias').value, 200);
           const pontosFidelidade = parseInt(el.querySelector('#cli-selos').value, 10) || 0;
-          const anotacoes = el.querySelector('#cli-anotacoes').value.trim();
+          const anotacoes = sanitizarTexto(el.querySelector('#cli-anotacoes').value, 500);
 
           if (!nome) {
             toast('Por favor, informe o nome do cliente.', 'erro');
@@ -588,9 +589,9 @@ export function renderClientes(raiz, irPara) {
             </div>
           `}
 
-          <h3 style="font-size: 15px; margin: 16px 0 8px;">Vendas Realizadas no Balcão (PDV)</h3>
+          <h3 style="font-size: 15px; margin: 16px 0 8px;">Vendas Realizadas no Balcão</h3>
           ${vendas.length === 0 ? `
-            <p style="color: var(--texto-suave); font-size: 13px;">Nenhuma venda avulsa recente registrada no PDV.</p>
+            <p style="color: var(--texto-suave); font-size: 13px;">Nenhuma venda avulsa recente registrada no controle de balcão.</p>
           ` : `
             <div class="historico-lista">
               ${vendas.map((v) => `

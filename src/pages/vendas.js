@@ -11,6 +11,7 @@ import { exibirModalLimite } from '../components/limite-modal.js';
 import { registrarVendaTenant } from '../data/tenants.js';
 import { registrarVenda as registrarVendaApi } from '../services/api.js';
 import { executarComIdempotencia, gerarIdempotencyKey } from '../utils/idempotencia.js';
+import { escapeHtml, sanitizarNome, sanitizarTelefone } from '../utils/sanitizar.js';
 
 let carrinho = [];
 let categoriaAtiva = 'todos';
@@ -128,14 +129,14 @@ export function renderVendas(raiz, irPara) {
               ` : carrinho.map((it, idx) => `
                 <div class="item-carrinho">
                   <div class="item-cabecalho">
-                    <span class="item-nome">${it.emoji} ${it.nome}</span>
+                    <span class="item-nome">${it.emoji} ${escapeHtml(it.nome)}</span>
                     <span class="item-total">${fmtMoeda(it.total)}</span>
                   </div>
                   <div class="item-sub">
                     ${it.forma === 'peso'
         ? `<span>${fmtKg(it.pesoKg)} &times; ${fmtMoeda(it.precoKg)}/kg</span>`
         : `<span>${it.qtd} &times; ${fmtMoeda(it.precoUnit)}</span>`}
-                    ${it.obs ? `<small class="item-obs-tag">Obs: ${it.obs}</small>` : ''}
+                    ${it.obs ? `<small class="item-obs-tag">Obs: ${escapeHtml(it.obs)}</small>` : ''}
                   </div>
                   <div class="item-controles">
                     ${it.forma === 'peso' ? `
@@ -160,10 +161,10 @@ export function renderVendas(raiz, irPara) {
                 class="input input-sm" 
                 list="pdv-clientes-lista" 
                 placeholder="Nome do cliente (ou selecione da base)" 
-                value="${clienteNome}" 
+                value="${escapeHtml(clienteNome)}" 
               />
               <datalist id="pdv-clientes-lista">
-                ${todosClientes.map((c) => `<option value="${c.nome}">${c.telefone ? `${c.telefone} • ` : ''}${c.preferencias || ''}</option>`).join('')}
+                ${todosClientes.map((c) => `<option value="${escapeHtml(c.nome)}">${c.telefone ? `${escapeHtml(c.telefone)} • ` : ''}${escapeHtml(c.preferencias || '')}</option>`).join('')}
               </datalist>
 
               <input 
@@ -171,7 +172,7 @@ export function renderVendas(raiz, irPara) {
                 id="pdv-cliente-tel" 
                 class="input input-sm" 
                 placeholder="WhatsApp (ex: 11999998888)" 
-                value="${clienteTelefone}" 
+                value="${escapeHtml(clienteTelefone)}" 
               />
 
               ${clienteEncontrado ? `
@@ -308,18 +309,18 @@ export function renderVendas(raiz, irPara) {
 
     const inputNome = raiz.querySelector('#pdv-cliente-nome');
     inputNome?.addEventListener('input', (e) => {
-      clienteNome = e.target.value;
+      clienteNome = sanitizarNome(e.target.value);
       const match = store.getClientes().find(
         (c) => c.nome.toLowerCase().trim() === clienteNome.toLowerCase().trim()
       );
       if (match) {
-        clienteTelefone = match.telefone || clienteTelefone;
+        clienteTelefone = sanitizarTelefone(match.telefone) || clienteTelefone;
         desenhar();
       }
     });
 
     const inputTel = raiz.querySelector('#pdv-cliente-tel');
-    inputTel?.addEventListener('input', (e) => { clienteTelefone = e.target.value; });
+    inputTel?.addEventListener('input', (e) => { clienteTelefone = sanitizarTelefone(e.target.value); });
 
     raiz.querySelectorAll('[data-pag]').forEach((b) => {
       b.addEventListener('click', () => {
@@ -499,12 +500,15 @@ export function renderVendas(raiz, irPara) {
         const itensTexto = carrinho.map((it) => it.forma === 'peso' ? `${it.nome} (${fmtKg(it.pesoKg)})` : `${it.qtd}x ${it.nome}`).join(', ');
         const idempotencyKey = gerarIdempotencyKey('venda');
 
+        const clienteSeguro = sanitizarNome(clienteNome) || 'Balcão';
+        const telefoneSeguro = sanitizarTelefone(clienteTelefone);
+
         const novaVenda = store.adicionarVenda({
           itensTexto,
           total: subtotal,
           metodo: metodoPagamento,
-          cliente: clienteNome || 'Balcão',
-          telefone: clienteTelefone,
+          cliente: clienteSeguro,
+          telefone: telefoneSeguro,
           troco: metodoPagamento === 'dinheiro' ? troco : 0,
           itens: [...carrinho],
           idempotencyKey,
@@ -515,7 +519,7 @@ export function renderVendas(raiz, irPara) {
           idempotencyKey,
           total: subtotal,
           pagamento: { metodo: metodoPagamento, troco, valorRecebido },
-          cliente: { nome: clienteNome, telefone: clienteTelefone },
+          cliente: { nome: clienteSeguro, telefone: telefoneSeguro },
           itens: [...carrinho],
         }, tenantAtivo?.id).catch((err) => console.warn('Supabase sync venda:', err));
 
@@ -523,7 +527,7 @@ export function renderVendas(raiz, irPara) {
         const msgZap = encodeURIComponent(
           `*${nomeLoja} - Comprovante de Venda*` +
           '\nPedido: #' + novaVenda.id + ' | Horario: ' + novaVenda.hora +
-          '\nCliente: ' + (clienteNome || 'Balcao') +
+          '\nCliente: ' + clienteSeguro +
           '\n------------------------------' +
           carrinho.map((it) => '\n - ' + (it.forma === 'peso' ? it.nome + ' (' + fmtKg(it.pesoKg) + ') - ' + fmtMoeda(it.total) : it.qtd + 'x ' + it.nome + ' - ' + fmtMoeda(it.total))).join('') +
           '\n------------------------------' +
@@ -537,18 +541,18 @@ export function renderVendas(raiz, irPara) {
           <div class="comprovante-sucesso">
             <div class="sucesso-icone">${icone('ok')}</div>
             <h2>Venda Concluída!</h2>
-            <p class="sucesso-sub">Código da venda: <strong>${novaVenda.id}</strong></p>
+            <p class="sucesso-sub">Código da venda: <strong>${escapeHtml(novaVenda.id)}</strong></p>
 
             <div class="cupom-papel">
               <div class="cupom-cabecalho">
                 <strong>🍗 Frango Assado</strong>
                 <small>Comprovante Não Fiscal</small>
-                <small>${novaVenda.hora} &bull; ${nomePonto}</small>
+                <small>${novaVenda.hora} &bull; ${escapeHtml(nomePonto)}</small>
               </div>
               <div class="cupom-linhas">
                 ${carrinho.map((it) => `
                   <div class="cupom-item">
-                    <span>${it.forma === 'peso' ? `${it.nome} (${fmtKg(it.pesoKg)})` : `${it.qtd}x ${it.nome}`}</span>
+                    <span>${it.forma === 'peso' ? `${escapeHtml(it.nome)} (${fmtKg(it.pesoKg)})` : `${it.qtd}x ${escapeHtml(it.nome)}`}</span>
                     <strong>${fmtMoeda(it.total)}</strong>
                   </div>
                 `).join('')}
@@ -563,8 +567,8 @@ export function renderVendas(raiz, irPara) {
             </div>
 
             <div class="comprovante-acoes">
-              ${clienteTelefone ? `
-                <a href="https://wa.me/55${clienteTelefone.replace(/\D/g, '')}?text=${msgZap}" target="_blank" class="btn btn-primario btn-bloco" style="background:#25D366;border:0">
+              ${telefoneSeguro ? `
+                <a href="https://wa.me/55${telefoneSeguro}?text=${msgZap}" target="_blank" class="btn btn-primario btn-bloco" style="background:#25D366;border:0">
                   ${icone('whatsapp')} Enviar Recibo no WhatsApp
                 </a>
               ` : `

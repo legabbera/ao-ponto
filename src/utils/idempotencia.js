@@ -57,3 +57,4 @@ export async function executarComIdempotencia(assinatura, operacao, janelaMs = 4
     throw err;
   }
 }
+
