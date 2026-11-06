@@ -5,10 +5,12 @@
  * - Meu plano
  */
 import { icone } from '../components/icons.js';
-import { toast } from '../components/ui.js';
+import { toast, abrirModal } from '../components/ui.js';
 import { salvarDominioCustom, checarDominioCustom } from '../services/api.js';
 import { store } from '../state/store.js';
 import { PLANOS, atualizarTenantAtivo } from '../data/tenants.js';
+import { baixarArquivoBackup, validarArquivoBackup, aplicarRestauracaoBackup, temRollbackDisponivel, executarRollbackEmergencia } from '../utils/backup.js';
+import { escapeHtml } from '../utils/sanitizar.js';
 
 export function renderConfiguracoes(raiz, irPara) {
   const tenant = store.getTenant();
@@ -124,6 +126,36 @@ export function renderConfiguracoes(raiz, irPara) {
         </button>
       `}
     </section>
+
+    <!-- Backup & Recuperação de Desastres (Disaster Recovery) -->
+    <section class="card config-secao" id="secao-backup">
+      <div class="card-cabecalho">
+        <div>
+          <div class="card-titulo">${icone('escudo')} Cibersegurança & Backup de Contingência</div>
+          <div class="card-sub">Snapshot completo de pedidos, vendas, clientes e receitas para recuperação de desastres</div>
+        </div>
+        <span class="badge badge-verde">🛡️ Criptografado & Verificado</span>
+      </div>
+
+      <div class="config-backup-info" style="margin-top:12px; font-size:13px; color:var(--texto-suave); line-height:1.5;">
+        Proteja seu ponto contra perda de celular, pane no computador do caixa ou instabilidade de rede. Baixe um snapshot local em arquivo JSON seguro ou restaure dados anteriores com 1 clique.
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;">
+        <button class="btn btn-primario" id="btn-baixar-backup">
+          ${icone('download')} Baixar Backup Completo (.JSON)
+        </button>
+        <button class="btn btn-contorno" id="btn-abrir-restaurar">
+          ${icone('upload')} Restaurar de Arquivo
+        </button>
+        ${temRollbackDisponivel() ? `
+          <button class="btn btn-contorno" id="btn-desfazer-restauracao" style="color:#DC2626; border-color:#FECACA;" title="Desfazer a última restauração e voltar aos dados anteriores">
+            ↩️ Desfazer Restauração (Rollback)
+          </button>
+        ` : ''}
+      </div>
+      <input type="file" id="input-arquivo-backup" accept=".json" style="display:none;" />
+    </section>
   </div>`;
 
   const $ = (s) => raiz.querySelector(s);
@@ -197,6 +229,117 @@ export function renderConfiguracoes(raiz, irPara) {
       toast('Erro na verificação: ' + err.message, 'erro');
       btn.disabled = false;
       btn.textContent = 'Verificar novamente';
+    }
+  });
+
+  // ── Cibersegurança & Backup de Contingência ─────────────────
+  $('#btn-baixar-backup')?.addEventListener('click', () => {
+    try {
+      const { nomeArquivo, snapshot } = baixarArquivoBackup();
+      toast(`Backup gerado com sucesso! Arquivo "${nomeArquivo}" baixado. 🛡️`, 'sucesso');
+    } catch (err) {
+      toast('Erro ao gerar backup: ' + err.message, 'erro');
+    }
+  });
+
+  const inputBackup = $('#input-arquivo-backup');
+  $('#btn-abrir-restaurar')?.addEventListener('click', () => {
+    inputBackup?.click();
+  });
+
+  inputBackup?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const conteudo = evt.target?.result;
+      const validacao = validarArquivoBackup(conteudo);
+      inputBackup.value = ''; // reset para permitir selecionar mesmo arquivo novamente
+
+      if (!validacao.valido) {
+        toast(validacao.erro || 'Arquivo de backup inválido.', 'erro');
+        return;
+      }
+
+      const res = validacao.resumo;
+      abrirModal({
+        titulo: 'Restaurar Dados de Backup 🛡️',
+        html: `
+          <div class="modal-restaurar-backup" style="font-size:14px; color:var(--texto);">
+            <p style="margin-bottom:12px;">O arquivo de backup foi verificado e é autêntico:</p>
+            
+            <div style="background:var(--fundo-suave, #f8f6f2); border:1px solid var(--borda, #e5e0d8); border-radius:10px; padding:12px; margin-bottom:16px;">
+              <div style="margin-bottom:6px;"><strong>Ponto:</strong> ${escapeHtml(res.tenantNome)}</div>
+              <div style="margin-bottom:6px;"><strong>Data do Backup:</strong> ${escapeHtml(res.data)}</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:13px; margin-top:8px; border-top:1px dashed var(--borda, #ddd); padding-top:8px;">
+                <span>🍗 <strong>${res.pedidos}</strong> pedidos</span>
+                <span>💰 <strong>${res.vendas}</strong> vendas</span>
+                <span>👥 <strong>${res.clientes}</strong> clientes</span>
+                <span>📋 <strong>${res.fichasTecnicas}</strong> fichas técnicas</span>
+              </div>
+            </div>
+
+            <div style="margin-bottom:16px;">
+              <label style="font-weight:600; display:block; margin-bottom:6px;">Como deseja aplicar a restauração?</label>
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+                  <input type="radio" name="modo-restauracao" value="substituir" checked style="margin-top:3px;" />
+                  <div>
+                    <strong>Substituir Base Completa (Recomendado)</strong>
+                    <div style="font-size:12px; color:var(--texto-suave);">Substitui todos os dados pelo snapshot do arquivo (ideal para troca de aparelho ou restauração limpa).</div>
+                  </div>
+                </label>
+                <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer;">
+                  <input type="radio" name="modo-restauracao" value="mesclar" style="margin-top:3px;" />
+                  <div>
+                    <strong>Mesclar Dados (Merge Seguro)</strong>
+                    <div style="font-size:12px; color:var(--texto-suave);">Preserva registros criados recentemente e adiciona apenas dados faltantes.</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <p style="font-size:12px; color:#10B981; margin-bottom:16px;">
+              🛡️ <em>Um snapshot de emergência será gerado automaticamente antes da aplicação para permitir Rollback (desfazer) caso necessário.</em>
+            </p>
+
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+              <button class="btn btn-contorno" data-fechar>Cancelar</button>
+              <button class="btn btn-primario" id="btn-confirmar-restauracao">
+                ${icone('check')} Confirmar e Restaurar
+              </button>
+            </div>
+          </div>
+        `,
+        aoAbrir: (elModal, fecharModal) => {
+          elModal.querySelector('#btn-confirmar-restauracao')?.addEventListener('click', () => {
+            const modo = elModal.querySelector('input[name="modo-restauracao"]:checked')?.value || 'substituir';
+            try {
+              aplicarRestauracaoBackup(validacao.snapshot, modo);
+              toast('Backup restaurado com sucesso! 🎉', 'sucesso');
+              fecharModal();
+              renderConfiguracoes(raiz, irPara);
+            } catch (err) {
+              toast('Erro ao restaurar: ' + err.message, 'erro');
+            }
+          });
+        }
+      });
+    };
+    reader.readAsText(file);
+  });
+
+  // Rollback de Emergência
+  $('#btn-desfazer-restauracao')?.addEventListener('click', () => {
+    if (confirm('Deseja desfazer a última restauração e retornar aos dados anteriores à importação?')) {
+      try {
+        executarRollbackEmergencia();
+        toast('Rollback de emergência executado com sucesso! Dados anteriores restabelecidos.', 'sucesso');
+        renderConfiguracoes(raiz, irPara);
+      } catch (err) {
+        toast('Erro ao executar rollback: ' + err.message, 'erro');
+      }
     }
   });
 }
