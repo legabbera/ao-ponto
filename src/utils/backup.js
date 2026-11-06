@@ -255,3 +255,4 @@ export function executarRollbackEmergencia() {
   localStorage.removeItem(CHAVE_ROLLBACK);
   return snapshot;
 }
+
