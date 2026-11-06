@@ -584,3 +584,4 @@ _Gerado na plataforma Ao Ponto (aoponto.app.br)_`;
 
   renderTela();
 }
+

@@ -8,6 +8,7 @@ import { store } from '../state/store.js';
 import { PRODUTOS, STATUS_PEDIDO, PONTOS } from '../data/mock.js';
 import { fmtMoeda, fmtKg } from '../utils/format.js';
 import { salvarPedidoNoBanco } from '../services/api.js';
+import { executarComIdempotencia, gerarIdempotencyKey } from '../utils/idempotencia.js';
 
 let filtroStatus = 'todos';
 let filtroData = 'hoje';
@@ -400,7 +401,10 @@ export function renderPedidos(raiz, irPara) {
         });
       });
 
-      modal.querySelector('#btn-salvar-reserva').addEventListener('click', () => {
+      let processandoReserva = false;
+      modal.querySelector('#btn-salvar-reserva').addEventListener('click', async () => {
+        if (processandoReserva) return;
+        const btnSalvar = modal.querySelector('#btn-salvar-reserva');
         const cliente = modal.querySelector('#nr-cliente').value.trim();
         const telefone = modal.querySelector('#nr-telefone').value.trim();
         const data = modal.querySelector('#nr-data').value;
@@ -422,36 +426,63 @@ export function renderPedidos(raiz, irPara) {
         if (itensAtivos.length === 0) return toast('Selecione ao menos 1 item para a reserva.', 'erro');
 
         const total = itensAtivos.reduce((acc, it) => acc + (it.qtd * it.precoUnit), 0);
+        const assinaturaPedido = `pedido_${cliente}_${telefone.replace(/\D/g, '')}_${data}_${hora}_${total.toFixed(2)}`;
 
-        store.adicionarPedido({
-          cliente,
-          telefone,
-          ponto: st.ponto === 'todos' ? 'centro' : st.ponto,
-          data,
-          hora,
-          itens: itensAtivos,
-          total,
-          status: 'confirmado',
-          pagamento: {
-            status: pagMetodo === 'pix' ? 'pago' : 'pendente',
-            metodo: pagMetodo,
-          },
-        });
+        try {
+          await executarComIdempotencia(assinaturaPedido, async () => {
+            processandoReserva = true;
+            if (btnSalvar) {
+              btnSalvar.disabled = true;
+              btnSalvar.innerHTML = `<span class="spinner"></span> Salvando Reserva...`;
+            }
 
-        const tenantAtivo = store.getTenant();
-        salvarPedidoNoBanco(tenantAtivo?.id, {
-          cliente,
-          telefone,
-          data,
-          hora,
-          total,
-          status: 'confirmado',
-          itens: itensAtivos,
-        }).catch((err) => console.warn('Supabase sync pedido:', err));
+            const idempotencyKey = gerarIdempotencyKey('pedido');
 
-        toast(`Reserva de ${cliente} confirmada para ${data} às ${hora}h!`, 'sucesso');
-        fechar();
-        desenhar();
+            store.adicionarPedido({
+              cliente,
+              telefone,
+              ponto: st.ponto === 'todos' ? 'centro' : st.ponto,
+              data,
+              hora,
+              itens: itensAtivos,
+              total,
+              status: 'confirmado',
+              idempotencyKey,
+              pagamento: {
+                status: pagMetodo === 'pix' ? 'pago' : 'pendente',
+                metodo: pagMetodo,
+              },
+            });
+
+            const tenantAtivo = store.getTenant();
+            salvarPedidoNoBanco(tenantAtivo?.id, {
+              idempotencyKey,
+              cliente,
+              telefone,
+              data,
+              hora,
+              total,
+              status: 'confirmado',
+              itens: itensAtivos,
+            }).catch((err) => console.warn('Supabase sync pedido:', err));
+
+            toast(`Reserva de ${cliente} confirmada para ${data} às ${hora}h!`, 'sucesso');
+            processandoReserva = false;
+            fechar();
+            desenhar();
+          });
+        } catch (err) {
+          processandoReserva = false;
+          if (btnSalvar) {
+            btnSalvar.disabled = false;
+            btnSalvar.innerHTML = `${icone('ok')} Confirmar e Salvar Reserva`;
+          }
+          if (err.message && err.message.includes('processamento')) {
+            toast('Esta reserva já está sendo processada!', 'info');
+          } else {
+            toast(err.message || 'Erro ao salvar reserva', 'erro');
+          }
+        }
       });
     });
   }

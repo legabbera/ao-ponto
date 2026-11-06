@@ -10,6 +10,7 @@ import { fmtMoeda, fmtKg } from '../utils/format.js';
 import { exibirModalLimite } from '../components/limite-modal.js';
 import { registrarVendaTenant } from '../data/tenants.js';
 import { registrarVenda as registrarVendaApi } from '../services/api.js';
+import { executarComIdempotencia, gerarIdempotencyKey } from '../utils/idempotencia.js';
 
 let carrinho = [];
 let categoriaAtiva = 'todos';
@@ -17,6 +18,7 @@ let metodoPagamento = 'pix';
 let valorRecebido = 0;
 let clienteNome = '';
 let clienteTelefone = '';
+let processandoVenda = false;
 
 export function renderVendas(raiz, irPara) {
   const st = store.get(), perfil = store.perfil();
@@ -467,119 +469,145 @@ export function renderVendas(raiz, irPara) {
     });
   }
 
-  function finalizarVenda() {
-    if (carrinho.length === 0) return;
-
-    // ── Guard de limite do plano gratuito ───────────────────
-    try {
-      registrarVendaTenant();
-    } catch (e) {
-      if (e.message === 'LIMITE_ATINGIDO') {
-        exibirModalLimite(irPara, store.getTenant());
-        return;
-      }
-    }
+  async function finalizarVenda() {
+    if (carrinho.length === 0 || processandoVenda) return;
 
     const subtotal = carrinho.reduce((acc, it) => acc + it.total, 0);
-    const troco = Math.max(0, (valorRecebido || subtotal) - subtotal);
-    const itensTexto = carrinho.map((it) => it.forma === 'peso' ? `${it.nome} (${fmtKg(it.pesoKg)})` : `${it.qtd}x ${it.nome}`).join(', ');
+    const assinaturaVenda = `venda_${metodoPagamento}_${subtotal.toFixed(2)}_${carrinho.map(i => `${i.id}:${i.qtd || i.pesoKg}`).join('|')}`;
+    const btnFinalizar = raiz.querySelector('#btn-finalizar-venda');
 
-    const novaVenda = store.adicionarVenda({
-      itensTexto,
-      total: subtotal,
-      metodo: metodoPagamento,
-      cliente: clienteNome || 'Balcão',
-      telefone: clienteTelefone,
-      troco: metodoPagamento === 'dinheiro' ? troco : 0,
-      itens: [...carrinho],
-    });
+    try {
+      await executarComIdempotencia(assinaturaVenda, async () => {
+        processandoVenda = true;
+        if (btnFinalizar) {
+          btnFinalizar.disabled = true;
+          btnFinalizar.innerHTML = `<span class="spinner"></span> Registrando Venda...`;
+        }
 
-    const tenantAtivo = store.getTenant();
-    registrarVendaApi({
-      total: subtotal,
-      pagamento: { metodo: metodoPagamento, troco, valorRecebido },
-      cliente: { nome: clienteNome, telefone: clienteTelefone },
-      itens: [...carrinho],
-    }, tenantAtivo?.id).catch((err) => console.warn('Supabase sync venda:', err));
+        // ── Guard de limite do plano gratuito ───────────────────
+        try {
+          registrarVendaTenant();
+        } catch (e) {
+          if (e.message === 'LIMITE_ATINGIDO') {
+            exibirModalLimite(irPara, store.getTenant());
+            processandoVenda = false;
+            return;
+          }
+        }
 
-    const nomeLoja = store.getWhatsapp()?.config?.nomeEstabelecimento || 'Ao Ponto Assados';
-    const msgZap = encodeURIComponent(
-      `*${nomeLoja} - Comprovante de Venda*` +
-      '\nPedido: #' + novaVenda.id + ' | Horario: ' + novaVenda.hora +
-      '\nCliente: ' + (clienteNome || 'Balcao') +
-      '\n------------------------------' +
-      carrinho.map((it) => '\n - ' + (it.forma === 'peso' ? it.nome + ' (' + fmtKg(it.pesoKg) + ') - ' + fmtMoeda(it.total) : it.qtd + 'x ' + it.nome + ' - ' + fmtMoeda(it.total))).join('') +
-      '\n------------------------------' +
-      '\n*TOTAL: ' + fmtMoeda(subtotal) + '*' +
-      '\nPagamento: ' + metodoPagamento.toUpperCase() +
-      (metodoPagamento === 'dinheiro' && troco > 0 ? '\nTroco: ' + fmtMoeda(troco) : '') +
-      '\n\nObrigado pela preferencia e bom apetite!'
-    );
+        const troco = Math.max(0, (valorRecebido || subtotal) - subtotal);
+        const itensTexto = carrinho.map((it) => it.forma === 'peso' ? `${it.nome} (${fmtKg(it.pesoKg)})` : `${it.qtd}x ${it.nome}`).join(', ');
+        const idempotencyKey = gerarIdempotencyKey('venda');
 
-    abrirModal(`
-      <div class="comprovante-sucesso">
-        <div class="sucesso-icone">${icone('ok')}</div>
-        <h2>Venda Concluída!</h2>
-        <p class="sucesso-sub">Código da venda: <strong>${novaVenda.id}</strong></p>
+        const novaVenda = store.adicionarVenda({
+          itensTexto,
+          total: subtotal,
+          metodo: metodoPagamento,
+          cliente: clienteNome || 'Balcão',
+          telefone: clienteTelefone,
+          troco: metodoPagamento === 'dinheiro' ? troco : 0,
+          itens: [...carrinho],
+          idempotencyKey,
+        });
 
-        <div class="cupom-papel">
-          <div class="cupom-cabecalho">
-            <strong>🍗 Frango Assado</strong>
-            <small>Comprovante Não Fiscal</small>
-            <small>${novaVenda.hora} &bull; ${nomePonto}</small>
-          </div>
-          <div class="cupom-linhas">
-            ${carrinho.map((it) => `
-              <div class="cupom-item">
-                <span>${it.forma === 'peso' ? `${it.nome} (${fmtKg(it.pesoKg)})` : `${it.qtd}x ${it.nome}`}</span>
-                <strong>${fmtMoeda(it.total)}</strong>
+        const tenantAtivo = store.getTenant();
+        registrarVendaApi({
+          idempotencyKey,
+          total: subtotal,
+          pagamento: { metodo: metodoPagamento, troco, valorRecebido },
+          cliente: { nome: clienteNome, telefone: clienteTelefone },
+          itens: [...carrinho],
+        }, tenantAtivo?.id).catch((err) => console.warn('Supabase sync venda:', err));
+
+        const nomeLoja = store.getWhatsapp()?.config?.nomeEstabelecimento || 'Ao Ponto Assados';
+        const msgZap = encodeURIComponent(
+          `*${nomeLoja} - Comprovante de Venda*` +
+          '\nPedido: #' + novaVenda.id + ' | Horario: ' + novaVenda.hora +
+          '\nCliente: ' + (clienteNome || 'Balcao') +
+          '\n------------------------------' +
+          carrinho.map((it) => '\n - ' + (it.forma === 'peso' ? it.nome + ' (' + fmtKg(it.pesoKg) + ') - ' + fmtMoeda(it.total) : it.qtd + 'x ' + it.nome + ' - ' + fmtMoeda(it.total))).join('') +
+          '\n------------------------------' +
+          '\n*TOTAL: ' + fmtMoeda(subtotal) + '*' +
+          '\nPagamento: ' + metodoPagamento.toUpperCase() +
+          (metodoPagamento === 'dinheiro' && troco > 0 ? '\nTroco: ' + fmtMoeda(troco) : '') +
+          '\n\nObrigado pela preferencia e bom apetite!'
+        );
+
+        abrirModal(`
+          <div class="comprovante-sucesso">
+            <div class="sucesso-icone">${icone('ok')}</div>
+            <h2>Venda Concluída!</h2>
+            <p class="sucesso-sub">Código da venda: <strong>${novaVenda.id}</strong></p>
+
+            <div class="cupom-papel">
+              <div class="cupom-cabecalho">
+                <strong>🍗 Frango Assado</strong>
+                <small>Comprovante Não Fiscal</small>
+                <small>${novaVenda.hora} &bull; ${nomePonto}</small>
               </div>
-            `).join('')}
-          </div>
-          <div class="cupom-total">
-            <span>TOTAL PAGO (${metodoPagamento.toUpperCase()}):</span>
-            <strong>${fmtMoeda(subtotal)}</strong>
-          </div>
-          ${metodoPagamento === 'dinheiro' && troco > 0 ? `
-            <div class="cupom-troco">Troco entregue: ${fmtMoeda(troco)}</div>
-          ` : ''}
-        </div>
+              <div class="cupom-linhas">
+                ${carrinho.map((it) => `
+                  <div class="cupom-item">
+                    <span>${it.forma === 'peso' ? `${it.nome} (${fmtKg(it.pesoKg)})` : `${it.qtd}x ${it.nome}`}</span>
+                    <strong>${fmtMoeda(it.total)}</strong>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="cupom-total">
+                <span>TOTAL PAGO (${metodoPagamento.toUpperCase()}):</span>
+                <strong>${fmtMoeda(subtotal)}</strong>
+              </div>
+              ${metodoPagamento === 'dinheiro' && troco > 0 ? `
+                <div class="cupom-troco">Troco entregue: ${fmtMoeda(troco)}</div>
+              ` : ''}
+            </div>
 
-        <div class="comprovante-acoes">
-          ${clienteTelefone ? `
-            <a href="https://wa.me/55${clienteTelefone.replace(/\D/g, '')}?text=${msgZap}" target="_blank" class="btn btn-primario btn-bloco" style="background:#25D366;border:0">
-              ${icone('whatsapp')} Enviar Recibo no WhatsApp
-            </a>
-          ` : `
-            <button class="btn btn-contorno btn-bloco" id="btn-zap-rapido">
-              ${icone('whatsapp')} Compartilhar no WhatsApp
-            </button>
-          `}
-          <button class="btn btn-contorno btn-bloco" onclick="window.print()">
-            ${icone('imprimir')} Imprimir Cupom
-          </button>
-          <button class="btn btn-escuro btn-bloco" data-fechar id="btn-nova-venda-pos">
-            ${icone('mais')} Iniciar Próxima Venda
-          </button>
-        </div>
-      </div>
-    `, (modal, fechar) => {
-      modal.querySelector('#btn-zap-rapido')?.addEventListener('click', () => {
-        window.open('https://api.whatsapp.com/send?text=' + msgZap, '_blank');
-      });
-      modal.querySelector('#btn-nova-venda-pos')?.addEventListener('click', () => {
+            <div class="comprovante-acoes">
+              ${clienteTelefone ? `
+                <a href="https://wa.me/55${clienteTelefone.replace(/\D/g, '')}?text=${msgZap}" target="_blank" class="btn btn-primario btn-bloco" style="background:#25D366;border:0">
+                  ${icone('whatsapp')} Enviar Recibo no WhatsApp
+                </a>
+              ` : `
+                <button class="btn btn-contorno btn-bloco" id="btn-zap-rapido">
+                  ${icone('whatsapp')} Compartilhar no WhatsApp
+                </button>
+              `}
+              <button class="btn btn-contorno btn-bloco" onclick="window.print()">
+                ${icone('imprimir')} Imprimir Cupom
+              </button>
+              <button class="btn btn-escuro btn-bloco" data-fechar id="btn-nova-venda-pos">
+                ${icone('mais')} Iniciar Próxima Venda
+              </button>
+            </div>
+          </div>
+        `, (modal, fechar) => {
+          modal.querySelector('#btn-zap-rapido')?.addEventListener('click', () => {
+            window.open('https://api.whatsapp.com/send?text=' + msgZap, '_blank');
+          });
+          modal.querySelector('#btn-nova-venda-pos')?.addEventListener('click', () => {
+            carrinho = [];
+            clienteNome = '';
+            clienteTelefone = '';
+            processandoVenda = false;
+            fechar();
+            desenhar();
+          });
+        });
+
         carrinho = [];
         clienteNome = '';
         clienteTelefone = '';
-        fechar();
+        processandoVenda = false;
         desenhar();
       });
-    });
-
-    carrinho = [];
-    clienteNome = '';
-    clienteTelefone = '';
-    desenhar();
+    } catch (err) {
+      processandoVenda = false;
+      if (err.message && err.message.includes('processamento')) {
+        toast('Venda já está sendo processada!', 'info');
+      } else {
+        toast(err.message || 'Erro ao registrar venda', 'erro');
+      }
+    }
   }
 
   desenhar();

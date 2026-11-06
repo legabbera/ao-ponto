@@ -1,3 +1,4 @@
+const transacoesProcessadasMemoria = new Set();
 /**
  * CAMADA DE SERVIÇOS — Conexão Supabase Multi-tenant
  * ------------------------------------------------
@@ -277,6 +278,11 @@ export async function buscarPedidosDoBanco(tenantId) {
 }
 
 export async function salvarPedidoNoBanco(tenantId, dados) {
+  if (dados?.idempotencyKey && transacoesProcessadasMemoria.has(dados.idempotencyKey)) {
+    console.warn('[Idempotencia API] Pedido duplicado descartado:', dados.idempotencyKey);
+    return null;
+  }
+  if (dados?.idempotencyKey) transacoesProcessadasMemoria.add(dados.idempotencyKey);
   if (supabase && tenantId) {
     try {
       const { data: pedido, error } = await supabase
@@ -314,6 +320,11 @@ export async function salvarPedidoNoBanco(tenantId, dados) {
 // ── 4. VENDAS (PDV / CAIXA RÁPIDO) ────────────────────────────
 
 export async function registrarVenda(dadosVenda, tenantId) {
+  if (dadosVenda?.idempotencyKey && transacoesProcessadasMemoria.has(dadosVenda.idempotencyKey)) {
+    console.warn('[Idempotencia API] Venda duplicada descartada:', dadosVenda.idempotencyKey);
+    return dadosVenda;
+  }
+  if (dadosVenda?.idempotencyKey) transacoesProcessadasMemoria.add(dadosVenda.idempotencyKey);
   if (supabase && tenantId) {
     try {
       // 1. Grava a Venda
@@ -349,8 +360,7 @@ export async function registrarVenda(dadosVenda, tenantId) {
     }
   }
 
-  // Atualiza contador no tenant mock
-  registrarVendaTenant();
+  // Contador já atualizado na chamada do frontend
   return dadosVenda;
 }
 
