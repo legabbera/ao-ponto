@@ -6,6 +6,8 @@
 import { icone } from '../components/icons.js';
 import { fmtMoeda } from '../utils/format.js';
 import { abrirModalTermos, abrirModalLGPD } from '../components/legal-modal.js';
+import { abrirModal, toast } from '../components/ui.js';
+import { salvarLead } from '../services/leads.js';
 
 // Configuração centralizada para links e contatos reais
 export const LANDING_CONFIG = {
@@ -814,7 +816,7 @@ export function renderLanding(raiz, irPara) {
             <h4>Produto</h4>
             <ul>
               <li><a href="javascript:void(0)" id="footer-link-app">Acessar App Demo</a></li>
-              <li><a href="#contato">Falar com a equipe</a></li>
+              <li><a href="javascript:void(0)" id="footer-link-contato">Falar com a equipe</a></li>
               <li><span style="font-size:12px;color:rgba(255,255,255,0.4)">Versão 0.1 (Protótipo B2B)</span></li>
             </ul>
           </div>
@@ -982,54 +984,210 @@ export function renderLanding(raiz, irPara) {
     if (e.target === modal) fecharModalLead();
   });
 
-  // Envio de formulário principal B2B
+  // Popup Falar com a Equipe (Rodapé)
+  raiz.querySelector('#footer-link-contato')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    abrirPopupFalarComEquipe();
+  });
+
+  function abrirPopupFalarComEquipe() {
+    abrirModal(`
+      <div style="text-align:left; max-width:440px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="font-size:36px; margin-bottom:6px;">💬</div>
+          <h3 style="font-size:20px; color:var(--carvao); margin:0 0 6px 0; font-weight:700;">
+            Falar com a Equipe Ao Ponto
+          </h3>
+          <p style="font-size:13px; color:var(--texto-suave); margin:0;">
+            Tire suas dúvidas ou solicite uma demonstração direto no WhatsApp:
+          </p>
+        </div>
+
+        <form id="form-popup-contato">
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:var(--carvao); margin-bottom:4px;">
+                Seu nome completo *
+              </label>
+              <input type="text" id="popup-contato-nome" placeholder="Ex.: João Batista" required 
+                style="width:100%; box-sizing:border-box; color:var(--carvao); background:#f9f5ee; border:1px solid var(--borda); border-radius:8px; padding:10px 12px; font-size:14px;" />
+            </div>
+
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:var(--carvao); margin-bottom:4px;">
+                WhatsApp com DDD *
+              </label>
+              <input type="tel" id="popup-contato-whats" placeholder="(00) 00000-0000" required 
+                style="width:100%; box-sizing:border-box; color:var(--carvao); background:#f9f5ee; border:1px solid var(--borda); border-radius:8px; padding:10px 12px; font-size:14px;" />
+            </div>
+
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:var(--carvao); margin-bottom:4px;">
+                Sua dúvida ou mensagem (opcional)
+              </label>
+              <textarea id="popup-contato-msg" rows="3" placeholder="Ex.: Gostaria de saber como funciona o controle de balcão e os planos..." 
+                style="width:100%; box-sizing:border-box; color:var(--carvao); background:#f9f5ee; border:1px solid var(--borda); border-radius:8px; padding:10px 12px; font-size:14px; font-family:inherit; resize:vertical;"></textarea>
+            </div>
+
+            <button type="submit" class="lp-btn-cta" id="btn-popup-enviar-whats" style="margin-top:8px; height:48px; width:100%; font-size:15px; font-weight:700;">
+              Enviar e Abrir no WhatsApp ↗
+            </button>
+          </div>
+        </form>
+      </div>
+    `, (m, fechar) => {
+      const form = m.querySelector('#form-popup-contato');
+      form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nome = m.querySelector('#popup-contato-nome')?.value.trim();
+        const whats = m.querySelector('#popup-contato-whats')?.value.trim();
+        const msg = m.querySelector('#popup-contato-msg')?.value.trim();
+
+        if (!nome || !whats) return;
+
+        const btn = m.querySelector('#btn-popup-enviar-whats');
+        btn.disabled = true;
+        btn.textContent = 'Enviando...';
+
+        try {
+          const res = await salvarLead({
+            nome,
+            whatsapp: whats,
+            mensagem: msg,
+            origem: 'rodape_contato'
+          });
+
+          fechar();
+          toast('Contato registrado com sucesso! Abrindo WhatsApp... 📲', 'sucesso');
+          if (res.urlWhatsApp) {
+            window.open(res.urlWhatsApp, '_blank');
+          }
+        } catch (err) {
+          toast('Erro ao processar: ' + err.message, 'erro');
+          btn.disabled = false;
+          btn.textContent = 'Enviar e Abrir no WhatsApp ↗';
+        }
+      });
+    });
+  }
+
+  // Envio de formulário principal B2B (Imagem 2)
   const formPrincipal = raiz.querySelector('#lp-lead-form');
   const boxSucesso = raiz.querySelector('#lp-form-sucesso');
   const btnWhats = raiz.querySelector('#btn-falar-whats-direto');
 
-  formPrincipal?.addEventListener('submit', (e) => {
+  formPrincipal?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const nome = raiz.querySelector('#lead-nome')?.value.trim();
     const whats = raiz.querySelector('#lead-whats')?.value.trim();
     const tipo = raiz.querySelector('#lead-tipo')?.value;
+    const cidade = raiz.querySelector('#lead-cidade')?.value.trim();
 
-    sessionStorage.setItem('aoponto-lead', JSON.stringify({ nome, whats, tipo, data: new Date().toISOString() }));
+    const submitBtn = formPrincipal.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Processando...';
+    }
 
-    formPrincipal.style.display = 'none';
-    if (boxSucesso) {
-      boxSucesso.style.display = 'block';
-      const msg = raiz.querySelector('#msg-sucesso-texto');
-      if (msg) {
-        msg.textContent = `Olá ${nome}! Seu interesse foi registrado. Entraremos em contato com você pelo WhatsApp (${whats}) para apresentar o Ao Ponto.`;
+    try {
+      const res = await salvarLead({
+        nome,
+        whatsapp: whats,
+        tipoNegocio: tipo,
+        cidade: cidade,
+        origem: 'landing_form'
+      });
+
+      // Dispara abertura no WhatsApp
+      if (res.urlWhatsApp) {
+        window.open(res.urlWhatsApp, '_blank');
       }
-      if (LANDING_CONFIG.WHATSAPP_NUMERO && btnWhats) {
-        btnWhats.style.display = 'inline-flex';
-        btnWhats.onclick = () => {
-          const url = `https://wa.me/${LANDING_CONFIG.WHATSAPP_NUMERO}?text=${encodeURIComponent(LANDING_CONFIG.WHATSAPP_MENSAGEM)}`;
-          window.open(url, '_blank');
-        };
+
+      formPrincipal.style.display = 'none';
+      if (boxSucesso) {
+        boxSucesso.style.display = 'block';
+        const msg = raiz.querySelector('#msg-sucesso-texto');
+        if (msg) {
+          msg.textContent = `Olá ${nome}! Seu interesse foi salvo no sistema e enviado para nossa equipe. Também abrimos uma conversa direta no seu WhatsApp!`;
+        }
+        if (btnWhats) {
+          btnWhats.style.display = 'inline-flex';
+          btnWhats.textContent = 'Reabrir conversa no WhatsApp ↗';
+          btnWhats.onclick = () => {
+            window.open(res.urlWhatsApp, '_blank');
+          };
+        }
+      }
+    } catch (err) {
+      toast('Erro ao enviar: ' + err.message, 'erro');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Quero conhecer o Ao Ponto';
       }
     }
   });
 
-  // Envio formulário do modal
+  // Envio formulário do modal (Imagem 1)
   const formModal = raiz.querySelector('#lp-modal-form');
   const modalSucesso = raiz.querySelector('#lp-modal-sucesso');
-  formModal?.addEventListener('submit', (e) => {
+  formModal?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const nome = raiz.querySelector('#modal-nome')?.value.trim();
     const whats = raiz.querySelector('#modal-whats')?.value.trim();
     const tipo = raiz.querySelector('#modal-tipo')?.value;
 
-    sessionStorage.setItem('aoponto-lead', JSON.stringify({ nome, whats, tipo, data: new Date().toISOString() }));
-    formModal.style.display = 'none';
-    if (modalSucesso) modalSucesso.style.display = 'block';
+    const modalBtn = formModal.querySelector('button[type="submit"]');
+    if (modalBtn) {
+      modalBtn.disabled = true;
+      modalBtn.textContent = 'Enviando...';
+    }
 
-    setTimeout(() => {
-      fecharModalLead();
-      formModal.reset();
-      formModal.style.display = 'block';
-      if (modalSucesso) modalSucesso.style.display = 'none';
-    }, 2800);
+    try {
+      const res = await salvarLead({
+        nome,
+        whatsapp: whats,
+        tipoNegocio: tipo,
+        origem: 'modal_interesse'
+      });
+
+      // Abre WhatsApp
+      if (res.urlWhatsApp) {
+        window.open(res.urlWhatsApp, '_blank');
+      }
+
+      formModal.style.display = 'none';
+      if (modalSucesso) {
+        modalSucesso.style.display = 'block';
+        modalSucesso.innerHTML = `
+          <strong style="color:var(--verde);font-size:18px;display:block">Tudo certo! 👍</strong>
+          <p style="font-size:14px;color:var(--texto-suave);margin-top:8px">
+            Seus dados foram registrados com sucesso e enviamos a mensagem para o WhatsApp da equipe comercial.
+          </p>
+          <button class="btn btn-primario" id="btn-modal-whats-reabrir" style="margin-top:12px; font-size:13px;">
+            Reabrir WhatsApp ↗
+          </button>
+        `;
+        modalSucesso.querySelector('#btn-modal-whats-reabrir')?.addEventListener('click', () => {
+          window.open(res.urlWhatsApp, '_blank');
+        });
+      }
+
+      setTimeout(() => {
+        fecharModalLead();
+        formModal.reset();
+        formModal.style.display = 'block';
+        if (modalBtn) {
+          modalBtn.disabled = false;
+          modalBtn.textContent = 'Enviar meu interesse';
+        }
+        if (modalSucesso) modalSucesso.style.display = 'none';
+      }, 3500);
+    } catch (err) {
+      toast('Erro ao processar: ' + err.message, 'erro');
+      if (modalBtn) {
+        modalBtn.disabled = false;
+        modalBtn.textContent = 'Enviar meu interesse';
+      }
+    }
   });
 }

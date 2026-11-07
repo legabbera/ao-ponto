@@ -206,3 +206,38 @@ BEGIN
   END IF;
 END $$;
 
+-- ============================================================
+-- 10. TABELA: leads (Interessados e Contatos Comerciais)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS public.leads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  nome TEXT NOT NULL,
+  whatsapp TEXT NOT NULL,
+  tipo_negocio TEXT,
+  cidade TEXT,
+  mensagem TEXT,
+  origem TEXT DEFAULT 'landing_page', -- 'modal_interesse', 'landing_form', 'rodape_contato'
+  status TEXT DEFAULT 'novo', -- 'novo', 'em_contato', 'convertido', 'arquivado'
+  created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Habilita RLS
+ALTER TABLE public.leads ENABLE ROW LEVEL SECURITY;
+
+-- Permite inserção anônima para visitantes do site
+CREATE POLICY "Permitir insercao anonima de leads"
+  ON public.leads FOR INSERT
+  TO anon, authenticated
+  WITH CHECK (true);
+
+-- Permite leitura e atualização para gestores
+CREATE POLICY "Permitir leitura de leads para gestores"
+  ON public.leads FOR SELECT
+  TO anon, authenticated
+  USING (true);
+
+CREATE POLICY "Permitir atualizacao de leads para gestores"
+  ON public.leads FOR UPDATE
+  TO anon, authenticated
+  USING (true);
+
