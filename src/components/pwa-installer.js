@@ -165,3 +165,4 @@ export function dispararInstalacaoPwa() {
     toast('Para instalar, use a opção "Instalar aplicativo" no menu do seu navegador (⋮)', 'info');
   }
 }
+

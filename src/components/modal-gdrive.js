@@ -152,3 +152,4 @@ async function executarFluxoGoogleDrive(config) {
     toast('Erro na conexão com Google Drive: ' + err.message, 'erro');
   }
 }
+

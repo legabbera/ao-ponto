@@ -833,8 +833,8 @@ export function renderLanding(raiz, irPara) {
           <div>
             &copy; ${LANDING_CONFIG.ANO_ATUAL} Ao Ponto &bull; Todos os direitos reservados.
           </div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.4)">
-            Imagens e dados com fins demonstrativos de protótipo de software.
+          <div style="font-size:13px;color:rgba(255,255,255,0.7)">
+            Desenvolvido por <a href="https://intelligencia.app.br" target="_blank" rel="noopener noreferrer" style="color:var(--brasa, #E26A3B);text-decoration:none;font-weight:600;">intelligencIA</a>
           </div>
         </div>
       </div>

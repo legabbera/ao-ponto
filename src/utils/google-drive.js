@@ -183,3 +183,4 @@ export async function uploadJsonParaGoogleDrive(token, nomeArquivo, conteudoJson
   const data = await response.json();
   return data;
 }
+
