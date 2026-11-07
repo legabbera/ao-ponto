@@ -11,6 +11,7 @@ import { store } from '../state/store.js';
 import { PLANOS, atualizarTenantAtivo } from '../data/tenants.js';
 import { baixarArquivoBackup, validarArquivoBackup, aplicarRestauracaoBackup, temRollbackDisponivel, executarRollbackEmergencia } from '../utils/backup.js';
 import { escapeHtml } from '../utils/sanitizar.js';
+import { iniciarEnvioGoogleDrive } from '../components/modal-gdrive.js';
 
 export function renderConfiguracoes(raiz, irPara) {
   const tenant = store.getTenant();
@@ -143,7 +144,10 @@ export function renderConfiguracoes(raiz, irPara) {
 
       <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;">
         <button class="btn btn-primario" id="btn-baixar-backup">
-          ${icone('download')} Baixar Backup Completo (.JSON)
+          ${icone('download')} Baixar Backup (.JSON)
+        </button>
+        <button class="btn btn-primario" id="btn-gdrive-backup" style="background:linear-gradient(135deg, #1A73E8, #4285F4); border-color:#1A73E8;">
+          ☁️ Salvar no Google Drive
         </button>
         <button class="btn btn-contorno" id="btn-abrir-restaurar">
           ${icone('upload')} Restaurar de Arquivo
@@ -240,6 +244,11 @@ export function renderConfiguracoes(raiz, irPara) {
     } catch (err) {
       toast('Erro ao gerar backup: ' + err.message, 'erro');
     }
+  });
+
+  // Salvar no Google Drive (OAuth + Picker)
+  $('#btn-gdrive-backup')?.addEventListener('click', () => {
+    iniciarEnvioGoogleDrive();
   });
 
   const inputBackup = $('#input-arquivo-backup');

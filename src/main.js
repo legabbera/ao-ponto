@@ -29,9 +29,13 @@ import { renderPlanos } from './pages/planos.js';
 import { renderConfiguracoes } from './pages/configuracoes.js';
 import { renderCalculadora } from './pages/calculadora.js';
 import { iniciarEscudoAntiClonagem } from './utils/anti-clonagem.js';
+import { inicializarPwa } from './components/pwa-installer.js';
 
 // Inicia proteção defensiva contra scrapers e bots de IA
 iniciarEscudoAntiClonagem();
+
+// Registra e inicializa suporte a PWA (iOS / Android)
+inicializarPwa();
 
 const app = document.getElementById('app');
 

@@ -6,6 +6,7 @@ import { toast, abrirModal } from './ui.js';
 import { store } from '../state/store.js';
 import { PONTOS, PERFIS } from '../data/mock.js';
 import { PLANOS, logoutTenant, diasTrialRestantes } from '../data/tenants.js';
+import { dispararInstalacaoPwa, isPwaInstalado } from './pwa-installer.js';
 
 export const ROTAS = [
   { id: 'inicio', rotulo: 'Início', icone: 'home', principal: true },
@@ -45,6 +46,7 @@ export function renderShell(raiz, rotaAtual, irPara) {
       ${rotas.filter((r) => r.principal).map(itemSb).join('')}
       <div class="sb-secao">Gestão</div>
       ${rotas.filter((r) => !r.principal).map(itemSb).join('')}
+        ${!isPwaInstalado() ? `<button class="sb-item" data-acao="instalar-app" title="Instalar Aplicativo no Celular / Computador" style="color:var(--brasa); font-weight:600;">${icone('mais')}<span>📲 Instalar App (PWA)</span></button>` : ''}
         ${tenant ? `<div class="sb-plano-badge" data-ir="planos" title="Meu Plano">${icone('grafico')}<span>${PLANOS[tenant.plano]?.nome || 'Grátis'}</span></div>` : ''}
         <a href="/manual.html" target="_blank" class="sb-item" style="text-decoration:none" title="Manual do Usuário (PDF / Impressão)">${icone('info')}<span>Manual do Usuário</span></a>
         <a href="/treinamento-video.html" target="_blank" class="sb-item" style="text-decoration:none" title="Vídeo Treinamento Full HD 1080p">${icone('grafico')}<span>Vídeo Treinamento</span></a>
@@ -118,6 +120,7 @@ export function renderShell(raiz, rotaAtual, irPara) {
     perfil: () => modalPerfil(irPara),
     'meu-perfil': () => modalMeuPerfil(irPara),
     sair: () => sair(irPara),
+    'instalar-app': () => dispararInstalacaoPwa(),
   };
 }
 
