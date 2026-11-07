@@ -28,6 +28,10 @@ import { renderMenu } from './pages/placeholder.js';
 import { renderPlanos } from './pages/planos.js';
 import { renderConfiguracoes } from './pages/configuracoes.js';
 import { renderCalculadora } from './pages/calculadora.js';
+import { iniciarEscudoAntiClonagem } from './utils/anti-clonagem.js';
+
+// Inicia proteção defensiva contra scrapers e bots de IA
+iniciarEscudoAntiClonagem();
 
 const app = document.getElementById('app');
 
