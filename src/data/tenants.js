@@ -6,8 +6,8 @@
  * Mantém o mesmo formato de retorno para não mudar as telas.
  */
 
-// ── Definição dos planos ────────────────────────────────────
-export const PLANOS = {
+// ── Definição dos planos padrão e dinâmicos com suporte a Descontos Relâmpago ──
+export const PLANOS_PADRAO = {
   'plano-00': {
     id: 'plano-00',
     nome: 'Comece Grátis (30 dias)',
@@ -16,17 +16,25 @@ export const PLANOS = {
     diasTrial: 30,
     valorMensalidadeAposTrial: 79.0,
     diaVencimento: 10,
-    limiteVendasMes: null, // Ilimitado durante o período de 30 dias de teste
+    limiteVendasMes: null, // Ilimitado durante os 30 dias de teste
     recursos: [
       '30 dias de teste grátis com vendas ilimitadas',
       'Dashboard e controle de vendas em tempo real',
       'Gestão de pedidos e encomendas',
-      'Controle de estoque de frangos e insumos',
-      'Subdomínio exclusivo (voce.aoponto.app)',
+      'Controle de estoque de insumos e produtos',
+      'Subdomínio exclusivo (ponto.aoponto.app)',
       'Após 30 dias: R$ 79,00/mês (vence todo dia 10)',
     ],
     cor: '--verde',
     destaque: false,
+    descontoRelampago: {
+      ativo: false,
+      precoPromocional: 0,
+      valorAposTrialPromocional: 49.0,
+      titulo: '⚡ Desconto na Primeira Mensalidade',
+      tagBadge: '⚡ PROMOÇÃO TRIAL',
+      validoAte: 'Por tempo limitado',
+    },
   },
   'plano-01': {
     id: 'plano-01',
@@ -39,13 +47,147 @@ export const PLANOS = {
       'Tudo do plano de teste',
       'Vendas e pedidos ilimitados',
       'Cobrança mensal no dia 10 de cada mês',
-      'Domínio personalizado (seunegocio.com.br)',
+      'Domínio personalizado (seuponto.com.br)',
       'Suporte prioritário via WhatsApp e e-mail',
     ],
     cor: '--brasa',
     destaque: true,
+    descontoRelampago: {
+      ativo: false,
+      precoPromocional: 49.0,
+      titulo: '⚡ Promoção Relâmpago - Primeiro Mês por R$ 49!',
+      tagBadge: '⚡ FLASH SALE -38%',
+      validoAte: 'Válido até domingo às 23:59',
+    },
+  },
+  'plano-02': {
+    id: 'plano-02',
+    nome: 'Redes & Franquias',
+    preco: 149.0,
+    precoFormatado: 'R$ 149,00/mês',
+    diaVencimento: 10,
+    limiteVendasMes: null,
+    recursos: [
+      'Todos os recursos do Plano Balcão',
+      'Gestão multi-unidades e franquias',
+      'Relatórios e DRE consolidados da rede',
+      'Taxa zero no Pix e assessoria de implantação',
+      'Atendimento VIP via WhatsApp exclusivo',
+    ],
+    cor: '--ambar',
+    destaque: false,
+    descontoRelampago: {
+      ativo: false,
+      precoPromocional: 99.0,
+      titulo: '⚡ Super Condição para Redes!',
+      tagBadge: '⚡ REDES VIP -33%',
+      validoAte: 'Por tempo limitado',
+    },
   },
 };
+
+const CHAVE_PLANOS_CONFIG = 'ao-ponto-planos-config';
+
+function carregarPlanosPersistidos() {
+  try {
+    const s = localStorage.getItem(CHAVE_PLANOS_CONFIG);
+    if (!s) return JSON.parse(JSON.stringify(PLANOS_PADRAO));
+    const obj = JSON.parse(s);
+    return {
+      'plano-00': { ...PLANOS_PADRAO['plano-00'], ...(obj['plano-00'] || {}) },
+      'plano-01': { ...PLANOS_PADRAO['plano-01'], ...(obj['plano-01'] || {}) },
+      'plano-02': { ...PLANOS_PADRAO['plano-02'], ...(obj['plano-02'] || {}) },
+    };
+  } catch (_) {
+    return JSON.parse(JSON.stringify(PLANOS_PADRAO));
+  }
+}
+
+export const PLANOS = carregarPlanosPersistidos();
+
+export function salvarPlanosConfig(novosPlanos) {
+  localStorage.setItem(CHAVE_PLANOS_CONFIG, JSON.stringify(novosPlanos));
+  Object.keys(novosPlanos).forEach((k) => {
+    PLANOS[k] = novosPlanos[k];
+  });
+  window.dispatchEvent(new CustomEvent('ao-ponto:planos-atualizados', { detail: novosPlanos }));
+}
+
+export function getPlanosConfig() {
+  return carregarPlanosPersistidos();
+}
+
+export function temDescontoRelampagoAtivo() {
+  const p = getPlanosConfig();
+  return Object.values(p).some((pl) => pl.descontoRelampago?.ativo);
+}
+
+export function getPrecoEfetivoPlano(plano) {
+  if (!plano) return 0;
+  if (plano.descontoRelampago?.ativo && typeof plano.descontoRelampago.precoPromocional === 'number') {
+    return plano.descontoRelampago.precoPromocional;
+  }
+  return plano.preco || 0;
+}
+
+export function aplicarDescontoRelampagoEmLote(porcentagem = 30) {
+  const cfg = getPlanosConfig();
+  const fator = (100 - porcentagem) / 100;
+
+  if (cfg['plano-01']) {
+    const precoPromo = Math.round(cfg['plano-01'].preco * fator);
+    cfg['plano-01'].descontoRelampago = {
+      ativo: true,
+      precoPromocional: precoPromo,
+      titulo: `⚡ Oferta Relâmpago com ${porcentagem}% OFF!`,
+      tagBadge: `⚡ FLASH SALE -${porcentagem}%`,
+      validoAte: 'Válido por tempo limitado',
+    };
+  }
+
+  if (cfg['plano-02']) {
+    const precoPromo = Math.round(cfg['plano-02'].preco * fator);
+    cfg['plano-02'].descontoRelampago = {
+      ativo: true,
+      precoPromocional: precoPromo,
+      titulo: `⚡ Oferta Relâmpago Redes com ${porcentagem}% OFF!`,
+      tagBadge: `⚡ FLASH SALE -${porcentagem}%`,
+      validoAte: 'Válido por tempo limitado',
+    };
+  }
+
+  if (cfg['plano-00']) {
+    cfg['plano-00'].descontoRelampago = {
+      ...cfg['plano-00'].descontoRelampago,
+      ativo: true,
+      valorAposTrialPromocional: Math.round(cfg['plano-00'].valorMensalidadeAposTrial * fator),
+    };
+  }
+
+  salvarPlanosConfig(cfg);
+  return cfg;
+}
+
+export function desativarTodosDescontosRelampago() {
+  const cfg = getPlanosConfig();
+  Object.keys(cfg).forEach((k) => {
+    if (cfg[k].descontoRelampago) {
+      cfg[k].descontoRelampago.ativo = false;
+    }
+  });
+  salvarPlanosConfig(cfg);
+  return cfg;
+}
+
+export function redefinirPlanosPadrao() {
+  localStorage.removeItem(CHAVE_PLANOS_CONFIG);
+  const def = JSON.parse(JSON.stringify(PLANOS_PADRAO));
+  Object.keys(def).forEach((k) => {
+    PLANOS[k] = def[k];
+  });
+  window.dispatchEvent(new CustomEvent('ao-ponto:planos-atualizados', { detail: def }));
+  return def;
+}
 
 // ── Mock de tenants cadastrados ─────────────────────────────
 const TENANTS_MOCK = [

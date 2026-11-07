@@ -5,7 +5,8 @@ import { icone } from '../components/icons.js';
 import { toast, abrirModal } from '../components/ui.js';
 import { buscarPlanos, upgradePlano } from '../services/api.js';
 import { store } from '../state/store.js';
-import { diasTrialRestantes } from '../data/tenants.js';
+import { diasTrialRestantes, getPlanosConfig, temDescontoRelampagoAtivo } from '../data/tenants.js';
+import { escapeHtml } from '../utils/sanitizar.js';
 
 export async function renderPlanos(raiz, irPara) {
   raiz.innerHTML = `<div class="planos-carregando"><span class="spinner" style="border-color:var(--brasa);border-top-color:transparent;width:32px;height:32px"></span></div>`;
@@ -85,36 +86,59 @@ export async function renderPlanos(raiz, irPara) {
   raiz.querySelectorAll('[data-upgrade]').forEach((btn) => {
     btn.addEventListener('click', () => confirmarUpgrade(btn.dataset.upgrade, irPara));
   });
+
+  // Re-renderiza reativamente se o Dono da Plataforma alterar planos no Master
+  window.addEventListener('ao-ponto:planos-atualizados', () => {
+    renderPlanos(raiz, irPara);
+  }, { once: true });
 }
 
 function cartaoPlano(plano, planoAtual) {
   const ativo = plano.id === planoAtual;
   const isPago = plano.preco > 0;
+  const temPromo = isPago && plano.descontoRelampago?.ativo && plano.descontoRelampago?.precoPromocional < plano.preco;
+  const precoEfetivo = temPromo ? plano.descontoRelampago.precoPromocional : plano.preco;
 
   return `
-  <div class="plano-card ${plano.destaque ? 'plano-destaque' : ''} ${ativo ? 'plano-ativo' : ''}">
-    ${plano.destaque ? '<div class="plano-badge-recomendado">Mais popular</div>' : ''}
-    <div class="plano-nome">${plano.nome}</div>
+  <div class="plano-card ${plano.destaque || temPromo ? 'plano-destaque' : ''} ${ativo ? 'plano-ativo' : ''}" style="${temPromo ? 'border-color:var(--brasa);box-shadow:0 6px 20px rgba(226,106,59,0.18);' : ''}">
+    ${temPromo
+      ? `<div class="plano-badge-recomendado" style="background:linear-gradient(135deg, #EF4444, #D9481C);">${escapeHtml(plano.descontoRelampago.tagBadge || '⚡ DESCONTO RELÂMPAGO')}</div>`
+      : (plano.destaque ? '<div class="plano-badge-recomendado">Mais popular</div>' : '')
+    }
+    <div class="plano-nome">${escapeHtml(plano.nome)}</div>
     <div class="plano-preco">
-      ${isPago
-        ? `<span class="plano-valor">R$ 79</span><span class="plano-periodo">,00/mês</span>`
-        : `<span class="plano-valor">Grátis</span><span class="plano-periodo"> por 30 dias</span>`
+      ${temPromo ? `
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <del style="color:var(--texto-suave); font-size:14px; font-weight:600;">De R$ ${plano.preco.toFixed(2).replace('.', ',')}</del>
+          <div style="display:flex; align-items:baseline; gap:4px;">
+            <span class="plano-valor" style="color:var(--brasa); font-size:32px;">R$ ${Math.floor(precoEfetivo)}</span>
+            <span class="plano-periodo">,${String((precoEfetivo % 1).toFixed(2)).slice(2)}/mês</span>
+          </div>
+          ${plano.descontoRelampago.validoAte ? `
+            <small style="color:#C2410C; font-size:11px; font-weight:700; display:block; margin-top:2px;">
+              🔥 ${escapeHtml(plano.descontoRelampago.validoAte)}
+            </small>
+          ` : ''}
+        </div>
+      ` : isPago
+        ? `<span class="plano-valor">R$ ${Math.floor(plano.preco)}</span><span class="plano-periodo">,${String((plano.preco % 1).toFixed(2)).slice(2)}/mês</span>`
+        : `<span class="plano-valor">Grátis</span><span class="plano-periodo"> por ${plano.diasTrial || 30} dias</span>`
       }
     </div>
     <div class="plano-limite">
       ${isPago
         ? `<strong>Vendas ilimitadas</strong><br><small style="color:var(--texto-suave)">Vencimento todo dia 10</small>`
-        : `<strong>30 dias de teste grátis</strong><br><small style="color:var(--texto-suave)">Depois R$ 79,00/mês no dia 10</small>`
+        : `<strong>${plano.diasTrial || 30} dias de teste grátis</strong><br><small style="color:var(--texto-suave)">Depois R$ ${(plano.valorMensalidadeAposTrial || 79).toFixed(2).replace('.', ',')}/mês no dia 10</small>`
       }
     </div>
     <ul class="plano-recursos">
-      ${plano.recursos.map((r) => `<li>${icone('confirmado')} <span>${r}</span></li>`).join('')}
+      ${plano.recursos.map((r) => `<li>${icone('confirmado')} <span>${escapeHtml(r)}</span></li>`).join('')}
     </ul>
     ${ativo
       ? `<div class="plano-atual-badge">✅ Seu plano atual</div>`
       : isPago
         ? `<button class="btn btn-primario btn-bloco" data-upgrade="${plano.id}" id="btn-upgrade-${plano.id}">
-             Ativar Plano Balcão
+             ${temPromo ? `Aproveitar Desconto: R$ ${precoEfetivo.toFixed(2).replace('.', ',')}/mês` : 'Ativar Plano Balcão'}
            </button>`
         : `<button class="btn btn-contorno btn-bloco" disabled>Plano de teste</button>`
     }
@@ -122,14 +146,29 @@ function cartaoPlano(plano, planoAtual) {
 }
 
 function confirmarUpgrade(planoId, irPara) {
+  const cfg = getPlanosConfig();
+  const pl = cfg[planoId] || {};
+  const temPromo = pl.descontoRelampago?.ativo && pl.descontoRelampago?.precoPromocional < pl.preco;
+  const preco = temPromo ? pl.descontoRelampago.precoPromocional : (pl.preco || 79);
+
   abrirModal(`
-    <h2>Assinar Plano Balcão</h2>
-    <p>Você terá acesso ilimitado por <strong>R$ 79,00/mês</strong> com vencimento todo <strong>dia 10</strong>. Pode cancelar quando quiser.</p>
+    <h2>Assinar ${escapeHtml(pl.nome || 'Plano Balcão')}</h2>
+    <p>
+      ${temPromo ? `
+        <span class="badge" style="background:#FFF8F3; border:1px solid #FED7AA; color:#C2410C; font-weight:700; margin-bottom:8px; display:inline-block;">
+          ${escapeHtml(pl.descontoRelampago.tagBadge || '⚡ DESCONTO RELÂMPAGO APLICADO')}
+        </span><br>
+        Preço promocional especial: <strong>R$ ${preco.toFixed(2).replace('.', ',')}/mês</strong> com vencimento no <strong>dia 10</strong>.
+      ` : `
+        Você terá acesso ilimitado por <strong>R$ ${preco.toFixed(2).replace('.', ',')}/mês</strong> com vencimento todo <strong>dia 10</strong>.
+      `}
+      Pode cancelar quando quiser.
+    </p>
     <div class="aviso-demo">${icone('info')}<span><strong>Simulação:</strong> nenhum pagamento real será debitado agora.</span></div>
     <div class="modal-acoes">
       <button class="btn btn-primario btn-bloco" id="btn-confirmar-upgrade">
         <span class="spinner" id="spinner-upgrade" style="display:none"></span>
-        Confirmar assinatura (simulação)
+        Confirmar assinatura (${temPromo ? `R$ ${preco.toFixed(2).replace('.', ',')}/mês` : 'simulação'})
       </button>
       <button class="btn btn-fantasma btn-bloco" data-fechar>Cancelar</button>
     </div>
