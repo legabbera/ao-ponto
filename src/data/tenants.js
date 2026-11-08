@@ -192,6 +192,16 @@ export function redefinirPlanosPadrao() {
 // ── Mock de tenants cadastrados ─────────────────────────────
 const TENANTS_MOCK = [
   {
+    id: '10dc59e8-dce5-4ebd-9600-9a0d363036d2',
+    slug: 'master',
+    nome: 'Ao Ponto SaaS (Master)',
+    cnpj: null,
+    plano: 'plano-02',
+    planoAtivadoEm: '2026-11-08',
+    vendasMesAtual: 0,
+    bloqueado: false,
+  },
+  {
     id: 'tenant_demo',
     slug: 'frango-demo',
     nome: 'Frango Assado Demo',
@@ -207,6 +217,21 @@ const TENANTS_MOCK = [
 
 // ── Mock de usuários ────────────────────────────────────────
 const USUARIOS_MOCK = [
+  {
+    id: '470e6456-fdb1-43d2-9196-32bee9c55bec',
+    tenantId: '10dc59e8-dce5-4ebd-9600-9a0d363036d2',
+    email: 'allexandregabbera@gmail.com',
+    celular: '11999998877',
+    celularFormatado: '(11) 99999-8877',
+    username: 'alexandre',
+    nome: 'Alexandre Gabbera',
+    cargo: 'Gestor Master da Plataforma',
+    perfil: 'master_saas',
+    role: 'master_saas',
+    pontos: ['todos'],
+    status: 'ativo',
+    createdAt: '2026-11-08T16:47:31Z',
+  },
   {
     id: 'user_demo',
     tenantId: 'tenant_demo',
