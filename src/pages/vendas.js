@@ -81,11 +81,11 @@ export function renderVendas(raiz, irPara) {
                     <span class="prod-preco">
                       ${prod.forma === 'peso' ? `${fmtMoeda(prod.precoKg)} <small>/kg</small>` : fmtMoeda(prod.preco)}
                     </span>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                      <button class="btn btn-pequeno btn-contorno btn-editar-prod" data-edit-id="${prod.id}" title="Editar este produto" style="padding:6px 8px; font-size:13px; border-radius:8px; line-height:1;">
+                    <div class="prod-acoes-linha">
+                      <button class="btn-editar-prod" data-edit-id="${prod.id}" title="Editar este produto">
                         ✏️
                       </button>
-                      <button class="btn btn-primario btn-add-prod" data-id="${prod.id}" title="Adicionar ao carrinho" style="padding:6px 12px; font-size:18px; font-weight:700; border-radius:8px; line-height:1; min-width:38px; display:inline-flex; align-items:center; justify-content:center;">
+                      <button class="btn-add-prod" data-id="${prod.id}" title="Adicionar ao carrinho">
                         +
                       </button>
                     </div>
