@@ -219,7 +219,20 @@ export function renderLogin(raiz, irPara) {
     try {
       const resultado = await loginDemo(u, s);
       limparTentativasLogin();
-      entrar('owner', resultado?.usuario, resultado?.tenant);
+
+      if (resultado?.usuario?.role === 'master_saas' || resultado?.usuario?.perfil === 'master_saas') {
+        store.set({
+          logado: true,
+          modoSaas: true,
+          perfil: 'master_saas',
+          usuario: resultado.usuario,
+          tenant: resultado.tenant,
+        });
+        toast(`👑 Bem-vindo ao Painel Master, ${resultado.usuario.nome.split(' ')[0]}!`, 'sucesso');
+        irPara('inicio');
+      } else {
+        entrar(resultado?.usuario?.perfil || 'owner', resultado?.usuario, resultado?.tenant);
+      }
     } catch (err) {
       const { falhas, bloqueadoAte } = registrarFalhaLogin();
       if (bloqueadoAte) {

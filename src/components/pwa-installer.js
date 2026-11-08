@@ -51,7 +51,7 @@ export function inicializarPwa() {
 export function isPwaInstalado() {
   if (typeof window === 'undefined') return false;
   return window.matchMedia('(display-mode: standalone)').matches ||
-         window.navigator.standalone === true;
+    window.navigator.standalone === true;
 }
 
 // Detecta se o dispositivo é iOS (iPhone / iPad)

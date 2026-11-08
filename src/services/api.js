@@ -35,13 +35,26 @@ export async function loginDemo(identificador, senha) {
 
   if (supabase) {
     try {
-      // 1. Tenta buscar no Supabase
+      // 1. Tenta autenticação oficial se for e-mail
+      let authUser = null;
+      if (termo.includes('@')) {
+        try {
+          const { data: authData } = await supabase.auth.signInWithPassword({
+            email: termo,
+            password: senha,
+          });
+          if (authData?.user) authUser = authData.user;
+        } catch (_) {}
+      }
+
+      // 2. Busca perfil no Supabase
       let query = supabase
         .from('profiles')
         .select('*, tenants(*)');
 
-      // Se informou números suficientes, busca por celular
-      if (apenasDigitos.length >= 8) {
+      if (authUser) {
+        query = query.or(`user_id.eq.${authUser.id},email.ilike.${termo}`);
+      } else if (apenasDigitos.length >= 8) {
         query = query.or(`celular.eq.${apenasDigitos},email.ilike.%${termo}%,username.ilike.%${termo}%,nome.ilike.%${termo}%`);
       } else if (termo.includes('@')) {
         query = query.ilike('email', termo);
@@ -53,7 +66,7 @@ export async function loginDemo(identificador, senha) {
 
       if (!error && data && data.length > 0) {
         const p = data[0];
-        const tenant = p.tenants;
+        const tenant = p.tenants || {};
 
         const usuarioObj = {
           id: p.id,
@@ -62,15 +75,16 @@ export async function loginDemo(identificador, senha) {
           celular: p.celular,
           email: p.email,
           username: p.username,
-          perfil: p.role || 'owner',
+          perfil: p.role === 'master_saas' ? 'master_saas' : (p.role || 'owner'),
+          role: p.role || 'owner',
         };
 
         const tenantObj = {
-          id: tenant.id,
-          slug: tenant.slug,
-          nome: tenant.nome,
+          id: tenant.id || 'master_tenant',
+          slug: tenant.slug || 'master',
+          nome: tenant.nome || 'Ao Ponto Master',
           cnpj: tenant.cnpj,
-          plano: tenant.plano || 'plano-00',
+          plano: tenant.plano || 'plano-02',
           planoAtivadoEm: tenant.plano_ativado_em,
           dominioCustom: tenant.dominio_custom,
           dominioCustomStatus: tenant.dominio_custom_status,
