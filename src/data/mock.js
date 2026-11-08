@@ -23,13 +23,14 @@ export const CATEGORIAS = [
 ];
 
 export const PRODUTOS = [
-  { id: 'inteiro', nome: 'Frango inteiro assado', categoria: 'frangos', forma: 'unidade', preco: 45.0, base: 18, cor: '#D9481C', emoji: '🍗', desc: 'Acompanha farofa crocante e tempero da casa' },
-  { id: 'meio', nome: 'Meio frango assado', categoria: 'frangos', forma: 'meia', preco: 25.0, base: 14, cor: '#E8A33D', emoji: '🍗', desc: 'Metade do frango dourado e suculento com farofa' },
-  { id: 'linguica', nome: 'Linguiça toscana assada', categoria: 'carnes', forma: 'peso', precoKg: 39.9, gramasMedia: 400, base: 10, cor: '#8B4A22', emoji: '🌭', desc: 'Assada na brasa (preço por kg)' },
+  { id: 'inteiro', nome: 'Frango inteiro assado', categoria: 'frangos', forma: 'unidade', preco: 45.0, base: 18, cor: '#D9481C', iconeUrl: '/icones-produtos/frango.svg', emoji: '🍗', desc: 'Acompanha farofa crocante e tempero da casa' },
+  { id: 'meio', nome: 'Meio frango assado', categoria: 'frangos', forma: 'meia', preco: 25.0, base: 14, cor: '#E8A33D', iconeUrl: '/icones-produtos/meio-frango.svg', emoji: '🍗', desc: 'Metade do frango dourado e suculento com farofa' },
+  { id: 'linguica', nome: 'Linguiça toscana assada', categoria: 'carnes', forma: 'peso', precoKg: 39.9, gramasMedia: 400, base: 10, cor: '#8B4A22', iconeUrl: '/icones-produtos/linguica.svg', emoji: '🌭', desc: 'Assada na brasa (preço por kg)' },
+  { id: 'costela', nome: 'Costela bovina assada', categoria: 'carnes', forma: 'peso', precoKg: 69.9, gramasMedia: 500, base: 8, cor: '#8B0000', iconeUrl: '/icones-produtos/costela-bovina.svg', emoji: '🥩', desc: 'Costela gaúcha macia assada lentamente na brasa' },
   { id: 'lombo', nome: 'Lombo suíno assado', categoria: 'carnes', forma: 'peso', precoKg: 54.9, gramasMedia: 450, base: 6, cor: '#7A4FB0', emoji: '🥩', desc: 'Fatias suculentas de lombo na brasa' },
-  { id: 'batata', nome: 'Batata bolinha refogada', categoria: 'guarnicoes', forma: 'porcao', preco: 12.0, base: 16, cor: '#2E8B57', emoji: '🥔', desc: 'No azeite, ervas finas e alho' },
-  { id: 'maionese', nome: 'Maionese caseira de batata', categoria: 'guarnicoes', forma: 'porcao', preco: 15.0, base: 12, cor: '#D4AC0D', emoji: '🥗', desc: 'Receita tradicional de domingo' },
-  { id: 'farofa', nome: 'Farofa crocante especial', categoria: 'guarnicoes', forma: 'porcao', preco: 10.0, base: 14, cor: '#B7950B', emoji: '🥣', desc: 'Com bacon, milho e cebola tostada' },
+  { id: 'batata', nome: 'Batatas douradas refogadas', categoria: 'guarnicoes', forma: 'porcao', preco: 12.0, base: 16, cor: '#2E8B57', iconeUrl: '/icones-produtos/batatas-douradas.svg', emoji: '🥔', desc: 'No azeite, ervas finas e alho' },
+  { id: 'maionese', nome: 'Maionese caseira de batata', categoria: 'guarnicoes', forma: 'porcao', preco: 15.0, base: 12, cor: '#D4AC0D', iconeUrl: '/icones-produtos/maionese.svg', emoji: '🥗', desc: 'Receita tradicional de domingo' },
+  { id: 'farofa', nome: 'Farofa crocante especial', categoria: 'guarnicoes', forma: 'porcao', preco: 10.0, base: 14, cor: '#B7950B', iconeUrl: '/icones-produtos/farofa.svg', emoji: '🥣', desc: 'Com bacon, milho e cebola tostada' },
   { id: 'refri2l', nome: 'Refrigerante 2L', categoria: 'bebidas', forma: 'unidade', preco: 14.0, base: 15, cor: '#2874A6', emoji: '🥤', desc: 'Coca-Cola ou Guaraná Antarctica' },
 ];
 

@@ -17,7 +17,19 @@ export function carregarProdutosLocais() {
     const salvo = localStorage.getItem(STORAGE_KEY_PRODUTOS);
     if (salvo) {
       const lista = JSON.parse(salvo);
-      if (Array.isArray(lista) && lista.length > 0) return lista;
+      if (Array.isArray(lista) && lista.length > 0) {
+        const mapaPadrao = new Map(PRODUTOS_PADRAO.map((p) => [p.id, p]));
+        return lista.map((p) => {
+          const padrao = mapaPadrao.get(p.id);
+          if (padrao) {
+            return {
+              ...p,
+              iconeUrl: p.iconeUrl || padrao.iconeUrl,
+            };
+          }
+          return p;
+        });
+      }
     }
   } catch (_) {}
   return JSON.parse(JSON.stringify(PRODUTOS_PADRAO));
@@ -78,6 +90,7 @@ export async function salvarProduto(produto, tenantId = null) {
     preco: parseFloat(produto.preco) || 0,
     precoKg: produto.forma === 'peso' ? parseFloat(produto.precoKg || produto.preco) : null,
     gramasMedia: produto.forma === 'peso' ? (parseInt(produto.gramasMedia) || 400) : null,
+    iconeUrl: produto.iconeUrl || null,
     emoji: produto.emoji || '🍗',
     desc: (produto.desc || '').trim(),
     ativo: produto.ativo !== false,

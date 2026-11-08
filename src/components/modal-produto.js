@@ -176,6 +176,7 @@ export function abrirModalProduto(produtoExistente = null, aoSalvar = null, tena
           preco: forma === 'peso' ? precoKg : preco,
           precoKg: forma === 'peso' ? precoKg : null,
           gramasMedia,
+          iconeUrl: prod.iconeUrl || null,
           desc,
         }, tenantId);
 

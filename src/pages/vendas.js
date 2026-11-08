@@ -73,7 +73,9 @@ export function renderVendas(raiz, irPara) {
           <div class="pdv-grade-produtos">
             ${produtosFiltrados.map((prod) => `
               <div class="produto-card">
-                <div class="prod-emoji">${prod.emoji}</div>
+                <div class="prod-emoji">
+                  ${prod.iconeUrl ? `<img src="${prod.iconeUrl}" alt="${escapeHtml(prod.nome)}" class="prod-img-vetor" />` : prod.emoji}
+                </div>
                 <div class="prod-detalhes">
                   <strong class="prod-nome">${prod.nome}</strong>
                   <span class="prod-desc">${prod.desc}</span>
@@ -140,7 +142,7 @@ export function renderVendas(raiz, irPara) {
               ` : carrinho.map((it, idx) => `
                 <div class="item-carrinho">
                   <div class="item-cabecalho">
-                    <span class="item-nome">${it.emoji} ${escapeHtml(it.nome)}</span>
+                    <span class="item-nome">${it.iconeUrl ? `<img src="${it.iconeUrl}" alt="" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;" />` : it.emoji} ${escapeHtml(it.nome)}</span>
                     <span class="item-total">${fmtMoeda(it.total)}</span>
                   </div>
                   <div class="item-sub">
@@ -388,6 +390,7 @@ export function renderVendas(raiz, irPara) {
         id: prod.id,
         nome: prod.nome,
         emoji: prod.emoji,
+        iconeUrl: prod.iconeUrl || null,
         forma: 'peso',
         pesoKg,
         precoKg: prod.precoKg,
@@ -404,6 +407,7 @@ export function renderVendas(raiz, irPara) {
           id: prod.id,
           nome: prod.nome,
           emoji: prod.emoji,
+          iconeUrl: prod.iconeUrl || null,
           forma: prod.forma,
           qtd,
           precoUnit: prod.preco,
@@ -420,8 +424,12 @@ export function renderVendas(raiz, irPara) {
     const gramasAtual = editIdx !== null ? Math.round(carrinho[editIdx].pesoKg * 1000) : prod.gramasMedia;
     const obsAtual = editIdx !== null ? (carrinho[editIdx].obs || '') : '';
 
+    const iconePeso = prod.iconeUrl
+      ? `<img src="${prod.iconeUrl}" alt="" style="width:26px;height:26px;vertical-align:middle;margin-right:6px;" />`
+      : prod.emoji;
+
     abrirModal(`
-      <h2>${prod.emoji} Pesar ${prod.nome}</h2>
+      <h2>${iconePeso} Pesar ${prod.nome}</h2>
       <p>Preço por kg: <strong>${fmtMoeda(prod.precoKg)}/kg</strong></p>
 
       <div class="pesos-atalhos">

@@ -378,6 +378,17 @@
   border-radius: 12px;
   display: grid;
   place-items: center;
+  overflow: hidden;
+}
+
+.prod-emoji img,
+.prod-img-vetor {
+  width: 34px;
+  height: 34px;
+  max-width: 34px;
+  max-height: 34px;
+  object-fit: contain;
+  display: block;
 }
 
 .prod-detalhes {
