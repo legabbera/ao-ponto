@@ -31,6 +31,7 @@ export function renderLanding(raiz, irPara) {
           <li><a href="#demonstracao" class="lp-nav-link">Como funciona</a></li>
           <li><a href="#comparativo" class="lp-nav-link">Comparativo</a></li>
           <li><a href="#para-quem" class="lp-nav-link">Para quem é</a></li>
+          <li><a href="#precos" class="lp-nav-link">Preços</a></li>
           <li><a href="#faq" class="lp-nav-link">Dúvidas</a></li>
         </ul>
 
@@ -53,6 +54,7 @@ export function renderLanding(raiz, irPara) {
         <a href="#demonstracao" class="mobile-nav-link">Como funciona o app</a>
         <a href="#comparativo" class="mobile-nav-link">Comparativo com marketplaces</a>
         <a href="#para-quem" class="mobile-nav-link">Para quem é</a>
+        <a href="#precos" class="mobile-nav-link">Preços e Planos</a>
         <a href="#faq" class="mobile-nav-link">Perguntas frequentes</a>
         <button class="btn btn-contorno" id="mobile-btn-app" style="margin-top:8px">
           ${icone('vendas')} Experimentar App Demonstrativo
@@ -604,6 +606,85 @@ export function renderLanding(raiz, irPara) {
       </div>
     </section>
 
+    <!-- 8.5 PLANOS E PREÇOS -->
+    <section class="lp-precos" id="precos">
+      <div class="lp-container">
+        <div class="lp-section-header" style="text-align:center;margin:0 auto 48px auto">
+          <div class="lp-badge">Planos Transparentes</div>
+          <h2 class="lp-section-title">Um plano simples, que cabe no seu bolso e cresce com você.</h2>
+          <p class="lp-section-desc">
+            Sem pegadinhas, sem taxas sobre os seus pedidos e sem fidelidade. Todo o lucro das suas vendas é 100% seu.
+          </p>
+        </div>
+
+        <div class="lp-precos-grid">
+          <!-- PLANO 1: COMECE GRÁTIS -->
+          <div class="lp-preco-card">
+            <div class="lp-preco-header">
+              <h3 class="lp-preco-nome">Comece Grátis</h3>
+              <p class="lp-preco-desc">Para conhecer, testar na rotina do seu balcão e comprovar a facilidade.</p>
+            </div>
+
+            <div class="lp-preco-valor-box">
+              <span class="lp-preco-cifrao">R$</span>
+              <span class="lp-preco-numero">0</span>
+              <span class="lp-preco-periodo">/ primeiros 30 dias</span>
+            </div>
+
+            <ul class="lp-preco-beneficios">
+              <li><span class="lp-check">✓</span> <span><strong>30 dias de acesso total</strong> sem compromisso</span></li>
+              <li><span class="lp-check">✓</span> <span><strong>Controle de vendas e balcão</strong> liberado</span></li>
+              <li><span class="lp-check">✓</span> <span>Cadastro de frangos, carnes, porções e bebidas</span></li>
+              <li><span class="lp-check">✓</span> <span>Painel de encomendas e pedidos para retirada</span></li>
+              <li><span class="lp-check">✓</span> <span>Uso no celular, tablet ou computador</span></li>
+              <li><span class="lp-check">✓</span> <span><strong>Sem cartão de crédito</strong> para começar</span></li>
+              <li><span class="lp-check">✓</span> <span>Zero taxa por venda realizada</span></li>
+            </ul>
+
+            <button class="btn btn-contorno lp-btn-plano" id="btn-plano-gratis" style="width:100%;height:48px;font-size:15px;font-weight:700">
+              Começar Grátis (30 Dias)
+            </button>
+            <div class="lp-preco-garantia">
+              Teste no próximo fim de semana sem pagar nada.
+            </div>
+          </div>
+
+          <!-- PLANO 2: PLANO BALCÃO (SUGERIDO) -->
+          <div class="lp-preco-card destaque">
+            <div class="lp-preco-badge-topo">⭐ Plano Sugerido</div>
+            
+            <div class="lp-preco-header">
+              <h3 class="lp-preco-nome">Plano Balcão</h3>
+              <p class="lp-preco-desc">A solução completa e profissional para organizar seu atendimento e faturar mais.</p>
+            </div>
+
+            <div class="lp-preco-valor-box">
+              <span class="lp-preco-cifrao">R$</span>
+              <span class="lp-preco-numero">79</span>
+              <span class="lp-preco-periodo">,00 / mês (vencimento dia 10)</span>
+            </div>
+
+            <ul class="lp-preco-beneficios">
+              <li><span class="lp-check">✓</span> <span><strong>Tudo do plano gratuito</strong> liberado</span></li>
+              <li><span class="lp-check">✓</span> <span><strong>Vendas e pedidos ilimitados</strong> sem travas</span></li>
+              <li><span class="lp-check">✓</span> <span><strong>Suporte direto no WhatsApp</strong> com atendimento ágil</span></li>
+              <li><span class="lp-check">✓</span> <span>Venda de peças por unidade ou peso (kg)</span></li>
+              <li><span class="lp-check">✓</span> <span>Curva de pico de horários e faturamento detalhado</span></li>
+              <li><span class="lp-check">✓</span> <span>Backup na nuvem e no Google Drive integrado</span></li>
+              <li><span class="lp-check">✓</span> <span><strong>100% do lucro é seu:</strong> zero comissão sobre pedidos</span></li>
+            </ul>
+
+            <button class="lp-btn-cta lp-btn-plano" id="btn-plano-balcao" style="width:100%;height:48px;font-size:15px">
+              Quero o Plano Balcão
+            </button>
+            <div class="lp-preco-garantia">
+              Sem fidelidade. Cancele quando quiser.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- 9. PERGUNTAS FREQUENTES (FAQ) -->
     <section class="lp-faq" id="faq">
       <div class="lp-container">
@@ -698,11 +779,11 @@ export function renderLanding(raiz, irPara) {
 
           <div class="lp-faq-item">
             <button class="lp-faq-question" aria-expanded="false">
-              <span>Quanto custa?</span>
+              <span>Quanto custa o Ao Ponto?</span>
               <span class="lp-faq-arrow">▼</span>
             </button>
             <div class="lp-faq-answer">
-              <span class="f-lead">O projeto está atualmente</span> em fase de validação e demonstração com pequenos empreendedores de alimentação. As condições comerciais e planos definitivos estão sendo estruturados. Cadastre seu interesse para ser avisado em primeira mão com condições especiais de lançamento.
+              <span class="f-lead">Você pode começar</span> gratuitamente com 30 dias de teste sem precisar informar cartão de crédito. Após esse período de avaliação, o <strong>Plano Balcão</strong> custa apenas <strong>R$ 79,00 por mês</strong> (com vencimento todo dia 10), garantindo acesso a todas as funções, controle ilimitado de vendas e balcão, suporte direto no WhatsApp e zero cobrança de comissão sobre seus pedidos.
             </div>
           </div>
 
@@ -808,6 +889,7 @@ export function renderLanding(raiz, irPara) {
               <li><a href="#demonstracao">Como funciona</a></li>
               <li><a href="#comparativo">Comparativo</a></li>
               <li><a href="#para-quem">Para quem é</a></li>
+              <li><a href="#precos">Planos e Preços</a></li>
               <li><a href="#faq">Perguntas frequentes</a></li>
             </ul>
           </div>
@@ -967,6 +1049,12 @@ export function renderLanding(raiz, irPara) {
   raiz.querySelector('#nav-btn-cta')?.addEventListener('click', abrirModalLead);
   raiz.querySelector('#mobile-btn-cta')?.addEventListener('click', () => {
     mobileMenu?.classList.remove('aberto');
+    abrirModalLead();
+  });
+  raiz.querySelector('#btn-plano-gratis')?.addEventListener('click', () => {
+    abrirModalLead();
+  });
+  raiz.querySelector('#btn-plano-balcao')?.addEventListener('click', () => {
     abrirModalLead();
   });
   raiz.querySelector('#hero-btn-cta')?.addEventListener('click', () => {

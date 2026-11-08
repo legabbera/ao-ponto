@@ -994,6 +994,148 @@
 }
 
 /* =========================================================
+   8.5. PREÇOS & PLANOS
+   ========================================================= */
+.lp-precos {
+  padding: 80px 0;
+  background: var(--branco);
+  border-top: 1px solid var(--borda);
+  border-bottom: 1px solid var(--borda);
+}
+
+.lp-precos-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  max-width: 900px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+.lp-preco-card {
+  background: var(--creme);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-g, 18px);
+  padding: 36px 30px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lp-preco-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
+}
+
+.lp-preco-card.destaque {
+  background: #FFFDF9;
+  border: 2px solid var(--brasa);
+  box-shadow: 0 8px 28px rgba(217, 72, 28, 0.12);
+}
+
+.lp-preco-badge-topo {
+  position: absolute;
+  top: -14px;
+  right: 24px;
+  background: linear-gradient(135deg, var(--brasa) 0%, #C0392B 100%);
+  color: var(--branco);
+  font-family: var(--fonte-titulo);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 5px 14px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  box-shadow: 0 4px 12px rgba(217, 72, 28, 0.3);
+}
+
+.lp-preco-header {
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--borda);
+  padding-bottom: 20px;
+}
+
+.lp-preco-nome {
+  font-family: var(--fonte-titulo);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--carvao);
+  margin: 0 0 6px 0;
+}
+
+.lp-preco-desc {
+  font-size: 14px;
+  color: var(--texto-suave);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.lp-preco-valor-box {
+  margin: 20px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.lp-preco-cifrao {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--carvao);
+}
+
+.lp-preco-numero {
+  font-family: var(--fonte-titulo);
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--carvao);
+  line-height: 1;
+}
+
+.lp-preco-card.destaque .lp-preco-numero {
+  color: var(--brasa);
+}
+
+.lp-preco-periodo {
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.lp-preco-beneficios {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.lp-preco-beneficios li {
+  font-size: 14px;
+  color: var(--texto);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.45;
+}
+
+.lp-preco-beneficios li .lp-check {
+  color: var(--verde);
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.lp-preco-garantia {
+  text-align: center;
+  font-size: 13px;
+  color: var(--texto-suave);
+  margin-top: 14px;
+}
+
+/* =========================================================
    9. PERGUNTAS FREQUENTES (FAQ)
    ========================================================= */
 .lp-faq {
@@ -1324,6 +1466,10 @@
   }
   
   .lp-publicos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .lp-precos-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   
