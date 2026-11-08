@@ -7,17 +7,18 @@ import { store } from '../state/store.js';
 import { PONTOS, PERFIS } from '../data/mock.js';
 import { PLANOS, logoutTenant, diasTrialRestantes } from '../data/tenants.js';
 import { dispararInstalacaoPwa, isPwaInstalado } from './pwa-installer.js';
+import { abrirModalSuporte, abrirModalSugestoes } from './modal-ajuda.js';
 
 export const ROTAS = [
   { id: 'inicio', rotulo: 'Início', icone: 'home', principal: true },
   { id: 'vendas', rotulo: 'Vendas', icone: 'vendas', principal: true, desc: 'Controle de vendas e balcão' },
   { id: 'pedidos', rotulo: 'Pedidos', icone: 'pedidos', principal: true, desc: 'Reservas e encomendas' },
+  { id: 'pagamentos', rotulo: 'Pagamentos', icone: 'cartao', principal: true, desc: 'Maquininhas, Pix e Caixa' },
   { id: 'estoque', rotulo: 'Estoque', icone: 'pacote', principal: true, desc: 'Frangos e insumos' },
   { id: 'precificacao', rotulo: 'Calculadora de Preços', icone: 'dinheiro', principal: false, desc: 'Custos, ficha técnica e lucro real' },
   { id: 'clientes', rotulo: 'Clientes', icone: 'clientes', perfis: ['owner', 'admin'], desc: 'Histórico e fidelidade' },
   { id: 'usuarios', rotulo: 'Usuários', icone: 'usuarios', perfis: ['owner', 'admin'], desc: 'Equipe e permissões' },
   { id: 'whatsapp', rotulo: 'WhatsApp', icone: 'whatsapp', perfis: ['owner', 'admin'], desc: 'Central de atendimento' },
-  { id: 'pagamentos', rotulo: 'Pagamentos', icone: 'cartao', perfis: ['owner'], desc: 'Máquinas e provedores' },
   { id: 'relatorios', rotulo: 'Relatórios', icone: 'grafico', perfis: ['owner', 'admin'], desc: 'Análises e exportação' },
   { id: 'planos', rotulo: 'Meu Plano', icone: 'grafico', perfis: ['owner'], desc: 'Planos e limites de uso' },
   { id: 'configuracoes', rotulo: 'Configurações', icone: 'config', perfis: ['owner', 'admin'], desc: 'Domínio e dados do negócio' },
@@ -69,6 +70,9 @@ export function renderShell(raiz, rotaAtual, irPara) {
       ${rotas.filter((r) => r.principal).map(itemSb).join('')}
       <div class="sb-secao">Gestão</div>
       ${rotas.filter((r) => !r.principal).map(itemSb).join('')}
+      <div class="sb-secao">Ajuda & Apoio</div>
+      <button class="sb-item" data-acao="suporte" title="Falar com o Suporte Ao Ponto">${icone('suporte')}<span>Suporte</span></button>
+      <button class="sb-item" data-acao="sugestoes" title="Enviar sugestões de melhorias">${icone('lampada')}<span>Sugestões de melhorias</span></button>
         ${!isPwaInstalado() ? `<button class="sb-item" data-acao="instalar-app" title="Instalar Aplicativo no Celular / Computador" style="color:var(--brasa); font-weight:600;">${icone('mais')}<span>📲 Instalar App (PWA)</span></button>` : ''}
         ${tenant ? `<div class="sb-plano-badge" data-ir="planos" title="Meu Plano">${icone('grafico')}<span>${PLANOS[tenant.plano]?.nome || 'Grátis'}</span></div>` : ''}
         <a href="/manual.html" target="_blank" class="sb-item" style="text-decoration:none" title="Manual do Usuário (PDF / Impressão)">${icone('info')}<span>Manual do Usuário</span></a>
@@ -144,6 +148,8 @@ export function renderShell(raiz, rotaAtual, irPara) {
     'meu-perfil': () => modalMeuPerfil(irPara),
     sair: () => sair(irPara),
     'instalar-app': () => dispararInstalacaoPwa(),
+    suporte: () => abrirModalSuporte(),
+    sugestoes: () => abrirModalSugestoes(),
   };
 }
 

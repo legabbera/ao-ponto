@@ -60,3 +60,20 @@
   --bottom-nav: 68px;
   --transicao: 180ms cubic-bezier(.4, 0, .2, 1);
 }
+
+/* =========================================================
+   MODO ESCURO (Dark Mode) / MODO CLARO (Clear Mode)
+   ========================================================= */
+.dark, [data-tema="dark"] {
+  --creme: #12100E;
+  --creme-2: #1A1613;
+  --branco: #1D1815;
+  --carvao: #FAF6F0;
+  --carvao-2: #EDE4D8;
+  --carvao-3: #DFD3C3;
+  --texto: #FAF6F0;
+  --texto-suave: #AFA498;
+  --borda: #332B25;
+  --sombra: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --sombra-forte: 0 12px 32px rgba(0, 0, 0, 0.65);
+}

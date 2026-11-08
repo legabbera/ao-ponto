@@ -61,7 +61,7 @@ export function isIos() {
   return /iphone|ipad|ipod/.test(userAgent);
 }
 
-// Botão Flutuante Pulsante "Baixar no Celular / Tablet / PC"
+// Botão Flutuante Pulsante "Instalar Aplicativo Oficial (PWA)"
 export function exibirBotaoPwaPulsante() {
   if (isPwaInstalado()) return;
   if (document.getElementById('pwa-fab-pulse')) return;
@@ -69,11 +69,11 @@ export function exibirBotaoPwaPulsante() {
   const btn = document.createElement('button');
   btn.id = 'pwa-fab-pulse';
   btn.className = 'pwa-fab-pulse';
-  btn.setAttribute('aria-label', 'Baixar aplicativo no celular, tablet ou PC');
-  btn.title = 'Instalar o Ao Ponto como aplicativo no seu celular ou PC';
+  btn.setAttribute('aria-label', 'Instalar aplicativo no celular, tablet ou PC');
+  btn.title = 'Instalar o Ao Ponto como aplicativo oficial no seu celular, tablet ou PC';
   btn.innerHTML = `
     <span class="pwa-fab-pulse-dot"></span>
-    <span>📲 Baixar no Celular / PC</span>
+    <span>📲 Instalar Aplicativo</span>
   `;
 
   btn.addEventListener('click', (e) => {

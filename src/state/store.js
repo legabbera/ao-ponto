@@ -749,6 +749,27 @@ export const store = {
     store.salvarPagamentos();
   },
 
+  adicionarCash: ({ valor, motivo, operador }) => {
+    if (!estado.pagamentos.entradasCash) estado.pagamentos.entradasCash = [];
+    const agora = new Date();
+    const novaEntrada = {
+      id: `cash_${Date.now()}`,
+      valor: parseFloat(valor) || 0,
+      motivo: motivo || 'Suprimento de Caixa / Entrada Manual',
+      operador: operador || store.perfil().nome,
+      hora: agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      data: agora.toLocaleDateString('pt-BR'),
+      timestamp: agora.toISOString()
+    };
+    estado.pagamentos.entradasCash.unshift(novaEntrada);
+    store.salvarPagamentos();
+    return novaEntrada;
+  },
+
+  getCashEntries: () => {
+    return estado.pagamentos?.entradasCash || [];
+  },
+
   calcularTaxaELiquido: (valorBruto = 0, metodo = 'dinheiro') => {
     const taxas = estado.pagamentos?.taxas || PAGAMENTOS_PADRAO.taxas;
     const v = parseFloat(valorBruto) || 0;

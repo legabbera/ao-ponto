@@ -7,6 +7,7 @@ import { toast, abrirModal } from '../components/ui.js';
 import { store } from '../state/store.js';
 import { PONTOS } from '../data/mock.js';
 import { fmtMoeda } from '../utils/format.js';
+import { escapeHtml } from '../utils/sanitizar.js';
 
 export function renderPagamentos(raiz, irPara) {
   const st = store.get();
@@ -40,6 +41,10 @@ export function renderPagamentos(raiz, irPara) {
       else dinheiroTotal += val;
     });
 
+    const entradasCash = store.getCashEntries ? store.getCashEntries() : [];
+    const totalAportesCash = entradasCash.reduce((acc, c) => acc + (parseFloat(c.valor) || 0), 0);
+    const saldoTotalDinheiro = dinheiroTotal + totalAportesCash;
+
     const liquidoHoje = brutoHoje - taxasHoje;
 
     raiz.innerHTML = `
@@ -54,13 +59,87 @@ export function renderPagamentos(raiz, irPara) {
           </p>
         </div>
         <div class="clientes-topo-acoes">
-          <button class="btn btn-primario" id="btn-nova-maquininha">
+          <button class="btn btn-primario" id="btn-adicionar-cash-topo" style="background:#16A34A; border-color:#16A34A; font-weight:700;">
+            ${icone('mais')} Adicionar Cash
+          </button>
+          <button class="btn btn-contorno" id="btn-nova-maquininha">
             ${icone('mais')} Conectar Maquininha
           </button>
           <button class="btn btn-contorno" id="btn-imprimir-pix-balcao">
             📋 Placa Pix de Balcão
           </button>
         </div>
+      </div>
+
+      <!-- Meios de Entrada de Recursos (Máquinas, Pix e Cash) -->
+      <div class="card" style="margin-bottom: 22px; padding: 18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+          <div>
+            <strong style="font-size:16px; color:var(--carvao); display:block;">Entradas de Recursos do Caixa & Meios de Pagamento</strong>
+            <small style="color:var(--texto-suave);">Acompanhe o faturamento por canal de entrada e registre reforços de dinheiro</small>
+          </div>
+          <button class="btn btn-pequeno btn-primario" id="btn-adicionar-cash" style="background:#16A34A; border-color:#16A34A; font-weight:700; padding:8px 14px;">
+            ${icone('mais')} + Adicionar Cash (Dinheiro)
+          </button>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+          <!-- Débito -->
+          <div style="background:var(--creme); border:1.5px solid var(--borda); border-radius:12px; padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:12px; font-weight:700; color:var(--texto-suave);">CARTÃO DÉBITO</span>
+              <span style="font-size:18px;">💳</span>
+            </div>
+            <strong style="font-size:20px; color:var(--carvao); display:block;">${fmtMoeda(debitoTotal)}</strong>
+            <small style="color:var(--texto-suave); font-size:11px;">Entradas via maquininhas de balcão</small>
+          </div>
+
+          <!-- Crédito -->
+          <div style="background:var(--creme); border:1.5px solid var(--borda); border-radius:12px; padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:12px; font-weight:700; color:var(--texto-suave);">CARTÃO CRÉDITO</span>
+              <span style="font-size:18px;">💳</span>
+            </div>
+            <strong style="font-size:20px; color:var(--carvao); display:block;">${fmtMoeda(creditoTotal)}</strong>
+            <small style="color:var(--texto-suave); font-size:11px;">Vendas parceladas ou à vista</small>
+          </div>
+
+          <!-- Pix -->
+          <div style="background:#F0FDF4; border:1.5px solid #BBF7D0; border-radius:12px; padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:12px; font-weight:700; color:#166534;">PIX INSTANTÂNEO</span>
+              <span style="font-size:18px;">⚡</span>
+            </div>
+            <strong style="font-size:20px; color:#16A34A; display:block;">${fmtMoeda(pixTotal)}</strong>
+            <small style="color:#166534; font-size:11px;">Chave oficial e QR Code</small>
+          </div>
+
+          <!-- Cash / Dinheiro -->
+          <div style="background:#FEF3C7; border:1.5px solid #FCD34D; border-radius:12px; padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:12px; font-weight:700; color:#92400E;">DINHEIRO / CASH</span>
+              <span style="font-size:18px;">💵</span>
+            </div>
+            <strong style="font-size:20px; color:#92400E; display:block;">${fmtMoeda(saldoTotalDinheiro)}</strong>
+            <small style="color:#92400E; font-size:11px;">Vendas (${fmtMoeda(dinheiroTotal)}) + Aportes (${fmtMoeda(totalAportesCash)})</small>
+          </div>
+        </div>
+
+        ${entradasCash.length > 0 ? `
+          <div style="margin-top:16px; border-top:1px solid var(--borda); padding-top:12px;">
+            <strong style="font-size:13px; color:var(--texto-suave); display:block; margin-bottom:8px;">Últimas Entradas Manuais de Dinheiro (Cash) no Caixa:</strong>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              ${entradasCash.slice(0, 4).map((c) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; background:var(--branco); padding:8px 12px; border-radius:8px; border:1px solid var(--borda);">
+                  <div>
+                    <strong style="color:#16A34A;">+ ${fmtMoeda(c.valor)}</strong> &bull; <span>${escapeHtml(c.motivo)}</span>
+                  </div>
+                  <small style="color:var(--texto-suave);">${c.hora} por ${escapeHtml(c.operador)}</small>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
       </div>
 
       <!-- KPIs Financeiros / Conciliação de Hoje -->
@@ -414,6 +493,14 @@ export function renderPagamentos(raiz, irPara) {
           desenhar();
         }
       });
+    });
+
+    // Adicionar Cash (Entrada Manual / Suprimento)
+    raiz.querySelector('#btn-adicionar-cash')?.addEventListener('click', () => {
+      abrirModalAdicionarCash(() => desenhar());
+    });
+    raiz.querySelector('#btn-adicionar-cash-topo')?.addEventListener('click', () => {
+      abrirModalAdicionarCash(() => desenhar());
     });
 
     // Simulador de Margem dinâmico
@@ -851,6 +938,54 @@ function simularEnvioMaquininha(nomeMaq) {
         <button class="btn btn-primario" data-fechar>Fechar</button>
       </div>
     `,
+  });
+}
+
+function abrirModalAdicionarCash(onConcluir) {
+  abrirModal(`
+    <div style="max-width:440px; text-align:left;">
+      <div style="text-align:center; margin-bottom:16px;">
+        <div style="width:48px; height:48px; border-radius:12px; background:#DCFCE7; color:#16A34A; display:inline-flex; align-items:center; justify-content:center; margin-bottom:8px; font-size:24px;">
+          💵
+        </div>
+        <h3 style="font-size:18px; font-weight:800; color:var(--carvao); margin:0 0 4px 0;">Adicionar Entrada de Cash (Dinheiro)</h3>
+        <p style="font-size:13px; color:var(--texto-suave); margin:0;">
+          Registre suprimento de troco inicial ou entrada em espécie no caixa
+        </p>
+      </div>
+
+      <form id="form-novo-cash">
+        <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
+          <div>
+            <label style="display:block; font-size:12px; font-weight:700; color:var(--carvao); margin-bottom:4px;">Valor em Dinheiro (R$) *</label>
+            <input type="number" id="cash-valor" step="0.50" min="0.50" class="input" placeholder="Ex: 100.00" required style="font-size:16px; font-weight:700;" />
+          </div>
+          <div>
+            <label style="display:block; font-size:12px; font-weight:700; color:var(--carvao); margin-bottom:4px;">Motivo / Descrição *</label>
+            <input type="text" id="cash-motivo" class="input" placeholder="Ex: Fundo de troco inicial, Reforço de moedas..." required />
+          </div>
+        </div>
+
+        <div class="modal-acoes" style="flex-direction:column; gap:8px;">
+          <button type="submit" class="btn btn-primario btn-bloco" style="background:#16A34A; border-color:#16A34A; font-weight:700; padding:12px;">
+            Confirmar Entrada no Caixa
+          </button>
+          <button type="button" class="btn btn-fantasma btn-bloco" data-fechar>Cancelar</button>
+        </div>
+      </form>
+    </div>
+  `, (modal, fechar) => {
+    modal.querySelector('#form-novo-cash')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const valor = parseFloat(modal.querySelector('#cash-valor')?.value) || 0;
+      const motivo = modal.querySelector('#cash-motivo')?.value.trim();
+      if (valor <= 0 || !motivo) return;
+
+      store.adicionarCash({ valor, motivo });
+      fechar();
+      toast(`Entrada de R$ ${valor.toFixed(2)} adicionada ao caixa! 💵`, 'sucesso');
+      onConcluir?.();
+    });
   });
 }
 

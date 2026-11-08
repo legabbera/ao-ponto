@@ -43,6 +43,12 @@ try {
   if (escalaFonteSalva) {
     document.documentElement.style.setProperty('--escala-fonte', escalaFonteSalva);
   }
+  const temaSalvo = localStorage.getItem('ao-ponto-tema');
+  if (temaSalvo === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
 } catch (_) {}
 
 const app = document.getElementById('app');

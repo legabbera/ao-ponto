@@ -199,6 +199,46 @@ export function renderConfiguracoes(raiz, irPara) {
         </div>
       </div>
     </section>
+
+    <!-- Modo Visual: Claro / Escuro (Dark Mode Slide Switch) -->
+    <section class="card config-secao" id="secao-aparencia">
+      <div class="card-cabecalho">
+        <div>
+          <div class="card-titulo">${icone('olho')} Modo Visual (Claro / Escuro)</div>
+          <div class="card-sub">Alterne entre o tema clássico claro e o modo escuro (ideal para a noite)</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:space-between; background:var(--creme); border:1px solid var(--borda); border-radius:12px; padding:14px 18px; margin-top:8px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:24px;" id="icone-tema-atual">${document.documentElement.classList.contains('dark') ? '🌙' : '☀️'}</span>
+          <div>
+            <strong style="font-size:15px; display:block;" id="label-tema-atual">${document.documentElement.classList.contains('dark') ? 'Modo Escuro Ativo' : 'Modo Claro Ativo'}</strong>
+            <small style="color:var(--texto-suave); font-size:12px;">Deslize a chave para alternar o contraste visual</small>
+          </div>
+        </div>
+        <label class="switch-slide" title="Alternar Modo Escuro / Claro">
+          <input type="checkbox" id="toggle-tema-dark" ${document.documentElement.classList.contains('dark') ? 'checked' : ''} />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Máquinas de Cartão & Gateways de Pagamento -->
+    <section class="card config-secao" id="secao-maquininhas-config">
+      <div class="card-cabecalho">
+        <div>
+          <div class="card-titulo">${icone('cartao')} Código de Máquinas & Gateways de Pagamento</div>
+          <div class="card-sub">Cadastre os códigos (POS/Serial) das suas maquininhas e configure o gateway para computar vendas no balcão</div>
+        </div>
+        <button type="button" class="btn btn-pequeno btn-primario" id="btn-add-maq-config" style="font-weight:700;">
+          ${icone('mais')} Nova Máquina
+        </button>
+      </div>
+
+      <div id="lista-maquininhas-config-el" style="display:flex; flex-direction:column; gap:10px; margin-top:12px;">
+        <!-- Lista gerada dinamicamente via JS -->
+      </div>
+    </section>
   </div>`;
 
   const $ = (s) => raiz.querySelector(s);
@@ -409,6 +449,132 @@ export function renderConfiguracoes(raiz, irPara) {
       btn.classList.remove('btn-contorno');
       btn.classList.add('btn-primario');
       toast('Tamanho da fonte atualizado! 🔤', 'sucesso');
+    });
+  });
+
+  // Alternância de Modo Escuro / Modo Claro (Dark Mode / Clear Mode)
+  const toggleDark = $('#toggle-tema-dark');
+  toggleDark?.addEventListener('change', (e) => {
+    const isDark = e.target.checked;
+    document.documentElement.classList.toggle('dark', isDark);
+    localStorage.setItem('ao-ponto-tema', isDark ? 'dark' : 'light');
+    const label = $('#label-tema-atual');
+    const ic = $('#icone-tema-atual');
+    if (label) label.textContent = isDark ? 'Modo Escuro Ativo' : 'Modo Claro Ativo';
+    if (ic) ic.textContent = isDark ? '🌙' : '☀️';
+    toast(isDark ? 'Modo Escuro ativado! 🌙' : 'Modo Claro ativado! ☀️', 'info');
+  });
+
+  // Gestão de Máquinas de Cartão e Gateways
+  function desenharMaquininhasConfig() {
+    const el = $('#lista-maquininhas-config-el');
+    if (!el) return;
+    const pag = store.getPagamentos();
+    const maqs = pag.maquininhas || [];
+
+    if (maqs.length === 0) {
+      el.innerHTML = `
+        <div style="text-align:center; padding:18px; background:var(--creme); border-radius:10px; color:var(--texto-suave); font-size:13px;">
+          Nenhuma máquina cadastrada ainda. Clique em <strong>+ Nova Máquina</strong> para inserir o código do seu terminal.
+        </div>
+      `;
+      return;
+    }
+
+    el.innerHTML = maqs.map((m) => `
+      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--branco); border:1.5px solid var(--borda); border-radius:12px; padding:12px 16px; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:40px; height:40px; border-radius:10px; background:var(--creme-2); display:grid; place-items:center; font-size:18px;">
+            💳
+          </div>
+          <div>
+            <strong style="color:var(--carvao); font-size:14px; display:block;">${escapeHtml(m.nome)}</strong>
+            <span style="font-size:12px; color:var(--texto-suave);">
+              Código / Serial: <strong style="color:var(--brasa);">${escapeHtml(m.serial || m.codigo || 'N/A')}</strong> &bull; Gateway: ${escapeHtml(m.modelo || 'Smart POS')}
+            </span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="badge ${m.status === 'online' ? 'badge-verde' : 'badge-demo'}">
+            ${m.status === 'online' ? 'Ativa' : 'Inativa'}
+          </span>
+          <button class="btn btn-pequeno btn-fantasma btn-del-maq" data-maq-id="${m.id}" title="Remover máquina" style="color:var(--vermelho); font-size:14px; padding:6px 8px;">
+            ${icone('lixeira')}
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    el.querySelectorAll('.btn-del-maq').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (confirm('Deseja remover esta máquina de cartão?')) {
+          store.removerMaquininha(btn.dataset.maqId);
+          toast('Máquina removida com sucesso.', 'info');
+          desenharMaquininhasConfig();
+        }
+      });
+    });
+  }
+
+  desenharMaquininhasConfig();
+
+  $('#btn-add-maq-config')?.addEventListener('click', () => {
+    abrirModal(`
+      <div style="max-width:440px; text-align:left;">
+        <h3 style="font-size:18px; margin-bottom:6px; font-weight:800; color:var(--carvao);">Adicionar Código de Máquina</h3>
+        <p style="font-size:13px; color:var(--texto-suave); margin-bottom:16px;">
+          Insira o código do terminal e o gateway para computar as vendas no caixa:
+        </p>
+        <form id="form-nova-maq">
+          <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:var(--carvao); margin-bottom:4px;">Nome / Identificador *</label>
+              <input type="text" id="maq-nome" class="input" placeholder="Ex: Balcão 1, Espeto, Caixa Principal" required />
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:var(--carvao); margin-bottom:4px;">Código do Terminal / Serial (POS ID) *</label>
+              <input type="text" id="maq-serial" class="input" placeholder="Ex: POS-8841, ST-9920, MP-331" required />
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; font-weight:700; color:var(--carvao); margin-bottom:4px;">Gateway / Provedor *</label>
+              <select id="maq-provedor" class="input" required style="font-size:13px;">
+                <option value="Mercado Pago Point">Mercado Pago Point (Pro 2 / Smart)</option>
+                <option value="Stone / Ton">Stone / Ton (SmartPOS / TEF)</option>
+                <option value="PagBank / PagSeguro">PagBank / PagSeguro (Moderninha)</option>
+                <option value="Cielo / Rede">Cielo / Rede (LIO / Smart)</option>
+                <option value="Outro Provedor">Outro Provedor de Cartão</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-acoes" style="flex-direction:column; gap:8px;">
+            <button type="submit" class="btn btn-primario btn-bloco" style="font-weight:700; padding:12px;">
+              Salvar Máquina
+            </button>
+            <button type="button" class="btn btn-fantasma btn-bloco" data-fechar>Cancelar</button>
+          </div>
+        </form>
+      </div>
+    `, (modal, fechar) => {
+      modal.querySelector('#form-nova-maq')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nome = modal.querySelector('#maq-nome')?.value.trim();
+        const serial = modal.querySelector('#maq-serial')?.value.trim();
+        const modelo = modal.querySelector('#maq-provedor')?.value;
+
+        if (!nome || !serial) return;
+
+        store.adicionarMaquininha({
+          nome,
+          serial,
+          modelo,
+          ponto: 'todos',
+          status: 'online'
+        });
+
+        fechar();
+        toast('Máquina cadastrada com sucesso! 💳', 'sucesso');
+        desenharMaquininhasConfig();
+      });
     });
   });
 }

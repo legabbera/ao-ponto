@@ -2,18 +2,24 @@
   "name": "Ao Ponto - Gestão e Controle de Vendas",
   "short_name": "Ao Ponto",
   "description": "Plataforma de gestão, controle de vendas e balcão para pontos de frango assado e carnes.",
-  "start_url": "/#/inicio",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#121212",
-  "theme_color": "#E26A3B",
+  "background_color": "#FAF6EE",
+  "theme_color": "#C8421A",
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icon.png",
@@ -25,7 +31,13 @@
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "categories": ["business", "productivity", "food"]

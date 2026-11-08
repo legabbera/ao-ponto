@@ -3595,33 +3595,88 @@ input:checked+.switch-slider:before {
 /* =========================================================
    AJUSTES FINOS DE UI/UX — SMARTPHONES (COLUNA ÚNICA & WHATSAPP)
    ========================================================= */
-@media (max-width: 640px) {
-  /* Vendas / Balcão: 1 coluna com visual 100% nativo de smartphone */
+@media (max-width: 1023px) {
+  /* Vendas e Balcão: 1 coluna única para smartphones e tablets sem overflow lateral */
   .pdv-layout {
     grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .pdv-catalogo {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .pdv-grade-produtos {
     grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
     gap: 12px;
   }
   .produto-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
     padding: 12px 14px;
+  }
+  .pdv-topo {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+  }
+  .pdv-topo-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 8px;
+  }
+  .pdv-topo-acoes .btn {
+    flex: 1 1 130px;
+    justify-content: center;
+    font-size: 13px;
+    padding: 10px 12px;
   }
 
   /* Pedidos & Reservas: 1 coluna vertical fácil de rolar com o polegar */
+  .pedidos-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
   .pedidos-grade {
     grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
     gap: 12px;
+  }
+  .pedido-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .pedidos-topo {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
   }
   .pedidos-kpi-grade {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px;
-  }
-  .pedidos-topo-acoes {
     width: 100%;
   }
+  .pedidos-topo-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 8px;
+  }
   .pedidos-topo-acoes .btn {
-    flex: 1;
+    flex: 1 1 130px;
     justify-content: center;
   }
 

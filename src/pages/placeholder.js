@@ -4,6 +4,7 @@
 import { icone } from '../components/icons.js';
 import { ROTAS, rotasDoPerfil, modalPerfil, sair } from '../components/shell.js';
 import { store } from '../state/store.js';
+import { abrirModalSuporte, abrirModalSugestoes } from '../components/modal-ajuda.js';
 
 export function renderEmBreve(raiz, rotaId, irPara) {
   const r = ROTAS.find((x) => x.id === rotaId);
@@ -37,11 +38,34 @@ export function renderMenu(raiz, irPara) {
       </button>
     `).join('')}
   </div>
-  <div class="perfil-troca" style="margin-top:24px">
+  <div style="margin-top:24px; margin-bottom:12px;">
+    <h3 style="font-size:16px; font-weight:700; color:var(--carvao); margin:0 0 10px 0;">Ajuda & Apoio</h3>
+    <div class="menu-grade">
+      <button class="menu-card" id="menu-btn-suporte">
+        <span class="mc-ic">${icone('suporte')}</span>
+        <div class="menu-card-conteudo">
+          <strong class="menu-card-titulo">Suporte</strong>
+          <span class="menu-card-desc">Atendimento direto com nossa equipe via WhatsApp</span>
+        </div>
+        <span class="menu-card-seta">&rarr;</span>
+      </button>
+      <button class="menu-card" id="menu-btn-sugestoes">
+        <span class="mc-ic">${icone('lampada')}</span>
+        <div class="menu-card-conteudo">
+          <strong class="menu-card-titulo">Sugestões de melhorias</strong>
+          <span class="menu-card-desc">Envie ideias e melhorias para o sistema</span>
+        </div>
+        <span class="menu-card-seta">&rarr;</span>
+      </button>
+    </div>
+  </div>
+  <div class="perfil-troca" style="margin-top:20px">
     <button class="perfil-op" id="menu-trocar-perfil"><span>${perfil.emoji}</span><span><strong>Trocar perfil (demonstração)</strong><small>Logado como ${perfil.nome}</small></span></button>
     <button class="perfil-op" id="menu-sair"><span>🚪</span><span><strong>Sair</strong><small>Encerrar sessão</small></span></button>
   </div>`;
   raiz.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => irPara(b.dataset.ir)));
+  raiz.querySelector('#menu-btn-suporte')?.addEventListener('click', () => abrirModalSuporte());
+  raiz.querySelector('#menu-btn-sugestoes')?.addEventListener('click', () => abrirModalSugestoes());
   raiz.querySelector('#menu-trocar-perfil').addEventListener('click', () => modalPerfil(irPara));
   raiz.querySelector('#menu-sair').addEventListener('click', () => sair(irPara));
 }
