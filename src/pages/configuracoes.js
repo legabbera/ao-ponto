@@ -160,6 +160,45 @@ export function renderConfiguracoes(raiz, irPara) {
       </div>
       <input type="file" id="input-arquivo-backup" accept=".json" style="display:none;" />
     </section>
+
+    <!-- Acessibilidade e Tamanho da Fonte -->
+    <section class="card config-secao" id="secao-acessibilidade">
+      <div class="card-cabecalho">
+        <div>
+          <div class="card-titulo">${icone('olho')} Tamanho da Fonte & Leitura</div>
+          <div class="card-sub">Ajuste o tamanho dos textos para facilitar a visualização no balcão e smartphone</div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+        <p style="font-size:14px; color:var(--texto-suave); margin:0;">
+          Escolha o tamanho ideal para você e seus operadores lerem no celular sem esforço:
+        </p>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px;">
+          <button type="button" class="btn btn-contorno btn-fonte-opcao" data-tamanho="1" id="btn-fonte-padrao">
+            <strong>Padrão</strong>
+            <small style="display:block; font-size:11px; color:var(--texto-suave)">17px (Recomendado)</small>
+          </button>
+          <button type="button" class="btn btn-contorno btn-fonte-opcao" data-tamanho="1.06" id="btn-fonte-media">
+            <strong>Médio</strong>
+            <small style="display:block; font-size:11px; color:var(--texto-suave)">+1px (18px)</small>
+          </button>
+          <button type="button" class="btn btn-contorno btn-fonte-opcao" data-tamanho="1.12" id="btn-fonte-grande">
+            <strong>Grande</strong>
+            <small style="display:block; font-size:11px; color:var(--texto-suave)">+2px (19px)</small>
+          </button>
+          <button type="button" class="btn btn-contorno btn-fonte-opcao" data-tamanho="1.20" id="btn-fonte-extragrande">
+            <strong>Extra Grande</strong>
+            <small style="display:block; font-size:11px; color:var(--texto-suave)">+3px (20px)</small>
+          </button>
+        </div>
+        <div style="background:var(--creme); border:1px solid var(--borda); border-radius:10px; padding:12px; font-size:14px;">
+          <span style="color:var(--texto-suave)">Exemplo de visualização:</span>
+          <strong style="color:var(--carvao); display:block; margin-top:2px;">
+            🍗 1x Frango Inteiro Assado com Farofa — R$ 45,00
+          </strong>
+        </div>
+      </div>
+    </section>
   </div>`;
 
   const $ = (s) => raiz.querySelector(s);
@@ -350,5 +389,26 @@ export function renderConfiguracoes(raiz, irPara) {
         toast('Erro ao executar rollback: ' + err.message, 'erro');
       }
     }
+  });
+
+  // Ajuste dinâmico de tamanho de fonte
+  const escalaAtual = localStorage.getItem('ao-ponto-tamanho-fonte') || '1';
+  raiz.querySelectorAll('.btn-fonte-opcao').forEach((btn) => {
+    if (btn.dataset.tamanho === escalaAtual) {
+      btn.classList.remove('btn-contorno');
+      btn.classList.add('btn-primario');
+    }
+    btn.addEventListener('click', () => {
+      const escala = btn.dataset.tamanho;
+      document.documentElement.style.setProperty('--escala-fonte', escala);
+      localStorage.setItem('ao-ponto-tamanho-fonte', escala);
+      raiz.querySelectorAll('.btn-fonte-opcao').forEach((b) => {
+        b.classList.remove('btn-primario');
+        b.classList.add('btn-contorno');
+      });
+      btn.classList.remove('btn-contorno');
+      btn.classList.add('btn-primario');
+      toast('Tamanho da fonte atualizado! 🔤', 'sucesso');
+    });
   });
 }

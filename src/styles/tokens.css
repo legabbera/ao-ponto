@@ -23,11 +23,15 @@
   --azul-claro: #E3ECF8;
   --roxo: #7A4FB0;
 
-  /* Texto */
-  --texto: #2A2420;
-  --texto-suave: #6E625A;
+  /* Texto (calibrado com alto contraste para telas sob luz do dia no balcão) */
+  --texto: #14100D;
+  --texto-suave: #453B34;
   --texto-claro: #F5EDE3;
   --borda: #E8DDCD;
+
+  /* Tamanho de Fonte Base & Escala de Acessibilidade */
+  --tamanho-fonte-base: 17px;
+  --escala-fonte: 1;
 
   /* Tipografia — Montserrat com pesos calibrados para Leitura em F */
   --fonte-titulo: 'Montserrat', system-ui, -apple-system, sans-serif;

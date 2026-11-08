@@ -37,6 +37,29 @@ export function renderShell(raiz, rotaAtual, irPara) {
   const atual = ROTAS.find((r) => r.id === rotaAtual);
   const ativo = (id) => (id === rotaAtual || (id === 'menu' && !atual?.principal && rotaAtual !== 'inicio') ? 'aria-current="page"' : '');
 
+  const shellExistente = raiz.querySelector('.app');
+  if (shellExistente) {
+    raiz.querySelectorAll('.sb-item').forEach((b) => {
+      if (b.dataset.ir === rotaAtual) b.setAttribute('aria-current', 'page');
+      else b.removeAttribute('aria-current');
+    });
+
+    raiz.querySelectorAll('.bn-item').forEach((b) => {
+      if (b.dataset.ir === rotaAtual || (b.dataset.ir === 'menu' && !atual?.principal && rotaAtual !== 'inicio')) {
+        b.setAttribute('aria-current', 'page');
+      } else {
+        b.removeAttribute('aria-current');
+      }
+    });
+
+    const tituloForte = raiz.querySelector('.topo-titulo strong');
+    if (tituloForte) {
+      tituloForte.textContent = rotaAtual === 'inicio' ? (tenant?.nome || 'Ao Ponto') : (atual?.rotulo || 'Menu');
+    }
+
+    return;
+  }
+
   raiz.innerHTML = `
   <div class="app ${st.sidebarRecolhida ? 'recolhido' : ''}">
     <aside class="sidebar" aria-label="Menu principal">

@@ -21,14 +21,25 @@ export function renderMenu(raiz, irPara) {
   const perfil = store.perfil();
   const itens = rotasDoPerfil().filter((r) => !r.principal);
   raiz.innerHTML = `
-  <h1 style="font-size:24px;margin-bottom:4px">Menu</h1>
-  <p style="color:var(--texto-suave);margin:0 0 16px">Itens disponíveis para: <strong>${perfil.papel}</strong></p>
-  <div class="menu-grade">
-    ${itens.map((r) => `<button class="menu-card" data-ir="${r.id}" id="menu-${r.id}"><span class="mc-ic">${icone(r.icone)}</span><span>${r.rotulo}<br><small>${r.desc} · Etapa ${r.etapa}</small></span></button>`).join('')}
+  <div style="margin-bottom: 20px;">
+    <h1 style="font-size:24px;margin-bottom:4px">Menu</h1>
+    <p style="color:var(--texto-suave);margin:0">Módulos e ferramentas disponíveis para: <strong>${perfil.papel}</strong></p>
   </div>
-  <div class="perfil-troca" style="margin-top:20px">
+  <div class="menu-grade">
+    ${itens.map((r) => `
+      <button class="menu-card" data-ir="${r.id}" id="menu-${r.id}">
+        <span class="mc-ic">${icone(r.icone)}</span>
+        <div class="menu-card-conteudo">
+          <strong class="menu-card-titulo">${r.rotulo}</strong>
+          <span class="menu-card-desc">${r.desc || ''}</span>
+        </div>
+        <span class="menu-card-seta">&rarr;</span>
+      </button>
+    `).join('')}
+  </div>
+  <div class="perfil-troca" style="margin-top:24px">
     <button class="perfil-op" id="menu-trocar-perfil"><span>${perfil.emoji}</span><span><strong>Trocar perfil (demonstração)</strong><small>Logado como ${perfil.nome}</small></span></button>
-    <button class="perfil-op" id="menu-sair"><span>🚪</span><span><strong>Sair</strong><small>Encerrar sessão demonstrativa</small></span></button>
+    <button class="perfil-op" id="menu-sair"><span>🚪</span><span><strong>Sair</strong><small>Encerrar sessão</small></span></button>
   </div>`;
   raiz.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => irPara(b.dataset.ir)));
   raiz.querySelector('#menu-trocar-perfil').addEventListener('click', () => modalPerfil(irPara));

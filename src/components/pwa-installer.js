@@ -1,5 +1,5 @@
 /**
- * GERENCIADOR DE PWA — Registro de Service Worker e Prompt de Instalação (iOS / Android)
+ * GERENCIADOR DE PWA — Registro de Service Worker e Prompt de Instalação (iOS / Android / Desktop)
  */
 import { icone } from './icons.js';
 import { toast, abrirModal } from './ui.js';
@@ -27,8 +27,8 @@ export function inicializarPwa() {
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    // Exibe banner ou botão se não estiver instalado
     exibirBannerInstalacaoSeApropriado();
+    exibirBotaoPwaPulsante();
   });
 
   // 3. Detecta quando o app foi instalado com sucesso
@@ -36,7 +36,15 @@ export function inicializarPwa() {
     deferredPrompt = null;
     toast('🎉 Aplicativo Ao Ponto instalado com sucesso na tela inicial!', 'sucesso');
     removerBannerInstalacao();
+    removerBotaoPwaPulsante();
   });
+
+  // 4. Sempre exibe o botão flutuante pulsante se não estiver instalado
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', () => exibirBotaoPwaPulsante());
+  } else {
+    exibirBotaoPwaPulsante();
+  }
 }
 
 // Verifica se já está rodando em modo standalone (PWA instalado)
@@ -53,13 +61,38 @@ export function isIos() {
   return /iphone|ipad|ipod/.test(userAgent);
 }
 
-// Banner flutuante ou botão discreto na barra
+// Botão Flutuante Pulsante "Baixar no Celular / Tablet / PC"
+export function exibirBotaoPwaPulsante() {
+  if (isPwaInstalado()) return;
+  if (document.getElementById('pwa-fab-pulse')) return;
+
+  const btn = document.createElement('button');
+  btn.id = 'pwa-fab-pulse';
+  btn.className = 'pwa-fab-pulse';
+  btn.setAttribute('aria-label', 'Baixar aplicativo no celular, tablet ou PC');
+  btn.title = 'Instalar o Ao Ponto como aplicativo no seu celular ou PC';
+  btn.innerHTML = `
+    <span class="pwa-fab-pulse-dot"></span>
+    <span>📲 Baixar no Celular / PC</span>
+  `;
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dispararInstalacaoPwa();
+  });
+
+  document.body.appendChild(btn);
+}
+
+export function removerBotaoPwaPulsante() {
+  const btn = document.getElementById('pwa-fab-pulse');
+  if (btn) btn.remove();
+}
+
+// Banner flutuante no primeiro acesso
 function exibirBannerInstalacaoSeApropriado() {
   if (isPwaInstalado()) return;
-
-  // Se já foi dispensado nesta sessão, não incomoda
   if (sessionStorage.getItem('ao-ponto-pwa-dismissed')) return;
-
   if (document.getElementById('pwa-install-banner')) return;
 
   const banner = document.createElement('div');
@@ -120,7 +153,7 @@ function removerBannerInstalacao() {
 }
 
 /**
- * Dispara o prompt ou abre o guia para iOS
+ * Dispara o prompt ou abre o guia visual para iOS / Android / PC
  */
 export function dispararInstalacaoPwa() {
   if (deferredPrompt) {
@@ -128,6 +161,7 @@ export function dispararInstalacaoPwa() {
     deferredPrompt.userChoice.then((choiceResult) => {
       if (choiceResult.outcome === 'accepted') {
         removerBannerInstalacao();
+        removerBotaoPwaPulsante();
       }
       deferredPrompt = null;
     });
@@ -141,7 +175,7 @@ export function dispararInstalacaoPwa() {
           Instale o Ao Ponto para abrir em tela cheia direto da tela inicial do seu celular, sem barra de navegação.
         </p>
         
-        <div style="background:var(--creme-medio, #26221F); border-radius:12px; padding:16px; text-align:left; font-size:14px; line-height:1.6; display:flex; flex-direction:column; gap:12px;">
+        <div style="background:var(--creme, #26221F); border:1px solid var(--borda); border-radius:12px; padding:16px; text-align:left; font-size:14px; line-height:1.6; display:flex; flex-direction:column; gap:12px;">
           <div style="display:flex; align-items:center; gap:10px;">
             <span style="background:var(--brasa, #E26A3B); color:#FFF; width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex-shrink:0;">1</span>
             <span>No Safari, toque no botão <strong>Compartilhar</strong> (ícone <span style="font-size:18px;">⎋</span> ou quadrado com seta para cima).</span>
@@ -162,7 +196,30 @@ export function dispararInstalacaoPwa() {
       </div>
     `);
   } else {
-    toast('Para instalar, use a opção "Instalar aplicativo" no menu do seu navegador (⋮)', 'info');
+    // Guia para Android (Chrome/Samsung) e Computador (PC / Mac)
+    abrirModal(`
+      <div style="text-align:center; padding:10px 0;">
+        <img src="/icon-192.png" alt="Ao Ponto" style="width:64px; height:64px; border-radius:14px; margin-bottom:12px;" />
+        <h2 style="font-size:20px; margin-bottom:8px;">Instalar Aplicativo Ao Ponto</h2>
+        <p style="color:var(--texto-suave); font-size:14px; margin-bottom:20px;">
+          Tenha o sistema instalado como aplicativo nativo no celular, tablet ou computador.
+        </p>
+
+        <div style="background:var(--creme); border:1px solid var(--borda); border-radius:12px; padding:16px; text-align:left; font-size:14px; line-height:1.6; display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <strong style="color:var(--carvao); display:block; font-size:15px; margin-bottom:4px;">📱 No Celular Android (Chrome / Samsung):</strong>
+            <span>Toque nos <strong>3 pontinhos (⋮)</strong> no canto superior do navegador e escolha <strong>"Instalar aplicativo"</strong> ou <strong>"Adicionar à tela inicial"</strong>.</span>
+          </div>
+          <div style="border-top:1px solid var(--borda); padding-top:10px;">
+            <strong style="color:var(--carvao); display:block; font-size:15px; margin-bottom:4px;">💻 No Computador / PC (Chrome / Edge):</strong>
+            <span>Clique no ícone de instalação <strong>(⤓)</strong> na barra de endereço do navegador ao lado do endereço do site.</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primario btn-bloco" style="margin-top:20px;" data-fechar>
+          Fechar
+        </button>
+      </div>
+    `);
   }
 }
-

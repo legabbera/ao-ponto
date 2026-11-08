@@ -8,6 +8,11 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
 html,
 body {
   margin: 0;
@@ -18,8 +23,8 @@ body {
   font-family: var(--fonte-texto);
   background: var(--creme);
   color: var(--texto);
-  font-size: 16px;
-  line-height: 1.45;
+  font-size: calc(var(--tamanho-fonte-base, 17px) * var(--escala-fonte, 1));
+  line-height: 1.48;
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }
@@ -584,4 +589,149 @@ svg.ic.ic-suave { color: var(--texto-suave) !important; }
   color: var(--texto);
   font-size: 20px;
   margin-bottom: 6px;
+}
+
+/* ---------- MENU HAMBURGER (CELULAR & TABLET) ---------- */
+.menu-grade {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.menu-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
+  background: var(--branco);
+  border: 1.5px solid var(--borda);
+  border-radius: var(--raio);
+  text-align: left;
+  box-shadow: var(--sombra);
+  transition: all var(--transicao);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.menu-card:hover,
+.menu-card:active {
+  border-color: var(--brasa);
+  transform: translateX(4px);
+  background: #FFFDF9;
+}
+
+.menu-card .mc-ic {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--brasa-clara);
+  color: var(--brasa);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(217, 72, 28, 0.15);
+}
+
+.menu-card .mc-ic svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.menu-card-conteudo {
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-card-titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--carvao);
+  display: block;
+}
+
+.menu-card-desc {
+  font-size: 13px;
+  color: var(--texto-suave);
+  display: block;
+  margin-top: 3px;
+  line-height: 1.35;
+}
+
+.menu-card-seta {
+  color: var(--brasa);
+  font-size: 20px;
+  font-weight: 700;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+/* ---------- BOTÃO PULSANTE PWA (BAIXAR APP) ---------- */
+.pwa-fab-pulse {
+  position: fixed;
+  bottom: calc(var(--bottom-nav) + 16px + env(safe-area-inset-bottom));
+  left: 16px;
+  z-index: 48;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--carvao) 0%, #2A2420 100%);
+  color: #FFFFFF;
+  border: 1.5px solid var(--brasa);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-family: var(--fonte-titulo);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 4px 18px rgba(217, 72, 28, 0.35);
+  cursor: pointer;
+  animation: pwaPulseGlow 2.2s infinite;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pwa-fab-pulse:hover {
+  transform: scale(1.05);
+}
+
+.pwa-fab-pulse:active {
+  transform: scale(0.98);
+}
+
+.pwa-fab-pulse-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22C55E;
+  box-shadow: 0 0 10px #22C55E;
+  display: inline-block;
+  animation: pwaDotPulse 1.2s infinite;
+}
+
+@keyframes pwaPulseGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(217, 72, 28, 0.5), 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(217, 72, 28, 0), 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(217, 72, 28, 0), 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+}
+
+@keyframes pwaDotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.8; }
+}
+
+@media (min-width: 1024px) {
+  .pwa-fab-pulse {
+    bottom: 24px;
+    left: 24px;
+  }
 }

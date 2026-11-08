@@ -37,6 +37,14 @@ iniciarEscudoAntiClonagem();
 // Registra e inicializa suporte a PWA (iOS / Android)
 inicializarPwa();
 
+// Carrega preferência de tamanho de fonte salva
+try {
+  const escalaFonteSalva = localStorage.getItem('ao-ponto-tamanho-fonte');
+  if (escalaFonteSalva) {
+    document.documentElement.style.setProperty('--escala-fonte', escalaFonteSalva);
+  }
+} catch (_) {}
+
 const app = document.getElementById('app');
 
 export function irPara(rota) {
