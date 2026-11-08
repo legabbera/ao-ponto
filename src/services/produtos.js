@@ -135,3 +135,4 @@ export function redefinirProdutosPadrao() {
   salvarProdutosLocais(padrao);
   return padrao;
 }
+
