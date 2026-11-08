@@ -5,7 +5,9 @@
 import { icone } from '../components/icons.js';
 import { toast, abrirModal } from '../components/ui.js';
 import { store } from '../state/store.js';
-import { PRODUTOS, CATEGORIAS, PONTOS } from '../data/mock.js';
+import { CATEGORIAS, PONTOS } from '../data/mock.js';
+import { carregarProdutosLocais } from '../services/produtos.js';
+import { abrirModalProduto } from '../components/modal-produto.js';
 import { fmtMoeda, fmtKg } from '../utils/format.js';
 import { exibirModalLimite } from '../components/limite-modal.js';
 import { registrarVendaTenant } from '../data/tenants.js';
@@ -28,9 +30,10 @@ export function renderVendas(raiz, irPara) {
     : PONTOS.find((p) => p.id === st.ponto)?.nome;
 
   function desenhar() {
+    const listaCompleta = carregarProdutosLocais();
     const produtosFiltrados = categoriaAtiva === 'todos'
-      ? PRODUTOS
-      : PRODUTOS.filter((p) => p.categoria === categoriaAtiva);
+      ? listaCompleta
+      : listaCompleta.filter((p) => p.categoria === categoriaAtiva);
 
     const subtotal = carrinho.reduce((acc, it) => acc + it.total, 0);
     const totalItens = carrinho.reduce((acc, it) => acc + (it.forma === 'peso' ? 1 : it.qtd), 0);
@@ -49,6 +52,9 @@ export function renderVendas(raiz, irPara) {
           <p><span class="badge badge-demo">${icone('local', 'mini')} ${nomePonto}</span> &bull; Registro e fechamento ágil de vendas</p>
         </div>
         <div class="pdv-topo-acoes">
+          <button class="btn btn-primario" id="btn-novo-produto" style="font-weight:700;">
+            ${icone('mais')} Novo Produto
+          </button>
           <button class="btn btn-contorno" id="btn-ir-pedidos">${icone('calendario')} Encomendas / Reservas</button>
           <button class="btn btn-contorno" id="btn-ir-clientes">${icone('clientes')} Clientes & Fidelidade</button>
         </div>
@@ -75,9 +81,14 @@ export function renderVendas(raiz, irPara) {
                     <span class="prod-preco">
                       ${prod.forma === 'peso' ? `${fmtMoeda(prod.precoKg)} <small>/kg</small>` : fmtMoeda(prod.preco)}
                     </span>
-                    <button class="btn btn-primario btn-add-prod" data-id="${prod.id}">
-                      ${icone('mais')} Adicionar
-                    </button>
+                    <div style="display:flex; gap:6px;">
+                      <button class="btn btn-pequeno btn-contorno btn-editar-prod" data-edit-id="${prod.id}" title="Editar este produto" style="padding:4px 8px; font-size:12px;">
+                        ✏️
+                      </button>
+                      <button class="btn btn-primario btn-add-prod" data-id="${prod.id}">
+                        ${icone('mais')} Adicionar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -250,9 +261,27 @@ export function renderVendas(raiz, irPara) {
     raiz.querySelector('#btn-ir-pedidos')?.addEventListener('click', () => irPara('pedidos'));
     raiz.querySelector('#btn-ir-clientes')?.addEventListener('click', () => irPara('clientes'));
 
+    // Botão Novo Produto
+    raiz.querySelector('#btn-novo-produto')?.addEventListener('click', () => {
+      abrirModalProduto(null, () => desenhar(), store.getTenant()?.id);
+    });
+
+    // Botão Editar Produto
+    raiz.querySelectorAll('.btn-editar-prod').forEach((b) => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const listaCompleta = carregarProdutosLocais();
+        const prod = listaCompleta.find((p) => p.id === b.dataset.editId);
+        if (prod) {
+          abrirModalProduto(prod, () => desenhar(), store.getTenant()?.id);
+        }
+      });
+    });
+
     raiz.querySelectorAll('.btn-add-prod').forEach((b) => {
       b.addEventListener('click', () => {
-        const prod = PRODUTOS.find((p) => p.id === b.dataset.id);
+        const listaCompleta = carregarProdutosLocais();
+        const prod = listaCompleta.find((p) => p.id === b.dataset.id);
         if (!prod) return;
         if (prod.forma === 'peso') {
           abrirModalPeso(prod);
@@ -302,7 +331,8 @@ export function renderVendas(raiz, irPara) {
       b.addEventListener('click', () => {
         const idx = Number(b.dataset.editarPeso);
         const item = carrinho[idx];
-        const prod = PRODUTOS.find((p) => p.id === item.id);
+        const listaCompleta = carregarProdutosLocais();
+        const prod = listaCompleta.find((p) => p.id === item.id);
         if (prod) abrirModalPeso(prod, idx);
       });
     });

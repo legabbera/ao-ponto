@@ -190,3 +190,4 @@ export async function atualizarStatusLead(id, novoStatus) {
 
   return true;
 }
+
