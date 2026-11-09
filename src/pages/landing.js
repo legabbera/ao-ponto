@@ -318,6 +318,94 @@ export function renderLanding(raiz, irPara) {
           </table>
         </div>
 
+        <!-- SANFONA COMPARATIVA PARA SMARTPHONES E TABLETS -->
+        <div class="lp-comp-sanfona">
+          <div class="lp-comp-sanfona-item aberto">
+            <button class="lp-comp-sanfona-btn" aria-expanded="true">
+              <span class="sanfona-titulo">🎯 Objetivo principal</span>
+              <span class="sanfona-seta">▼</span>
+            </button>
+            <div class="lp-comp-sanfona-corpo">
+              <div class="sanfona-card aoponto">
+                <div class="sanfona-card-rotulo">Ao Ponto 🍗</div>
+                <p><span class="f-lead">Apoiar a organização</span>, o controle do balcão e a clareza dos números do seu ponto de venda.</p>
+              </div>
+              <div class="sanfona-card marketplace">
+                <div class="sanfona-card-rotulo">Marketplaces de Entrega 🛵</div>
+                <p>Conectar consumidores e estabelecimentos em uma plataforma de entrega com catálogo geral.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lp-comp-sanfona-item">
+            <button class="lp-comp-sanfona-btn" aria-expanded="false">
+              <span class="sanfona-titulo">🍗 Gestão de vendas próprias (balcão e retirada)</span>
+              <span class="sanfona-seta">▼</span>
+            </button>
+            <div class="lp-comp-sanfona-corpo">
+              <div class="sanfona-card aoponto">
+                <div class="sanfona-card-rotulo">Ao Ponto 🍗</div>
+                <p><span class="f-lead">Feito para registrar vendas</span> presenciais, reservas de assados para domingo e clientes fiéis.</p>
+              </div>
+              <div class="sanfona-card marketplace">
+                <div class="sanfona-card-rotulo">Marketplaces de Entrega 🛵</div>
+                <p>Focado na gestão de pedidos que entram pela própria plataforma do aplicativo.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lp-comp-sanfona-item">
+            <button class="lp-comp-sanfona-btn" aria-expanded="false">
+              <span class="sanfona-titulo">👥 Descoberta por novos clientes</span>
+              <span class="sanfona-seta">▼</span>
+            </button>
+            <div class="lp-comp-sanfona-corpo">
+              <div class="sanfona-card aoponto">
+                <div class="sanfona-card-rotulo">Ao Ponto 🍗</div>
+                <p><span class="f-lead">Não gera clientes magicamente</span>: é um sistema para você gerenciar o negócio que você já construiu.</p>
+              </div>
+              <div class="sanfona-card marketplace">
+                <div class="sanfona-card-rotulo">Marketplaces de Entrega 🛵</div>
+                <p>Pode oferecer visibilidade e exposição para novos consumidores dentro da base do marketplace.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lp-comp-sanfona-item">
+            <button class="lp-comp-sanfona-btn" aria-expanded="false">
+              <span class="sanfona-titulo">💰 Custos e condições</span>
+              <span class="sanfona-seta">▼</span>
+            </button>
+            <div class="lp-comp-sanfona-corpo">
+              <div class="sanfona-card aoponto">
+                <div class="sanfona-card-rotulo">Ao Ponto 🍗</div>
+                <p><span class="f-lead">Sem comissões por cada assado</span> vendido no balcão. Modelo de assinatura transparente em validação.</p>
+              </div>
+              <div class="sanfona-card marketplace">
+                <div class="sanfona-card-rotulo">Marketplaces de Entrega 🛵</div>
+                <p>Costuma cobrar comissões percentuais sobre as vendas e mensalidades (consultar tabela vigente da plataforma).</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lp-comp-sanfona-item">
+            <button class="lp-comp-sanfona-btn" aria-expanded="false">
+              <span class="sanfona-titulo">📊 Relatórios da operação</span>
+              <span class="sanfona-seta">▼</span>
+            </button>
+            <div class="lp-comp-sanfona-corpo">
+              <div class="sanfona-card aoponto">
+                <div class="sanfona-card-rotulo">Ao Ponto 🍗</div>
+                <p><span class="f-lead">Indicadores diretos</span> de faturamento, horários de maior movimento e itens mais pedidos na sua loja.</p>
+              </div>
+              <div class="sanfona-card marketplace">
+                <div class="sanfona-card-rotulo">Marketplaces de Entrega 🛵</div>
+                <p>Relatórios focados nos pedidos e repasses realizados exclusivamente dentro do marketplace.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="lp-comp-conclusao">
           <strong>Conclusão prática:</strong> Você não precisa escolher um único canal para vender. Use os canais que fazem sentido para seu negócio e utilize o <strong>Ao Ponto</strong> como apoio à gestão da sua operação real.
         </div>
@@ -1017,6 +1105,23 @@ export function renderLanding(raiz, irPara) {
         tela.classList.remove('visivel');
       });
       raiz.querySelector(`#${targetId}`)?.classList.add('visivel');
+    });
+  });
+
+  // Sanfona Comparativo Mobile
+  const compSanfonaItems = raiz.querySelectorAll('.lp-comp-sanfona-item');
+  compSanfonaItems.forEach((item) => {
+    const btn = item.querySelector('.lp-comp-sanfona-btn');
+    btn?.addEventListener('click', () => {
+      const estaAberto = item.classList.contains('aberto');
+      compSanfonaItems.forEach((other) => {
+        other.classList.remove('aberto');
+        other.querySelector('.lp-comp-sanfona-btn')?.setAttribute('aria-expanded', 'false');
+      });
+      if (!estaAberto) {
+        item.classList.add('aberto');
+        btn.setAttribute('aria-expanded', 'true');
+      }
     });
   });
 

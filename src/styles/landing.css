@@ -794,6 +794,116 @@
 }
 
 /* =========================================================
+   SANFONA COMPARATIVA (MOBILE / TABLET)
+   ========================================================= */
+.lp-comp-sanfona {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.lp-comp-sanfona-item {
+  background: var(--branco);
+  border: 1.5px solid var(--borda);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all var(--transicao);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.lp-comp-sanfona-item.aberto {
+  border-color: var(--brasa);
+  box-shadow: 0 4px 14px rgba(200, 66, 26, 0.12);
+}
+
+.lp-comp-sanfona-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--fonte-titulo);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--carvao);
+}
+
+.lp-comp-sanfona-btn .sanfona-seta {
+  font-size: 12px;
+  color: var(--texto-suave);
+  transition: transform var(--transicao);
+}
+
+.lp-comp-sanfona-item.aberto .lp-comp-sanfona-btn .sanfona-seta {
+  transform: rotate(180deg);
+  color: var(--brasa);
+}
+
+.lp-comp-sanfona-corpo {
+  display: none;
+  padding: 0 16px 16px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lp-comp-sanfona-item.aberto .lp-comp-sanfona-corpo {
+  display: flex;
+}
+
+.sanfona-card {
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.sanfona-card.aoponto {
+  background: #FFF7F2;
+  border: 1.5px solid #FED7AA;
+}
+
+.sanfona-card.marketplace {
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+}
+
+.sanfona-card-rotulo {
+  font-family: var(--fonte-titulo);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.sanfona-card.aoponto .sanfona-card-rotulo {
+  color: var(--brasa-escura);
+}
+
+.sanfona-card.marketplace .sanfona-card-rotulo {
+  color: #64748B;
+}
+
+.sanfona-card p {
+  margin: 0;
+  color: var(--carvao);
+}
+
+@media (max-width: 768px) {
+  .lp-comp-table-wrap {
+    display: none !important;
+  }
+  .lp-comp-sanfona {
+    display: flex !important;
+  }
+}
+
+/* =========================================================
    6. DEMONSTRAÇÃO VISUAL DO PRODUTO (TABS INTERATIVAS)
    ========================================================= */
 .lp-demo {

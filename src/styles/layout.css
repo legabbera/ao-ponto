@@ -114,13 +114,20 @@ html, body { overflow-x: hidden; width: 100%; max-width: 100vw; }
 .bn-item[aria-current="page"] { color: #fff; }
 .bn-item[aria-current="page"]::before { content: ""; position: absolute; top: 0; width: 32px; height: 3px; border-radius: 0 0 4px 4px; background: var(--brasa); }
 
-/* Botão flutuante "+" */
-.fab { position: fixed; right: 16px; bottom: calc(var(--bottom-nav) + 16px + env(safe-area-inset-bottom)); z-index: 45; width: 60px; height: 60px; border-radius: 20px; border: 0; color: #fff; background: linear-gradient(135deg, #F07A3E, var(--brasa-escura)); box-shadow: 0 10px 26px rgba(217,72,28,.5); display: grid; place-items: center; transition: transform var(--transicao); }
-.fab svg { width: 28px; height: 28px; transition: transform var(--transicao); }
-.fab[aria-expanded="true"] svg { transform: rotate(45deg); }
-.fab-menu { position: fixed; right: 16px; bottom: calc(var(--bottom-nav) + 88px + env(safe-area-inset-bottom)); z-index: 45; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
-.fab-menu .btn { box-shadow: var(--sombra-forte); animation: subir .2s; }
-.fab-fundo { position: fixed; inset: 0; z-index: 44; background: rgba(31,27,24,.35); }
+/* Botão flutuante desativado para liberar barra inferior no mobile */
+.fab, .fab-menu, .fab-fundo { display: none !important; }
+
+.btn-tema-toggle {
+  font-size: 19px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transicao);
+}
+.btn-tema-toggle:hover {
+  transform: scale(1.15);
+}
 
 /* ---------- DESKTOP (A partir de 1024px) ---------- */
 @media (min-width: 1024px) {

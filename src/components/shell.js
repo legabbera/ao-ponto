@@ -58,6 +58,9 @@ export function renderShell(raiz, rotaAtual, irPara) {
       tituloForte.textContent = rotaAtual === 'inicio' ? (tenant?.nome || 'Ao Ponto') : (atual?.rotulo || 'Menu');
     }
 
+    const icTopo = raiz.querySelector('#topo-icone-tema');
+    if (icTopo) icTopo.textContent = document.documentElement.classList.contains('dark') ? '🌙' : '☀️';
+
     return;
   }
 
@@ -94,6 +97,9 @@ export function renderShell(raiz, rotaAtual, irPara) {
           <strong>${atual?.rotulo === 'Início' ? 'Ao Ponto' : atual?.rotulo || 'Menu'}</strong>
           <small>${icone('local', 'mini')} ${nomePonto}</small>
         </div>
+        <button class="topo-btn btn-tema-toggle" data-acao="alternar-tema" aria-label="Alternar modo escuro / claro" title="Alternar Modo Escuro / Claro">
+          <span id="topo-icone-tema">${document.documentElement.classList.contains('dark') ? '🌙' : '☀️'}</span>
+        </button>
         <button class="topo-btn" data-acao="notificacoes" aria-label="Notificações">${icone('sino')}<span class="ponto-notif"></span></button>
         <button class="avatar" data-acao="${isDemo ? 'perfil' : 'meu-perfil'}" aria-label="Perfil de ${nomeExibicao}">${iniciais}</button>
       </header>
@@ -104,7 +110,6 @@ export function renderShell(raiz, rotaAtual, irPara) {
       ${rotas.filter((r) => r.principal).map((r) => `<button class="bn-item" data-ir="${r.id}" ${ativo(r.id)} id="nav-${r.id}">${icone(r.icone)}<span>${r.rotulo}</span></button>`).join('')}
       <button class="bn-item" data-ir="menu" ${ativo('menu')} id="nav-menu">${icone('menu')}<span>Menu</span></button>
     </nav>
-    <button class="fab" aria-expanded="false" aria-label="Ações rápidas" id="btn-fab">${icone('mais')}</button>
   </div>`;
 
   function itemSb(r) {
@@ -115,26 +120,29 @@ export function renderShell(raiz, rotaAtual, irPara) {
   raiz.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => irPara(b.dataset.ir)));
   raiz.querySelectorAll('[data-acao]').forEach((b) => b.addEventListener('click', () => acoes[b.dataset.acao]?.()));
 
-  const fab = raiz.querySelector('#btn-fab');
-  fab.addEventListener('click', () => {
-    const aberto = fab.getAttribute('aria-expanded') === 'true';
-    raiz.querySelector('.fab-menu')?.remove(); raiz.querySelector('.fab-fundo')?.remove();
-    fab.setAttribute('aria-expanded', String(!aberto));
-    if (aberto) return;
-    const fundo = document.createElement('div'); fundo.className = 'fab-fundo';
-    const menu = document.createElement('div'); menu.className = 'fab-menu';
-    menu.innerHTML = `<button class="btn btn-escuro" data-q="novo-pedido">${icone('calendario')} Novo pedido / reserva</button>
-                      <button class="btn btn-primario" data-q="nova-venda">${icone('vendas')} Nova venda (Gestão de Vendas)</button>`;
-    const fechar = () => { menu.remove(); fundo.remove(); fab.setAttribute('aria-expanded', 'false'); };
-    fundo.addEventListener('click', fechar);
-    menu.querySelectorAll('[data-q]').forEach((b) => b.addEventListener('click', () => { fechar(); acoes[b.dataset.q](); }));
-    raiz.querySelector('.app').append(fundo, menu);
-  });
-
   const acoes = {
     'landing': () => irPara('landing'),
     'nova-venda': () => irPara('vendas'),
     'novo-pedido': () => irPara('pedidos'),
+    'alternar-tema': () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('ao-ponto-tema', isDark ? 'dark' : 'light');
+      const ic = raiz.querySelector('#topo-icone-tema');
+      if (ic) ic.textContent = isDark ? '🌙' : '☀️';
+      toast(isDark ? 'Modo Escuro ativado! 🌙' : 'Modo Claro ativado! ☀️', 'info');
+      const toggleCheck = document.querySelector('#toggle-tema-dark');
+      if (toggleCheck) toggleCheck.checked = isDark;
+      const toggleCheckMenu = document.querySelector('#menu-toggle-tema-dark');
+      if (toggleCheckMenu) toggleCheckMenu.checked = isDark;
+      const label = document.querySelector('#label-tema-atual');
+      if (label) label.textContent = isDark ? 'Modo Escuro Ativo' : 'Modo Claro Ativo';
+      const labelMenu = document.querySelector('#menu-label-tema');
+      if (labelMenu) labelMenu.textContent = isDark ? 'Modo Escuro Ativo' : 'Modo Claro Ativo';
+      const icCard = document.querySelector('#icone-tema-atual');
+      if (icCard) icCard.textContent = isDark ? '🌙' : '☀️';
+      const icMenu = document.querySelector('#menu-icone-tema');
+      if (icMenu) icMenu.textContent = isDark ? '🌙' : '☀️';
+    },
     recolher: () => { store.set({ sidebarRecolhida: !store.get().sidebarRecolhida }); raiz.querySelector('.app').classList.toggle('recolhido'); },
     notificacoes: () => abrirModal(`
       <h2>Notificações</h2><p>Exemplos fictícios.</p>

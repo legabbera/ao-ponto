@@ -21,11 +21,31 @@ export function renderEmBreve(raiz, rotaId, irPara) {
 export function renderMenu(raiz, irPara) {
   const perfil = store.perfil();
   const itens = rotasDoPerfil().filter((r) => !r.principal);
+  const isDark = document.documentElement.classList.contains('dark');
+
   raiz.innerHTML = `
-  <div style="margin-bottom: 20px;">
+  <div style="margin-bottom: 16px;">
     <h1 style="font-size:24px;margin-bottom:4px">Menu</h1>
     <p style="color:var(--texto-suave);margin:0">Módulos e ferramentas disponíveis para: <strong>${perfil.papel}</strong></p>
   </div>
+
+  <!-- Chave Slide Dark Mode / Clear Mode no topo do Menu -->
+  <div style="background:var(--creme); border:1.5px solid var(--borda); border-radius:14px; padding:12px 16px; margin-bottom:18px; display:flex; align-items:center; justify-content:space-between;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-size:22px;" id="menu-icone-tema">${isDark ? '🌙' : '☀️'}</span>
+      <div>
+        <strong style="font-size:14px; color:var(--carvao); display:block;" id="menu-label-tema">
+          ${isDark ? 'Modo Escuro Ativo' : 'Modo Claro Ativo'}
+        </strong>
+        <small style="color:var(--texto-suave); font-size:11px;">Alternar contraste visual (claro / escuro)</small>
+      </div>
+    </div>
+    <label class="switch-slide" title="Alternar Modo Escuro / Claro">
+      <input type="checkbox" id="menu-toggle-tema-dark" ${isDark ? 'checked' : ''} />
+      <span class="slider"></span>
+    </label>
+  </div>
+
   <div class="menu-grade">
     ${itens.map((r) => `
       <button class="menu-card" data-ir="${r.id}" id="menu-${r.id}">
@@ -64,6 +84,21 @@ export function renderMenu(raiz, irPara) {
     <button class="perfil-op" id="menu-sair"><span>🚪</span><span><strong>Sair</strong><small>Encerrar sessão</small></span></button>
   </div>`;
   raiz.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => irPara(b.dataset.ir)));
+  
+  const toggleMenu = raiz.querySelector('#menu-toggle-tema-dark');
+  toggleMenu?.addEventListener('change', (e) => {
+    const darkAtivo = e.target.checked;
+    document.documentElement.classList.toggle('dark', darkAtivo);
+    localStorage.setItem('ao-ponto-tema', darkAtivo ? 'dark' : 'light');
+    const label = raiz.querySelector('#menu-label-tema');
+    const ic = raiz.querySelector('#menu-icone-tema');
+    if (label) label.textContent = darkAtivo ? 'Modo Escuro Ativo' : 'Modo Claro Ativo';
+    if (ic) ic.textContent = darkAtivo ? '🌙' : '☀️';
+    const icTopo = document.querySelector('#topo-icone-tema');
+    if (icTopo) icTopo.textContent = darkAtivo ? '🌙' : '☀️';
+    toast(darkAtivo ? 'Modo Escuro ativado! 🌙' : 'Modo Claro ativado! ☀️', 'info');
+  });
+
   raiz.querySelector('#menu-btn-suporte')?.addEventListener('click', () => abrirModalSuporte());
   raiz.querySelector('#menu-btn-sugestoes')?.addEventListener('click', () => abrirModalSugestoes());
   raiz.querySelector('#menu-trocar-perfil').addEventListener('click', () => modalPerfil(irPara));
