@@ -3608,47 +3608,164 @@ input:checked+.switch-slider:before {
    ========================================================= */
 @media (max-width: 1023px) {
   /* Vendas e Balcão: 1 coluna única para smartphones e tablets sem overflow lateral */
+  .pdv-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
   .pdv-layout {
     grid-template-columns: 1fr !important;
     width: 100% !important;
     max-width: 100% !important;
+    min-width: 0 !important;
     box-sizing: border-box !important;
+    gap: 16px !important;
   }
   .pdv-catalogo {
     width: 100% !important;
     max-width: 100% !important;
+    min-width: 0 !important;
     box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  .pdv-categorias {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px !important;
   }
   .pdv-grade-produtos {
     grid-template-columns: 1fr !important;
     width: 100% !important;
     max-width: 100% !important;
+    min-width: 0 !important;
     box-sizing: border-box !important;
-    gap: 12px;
+    gap: 12px !important;
   }
   .produto-card {
     width: 100% !important;
     max-width: 100% !important;
+    min-width: 0 !important;
     box-sizing: border-box !important;
-    padding: 12px 14px;
+    padding: 12px 14px !important;
+    overflow: hidden !important;
+  }
+  .pdv-historico {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  .vendas-lista {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .venda-linha {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    gap: 8px !important;
+  }
+  .venda-info {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    overflow: hidden !important;
+  }
+  .venda-info strong {
+    display: block !important;
+    font-size: 13px !important;
+  }
+  .venda-info span {
+    display: block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    font-size: 12px !important;
+  }
+  .venda-total {
+    flex-shrink: 0 !important;
+    text-align: right !important;
+  }
+  .pdv-carrinho-painel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    position: static !important;
+    box-sizing: border-box !important;
+    margin-top: 10px !important;
+  }
+  .pdv-carrinho {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  .pdv-cliente-box {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    gap: 8px !important;
+  }
+  .pdv-cliente-box input {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .pagamento-botoes {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
   .pdv-topo {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    width: 100%;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .pdv-topo-acoes {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    gap: 8px;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
   }
   .pdv-topo-acoes .btn {
-    flex: 1 1 130px;
-    justify-content: center;
-    font-size: 13px;
-    padding: 10px 12px;
+    flex: 1 1 130px !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    padding: 10px 12px !important;
+  }
+
+  /* Pagamentos & Maquininhas no Celular */
+  .pagamentos-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  .cartao {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    padding: 14px !important;
   }
 
   /* Pedidos & Reservas: 1 coluna vertical fácil de rolar com o polegar */

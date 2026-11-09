@@ -79,9 +79,26 @@ export function renderMenu(raiz, irPara) {
       </button>
     </div>
   </div>
-  <div class="perfil-troca" style="margin-top:20px">
-    <button class="perfil-op" id="menu-trocar-perfil"><span>${perfil.emoji}</span><span><strong>Trocar perfil (demonstração)</strong><small>Logado como ${perfil.nome}</small></span></button>
-    <button class="perfil-op" id="menu-sair"><span>🚪</span><span><strong>Sair</strong><small>Encerrar sessão</small></span></button>
+  <div style="margin-top:24px; margin-bottom:12px;">
+    <h3 style="font-size:16px; font-weight:700; color:var(--carvao); margin:0 0 10px 0;">Sessão & Conta</h3>
+    <div class="menu-grade">
+      <button class="menu-card" id="menu-trocar-perfil">
+        <span class="mc-ic">${perfil.emoji}</span>
+        <div class="menu-card-conteudo">
+          <strong class="menu-card-titulo">Trocar perfil (demonstração)</strong>
+          <span class="menu-card-desc">Logado como ${perfil.nome} (${perfil.papel})</span>
+        </div>
+        <span class="menu-card-seta">&rarr;</span>
+      </button>
+      <button class="menu-card" id="menu-sair" style="border-color: rgba(220, 38, 38, 0.25);">
+        <span class="mc-ic" style="color: #DC2626; background: #FEE2E2;">${icone('sair')}</span>
+        <div class="menu-card-conteudo">
+          <strong class="menu-card-titulo" style="color: #DC2626;">Sair</strong>
+          <span class="menu-card-desc">Encerrar sessão e voltar ao início</span>
+        </div>
+        <span class="menu-card-seta" style="color: #DC2626;">&rarr;</span>
+      </button>
+    </div>
   </div>`;
   raiz.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => irPara(b.dataset.ir)));
   

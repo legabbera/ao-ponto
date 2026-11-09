@@ -137,7 +137,7 @@ export function renderVendas(raiz, irPara) {
                 <div class="carrinho-vazio">
                   <div class="carrinho-vazio-ic">${icone('vendas')}</div>
                   <p>Carrinho vazio</p>
-                  <small>Clique em <strong>+ Adicionar</strong> em qualquer item ao lado.</small>
+                  <small>Toque no botão <strong>+</strong> em qualquer item para adicionar.</small>
                 </div>
               ` : carrinho.map((it, idx) => `
                 <div class="item-carrinho">

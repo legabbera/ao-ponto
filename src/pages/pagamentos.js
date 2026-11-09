@@ -58,15 +58,15 @@ export function renderPagamentos(raiz, irPara) {
             &bull; Maquininhas de balcão (Stone, Mercado Pago, PagBank), taxas personalizadas e Pix
           </p>
         </div>
-        <div class="clientes-topo-acoes">
-          <button class="btn btn-primario" id="btn-adicionar-cash-topo" style="background:#16A34A; border-color:#16A34A; font-weight:700;">
+        <div class="clientes-topo-acoes" style="display: flex; flex-wrap: wrap; gap: 8px; width: 100%;">
+          <button class="btn btn-primario" id="btn-adicionar-cash-topo" style="background:#16A34A; border-color:#16A34A; font-weight:700; flex: 1 1 130px; min-width: 0; justify-content: center; font-size: 13px;">
             ${icone('mais')} Adicionar Cash
           </button>
-          <button class="btn btn-contorno" id="btn-nova-maquininha">
+          <button class="btn btn-contorno" id="btn-nova-maquininha" style="flex: 1 1 130px; min-width: 0; justify-content: center; font-size: 13px;">
             ${icone('mais')} Conectar Maquininha
           </button>
-          <button class="btn btn-contorno" id="btn-imprimir-pix-balcao">
-            📋 Placa Pix de Balcão
+          <button class="btn btn-contorno" id="btn-imprimir-pix-balcao" style="flex: 1 1 130px; min-width: 0; justify-content: center; font-size: 13px;">
+            📋 Placa Pix
           </button>
         </div>
       </div>
@@ -245,12 +245,12 @@ export function renderPagamentos(raiz, irPara) {
             </small>
           </div>
 
-          <div style="display: flex; gap: 10px; margin-top: auto;">
-            <button class="btn btn-bloco btn-contorno" id="btn-copiar-chave-pix">
+          <div style="display: flex; gap: 8px; margin-top: auto; flex-wrap: wrap;">
+            <button class="btn btn-bloco btn-contorno" id="btn-copiar-chave-pix" style="flex: 1 1 130px; min-width: 0; justify-content: center; font-size: 13px; padding: 10px 8px;">
               📋 Copiar Chave
             </button>
-            <button class="btn btn-bloco btn-whatsapp" id="btn-ver-qr-pix">
-              👁️ Ver QR Code do Caixa
+            <button class="btn btn-bloco btn-whatsapp" id="btn-ver-qr-pix" style="flex: 1 1 130px; min-width: 0; justify-content: center; font-size: 13px; padding: 10px 8px;">
+              👁️ Ver QR Code
             </button>
           </div>
         </div>
@@ -271,40 +271,42 @@ export function renderPagamentos(raiz, irPara) {
           </button>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 14px; width: 100%; box-sizing: border-box;">
           ${maquininhas.map((maq) => `
-            <div style="background: #FFFDF9; border: 1.5px solid var(--borda); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; transition: transform .2s, border-color .2s; position: relative;">
-              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div style="display: flex; gap: 12px; align-items: center;">
-                  <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #1E293B, #0F172A); color: #fff; display: grid; place-items: center; font-size: 20px;">
+            <div style="background: #FFFDF9; border: 1.5px solid var(--borda); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; transition: transform .2s, border-color .2s; position: relative; width: 100%; max-width: 100%; box-sizing: border-box; overflow-x: hidden;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 6px;">
+                <div style="display: flex; gap: 12px; align-items: center; min-width: 0;">
+                  <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, #1E293B, #0F172A); color: #fff; display: grid; place-items: center; font-size: 20px; flex-shrink: 0;">
                     💳
                   </div>
-                  <div>
-                    <strong style="font-size: 14px; color: var(--carvao); display: block;">${maq.nome}</strong>
+                  <div style="min-width: 0;">
+                    <strong style="font-size: 14px; color: var(--carvao); display: block; word-break: break-word;">${maq.nome}</strong>
                     <small style="color: var(--texto-suave);">${maq.modelo}</small>
                   </div>
                 </div>
-                <span class="badge ${maq.status === 'online' ? 'badge-sucesso' : 'badge-perigo'}" style="font-size: 10px;">
+                <span class="badge ${maq.status === 'online' ? 'badge-sucesso' : 'badge-perigo'}" style="font-size: 10px; flex-shrink: 0;">
                   ${maq.status === 'online' ? '🟢 Online' : '🔴 Offline'}
                 </span>
               </div>
 
-              <div style="background: var(--creme); border-radius: 8px; padding: 8px 10px; font-size: 12px; display: flex; justify-content: space-between;">
+              <div style="background: var(--creme); border-radius: 8px; padding: 8px 10px; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
                 <span>Série: <b>${maq.serial}</b></span>
                 <span>Conexão: <b>${maq.tipoConexao || 'Wi-Fi'}</b></span>
                 <span>Bateria: <b>${maq.bateria || 90}% 🔋</b></span>
               </div>
 
-              <div style="display: flex; gap: 8px; margin-top: auto; padding-top: 6px;">
-                <button class="btn btn-pequeno btn-contorno btn-testar-comunicacao-maq" data-id="${maq.id}" data-nome="${maq.nome}" style="flex: 1;">
+              <div style="display: flex; gap: 8px; margin-top: auto; padding-top: 6px; flex-wrap: wrap; width: 100%; box-sizing: border-box;">
+                <button class="btn btn-pequeno btn-contorno btn-testar-comunicacao-maq" data-id="${maq.id}" data-nome="${maq.nome}" style="flex: 1 1 150px; min-width: 0; justify-content: center; text-align: center; font-size: 12px; padding: 8px 10px;">
                   📶 Testar Comunicação
                 </button>
-                <button class="btn btn-pequeno btn-texto btn-editar-maq" data-id="${maq.id}">
-                  ✏️
-                </button>
-                <button class="btn btn-pequeno btn-texto btn-perigo-suave btn-remover-maq" data-id="${maq.id}" data-nome="${maq.nome}">
-                  🗑️
-                </button>
+                <div style="display: flex; gap: 6px; align-items: center; margin-left: auto;">
+                  <button class="btn btn-pequeno btn-contorno btn-editar-maq" data-id="${maq.id}" title="Editar maquininha" style="padding: 6px 10px; font-size: 12px;">
+                    ✏️ Editar
+                  </button>
+                  <button class="btn btn-pequeno btn-texto btn-perigo-suave btn-remover-maq" data-id="${maq.id}" data-nome="${maq.nome}" title="Remover maquininha" style="padding: 6px 10px; font-size: 12px;">
+                    🗑️
+                  </button>
+                </div>
               </div>
             </div>
           `).join('')}
@@ -312,7 +314,7 @@ export function renderPagamentos(raiz, irPara) {
       </div>
 
       <!-- Seção: Tabela de Taxas & Simulador de Custos -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; width: 100%; box-sizing: border-box;">
         
         <!-- Taxas Contratadas -->
         <div class="cartao" style="display: flex; flex-direction: column; gap: 12px;">
