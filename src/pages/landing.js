@@ -963,7 +963,7 @@ export function renderLanding(raiz, irPara) {
         <div class="lp-footer-grid">
           <div class="lp-footer-brand">
             <div class="lp-logo">
-              <img src="/logo.png" alt="Ao Ponto" class="lp-logo-img" />
+              <img src="/logo-branca.png" alt="Ao Ponto" class="lp-logo-img" />
             </div>
             <p>
               Apoiando pequenos comerciantes e mestres da brasa a organizarem suas vendas com simplicidade e tecnologia que respeita a rotina da rua.
