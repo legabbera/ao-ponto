@@ -4,17 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manual do Usuário — Plataforma Ao Ponto</title>
+  <link rel="icon" type="image/png" href="./favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --cor-fundo: #FFFBF5;
       --cor-card: #FFFFFF;
       --cor-primaria: #EA580C;
       --cor-primaria-escura: #C2410C;
-      --cor-texto: #27272A;
-      --cor-texto-suave: #71717A;
+      --cor-brasa: #EA580C;
+      --cor-texto: #18181B;
+      --cor-texto-suave: #52525B;
       --cor-borda: #E4E4E7;
       --cor-sucesso: #16A34A;
       --cor-destaque: #FEF3C7;
@@ -22,15 +24,17 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
       font-family: var(--fonte-principal);
       background: var(--cor-fundo);
       color: var(--cor-texto);
-      line-height: 1.6;
-      padding-bottom: 60px;
+      line-height: 1.65;
+      padding-bottom: 70px;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Barra Superior Fixa (Apenas tela) */
+    /* Barra Superior Fixa na Tela */
     .barra-topo {
       position: sticky;
       top: 0;
@@ -41,25 +45,37 @@
       justify-content: space-between;
       align-items: center;
       z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
     .barra-logo {
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 18px;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .barra-logo img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+    }
+    .barra-titulo-top {
+      font-size: 15px;
       font-weight: 800;
       color: var(--cor-primaria-escura);
+      border-left: 2px solid var(--cor-borda);
+      padding-left: 12px;
     }
     .barra-acoes {
       display: flex;
       gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
     }
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
+      padding: 9px 16px;
       font-size: 13px;
       font-weight: 700;
       border-radius: 8px;
@@ -71,9 +87,19 @@
     .btn-primario {
       background: var(--cor-primaria);
       color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
     }
     .btn-primario:hover {
       background: var(--cor-primaria-escura);
+      transform: translateY(-1px);
+    }
+    .btn-verde {
+      background: #16A34A;
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+    }
+    .btn-verde:hover {
+      background: #15803D;
     }
     .btn-contorno {
       background: #FFFFFF;
@@ -86,77 +112,156 @@
 
     /* Container Principal */
     .container {
-      max-width: 960px;
+      max-width: 980px;
       margin: 30px auto;
       background: var(--cor-card);
-      padding: 40px 50px;
-      border-radius: 16px;
+      padding: 45px 55px;
+      border-radius: 18px;
       border: 1px solid var(--cor-borda);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      box-shadow: 0 6px 25px rgba(0,0,0,0.04);
     }
 
-    /* Tipografia & Títulos */
-    h1 {
-      font-size: 28px;
+    /* Sumário / Índice */
+    .sumario-box {
+      background: #FFF7ED;
+      border: 1.5px solid #FED7AA;
+      border-radius: 14px;
+      padding: 22px 26px;
+      margin: 25px 0 35px 0;
+    }
+    .sumario-titulo {
+      font-size: 16px;
       font-weight: 800;
       color: var(--cor-primaria-escura);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sumario-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 8px 16px;
+      list-style: none;
+    }
+    .sumario-grid li a {
+      color: #9A3412;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sumario-grid li a:hover {
+      text-decoration: underline;
+      color: var(--cor-primaria-escura);
+    }
+
+    /* Tipografia & Cabeçalhos */
+    .header-manual {
+      border-bottom: 2px solid #FED7AA;
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+    }
+    .badge-oficial {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #FFEDD5;
+      color: #C2410C;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 30px;
+      font-weight: 900;
+      color: #9A3412;
       margin-bottom: 8px;
+      line-height: 1.2;
     }
     .subtitulo {
       font-size: 15px;
       color: var(--cor-texto-suave);
-      margin-bottom: 30px;
-      border-bottom: 2px solid #FED7AA;
-      padding-bottom: 14px;
+      line-height: 1.5;
     }
     h2 {
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 800;
       color: #18181B;
-      margin-top: 36px;
-      margin-bottom: 12px;
+      margin-top: 42px;
+      margin-bottom: 14px;
       padding-left: 12px;
       border-left: 4px solid var(--cor-primaria);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     h3 {
       font-size: 16px;
       font-weight: 700;
       color: #27272A;
-      margin-top: 20px;
-      margin-bottom: 8px;
+      margin-top: 24px;
+      margin-bottom: 10px;
     }
-    p { margin-bottom: 12px; font-size: 14px; }
-    ul, ol { margin-left: 20px; margin-bottom: 16px; font-size: 14px; }
-    li { margin-bottom: 6px; }
+    p { margin-bottom: 12px; font-size: 14.5px; }
+    ul, ol { margin-left: 22px; margin-bottom: 16px; font-size: 14px; }
+    li { margin-bottom: 7px; }
 
-    /* Mockups & Telas Simuladas */
+    /* Mockups de Telas em ASCII */
     .tela-mockup {
       background: #0F172A;
       border-radius: 12px;
-      padding: 18px;
-      margin: 20px 0;
+      padding: 18px 20px;
+      margin: 18px 0;
       color: #F8FAFC;
       font-family: 'Fira Code', monospace;
       font-size: 13px;
       border: 1px solid #334155;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
       white-space: pre-wrap;
       overflow-x: auto;
+      line-height: 1.45;
     }
+    
+    /* Caixas de Alerta e Destaque */
     .card-destaque {
       background: #FFF7ED;
       border: 1px solid #FFEDD5;
+      border-left: 4px solid var(--cor-primaria);
       border-radius: 10px;
-      padding: 16px;
-      margin: 16px 0;
-      font-size: 13px;
+      padding: 16px 20px;
+      margin: 18px 0;
+      font-size: 13.5px;
+    }
+    .card-dica {
+      background: #F0FDF4;
+      border: 1px solid #DCFCE7;
+      border-left: 4px solid #16A34A;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 18px 0;
+      font-size: 13.5px;
+    }
+    .card-atencao {
+      background: #FEF2F2;
+      border: 1px solid #FEE2E2;
+      border-left: 4px solid #DC2626;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 18px 0;
+      font-size: 13.5px;
     }
 
+    /* Tabelas Operacionais */
     .tabela-manual {
       width: 100%;
       border-collapse: collapse;
-      margin: 16px 0;
-      font-size: 13px;
+      margin: 18px 0;
+      font-size: 13.5px;
     }
     .tabela-manual th, .tabela-manual td {
       border: 1px solid var(--cor-borda);
@@ -166,6 +271,10 @@
     .tabela-manual th {
       background: #F8FAFC;
       font-weight: 700;
+      color: #0F172A;
+    }
+    .tabela-manual tr:nth-child(even) td {
+      background: #FAFAFA;
     }
 
     .badge {
@@ -179,285 +288,662 @@
     }
     .badge-laranja { background: #FFEDD5; color: #C2410C; }
     .badge-verde { background: #DCFCE7; color: #166534; }
+    .badge-azul { background: #E0F2FE; color: #0369A1; }
+    .badge-roxo { background: #F3E8FF; color: #6B21A8; }
 
-    /* Regras de Impressão e PDF */
+    /* Barra de Navegação Rápida de Seção */
+    .voltar-topo {
+      text-align: right;
+      font-size: 12px;
+      margin: 12px 0 24px 0;
+    }
+    .voltar-topo a {
+      color: var(--cor-texto-suave);
+      text-decoration: none;
+    }
+    .voltar-topo a:hover {
+      color: var(--cor-primaria);
+      text-decoration: underline;
+    }
+
+    /* Regras de Impressão e PDF de Alta Resolução */
+    @page {
+      size: A4;
+      margin: 14mm 16mm;
+    }
     @media print {
-      body { background: #FFFFFF; padding: 0; }
-      .barra-topo { display: none; }
+      body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+        padding: 0 !important;
+      }
+      .barra-topo, .voltar-topo, .btn-print-box {
+        display: none !important;
+      }
       .container {
-        border: none;
-        box-shadow: none;
-        margin: 0;
-        padding: 0;
-        max-width: 100%;
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
       }
       .tela-mockup {
-        background: #F8FAFC;
-        color: #0F172A;
-        border: 1px solid #CBD5E1;
+        background: #F8FAFC !important;
+        color: #0F172A !important;
+        border: 1px solid #CBD5E1 !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
       }
-      h2 { page-break-before: auto; }
-      .quebra-pagina { page-break-before: always; }
+      .card-destaque, .card-dica, .card-atencao, .tabela-manual {
+        page-break-inside: avoid;
+      }
+      h2 {
+        page-break-before: auto;
+        page-break-after: avoid;
+      }
+      .quebra-pagina {
+        page-break-before: always;
+      }
+      a {
+        text-decoration: none !important;
+        color: inherit !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Barra de Ações Superior -->
+  <!-- Barra de Ações Superior (Fixa na tela) -->
   <header class="barra-topo">
-    <div class="barra-logo">
-      <span>🍗</span>
-      <span>Ao Ponto — Manual Oficial do Usuário</span>
-    </div>
+    <a href="./#/inicio" class="barra-logo" title="Ir para o Sistema">
+      <img src="./logo.png" alt="Ao Ponto" onerror="this.src='./favicon.png'">
+      <span class="barra-titulo-top">Manual do Usuário Passo a Passo</span>
+    </a>
     <div class="barra-acoes">
-      <a href="./treinamento-video.html" class="btn btn-contorno">
-        🎥 Assistir Vídeo Full HD 1080p
-      </a>
-      <button class="btn btn-primario" onclick="window.print()">
-        📥 Baixar / Imprimir em PDF
+      <button class="btn btn-primario" onclick="window.print()" title="Salvar como PDF oficial ou imprimir no papel">
+        📥 Baixar Manual em PDF (Imprimir)
       </button>
+      <a href="./treinamento-video.html" class="btn btn-verde" title="Assistir ao vídeo interativo narrado em 1080p">
+        🎥 Assistir Vídeo de Treinamento
+      </a>
       <a href="./#/inicio" class="btn btn-contorno">
-        🍗 Ir para o Sistema
+        🍗 Abrir Sistema
       </a>
     </div>
   </header>
 
-  <!-- Documento -->
-  <main class="container">
+  <!-- Documento Principal -->
+  <main class="container" id="conteudo-manual">
     
-    <h1>Manual de Operação e Gestão de Vendas 🍗📊</h1>
-    <div class="subtitulo">
-      Documento oficial de treinamento para proprietários, operadores de caixa e assadores da plataforma <b>Ao Ponto</b>.
+    <div class="header-manual">
+      <span class="badge-oficial">Documentação Oficial v2.4 • Edição Completa</span>
+      <h1>Manual de Gestão Operacional & Balcão 🍗📋</h1>
+      <div class="subtitulo">
+        Guia exaustivo passo a passo com a explicação de cada ferramenta, aba por aba e recurso por recurso para proprietários, operadores de balcão e assadores da plataforma <b>Ao Ponto</b>.
+      </div>
     </div>
 
-    <!-- Boas-vindas -->
-    <h2>Boas-vindas à Plataforma Ao Ponto</h2>
-    <p>
-      O <b>Ao Ponto</b> é a sua <b>plataforma de gestão e controle de vendas</b> desenvolvida especificamente para a operação dinâmica de assadeiras, frangarias e rotisseries. O sistema organiza com perfeição o pico de movimento do domingo, gerencia o ciclo do braseiro, automatiza o envio de mensagens pelo WhatsApp do freguês e faz a conciliação completa das maquininhas físicas de cartão.
-    </p>
+    <!-- Sumário Navegável -->
+    <div class="sumario-box">
+      <div class="sumario-titulo">
+        <span>📑</span> <strong>Sumário Geral — Navegue Diretamente por Aba e Ferramenta:</strong>
+      </div>
+      <ul class="sumario-grid">
+        <li><a href="#modulo-visao-geral">1. Visão Geral & Boas-Vindas</a></li>
+        <li><a href="#modulo-instalacao-pwa">2. Instalação Oficial (PWA no Celular/PC)</a></li>
+        <li><a href="#modulo-dark-mode">3. Modo Visual (Dark Mode / Claro)</a></li>
+        <li><a href="#modulo-inicio">4. Aba Início (Painel & Ações Rápidas)</a></li>
+        <li><a href="#modulo-vendas">5. Aba Controle de Vendas & Balcão</a></li>
+        <li><a href="#modulo-pedidos">6. Aba Pedidos & Reservas de Domingo</a></li>
+        <li><a href="#modulo-pagamentos">7. Aba Pagamentos, Maquininhas & Cash</a></li>
+        <li><a href="#modulo-estoque">8. Aba Estoque & Ciclo da Brasa</a></li>
+        <li><a href="#modulo-clientes">9. Aba Clientes & Clube de Fidelidade</a></li>
+        <li><a href="#modulo-whatsapp">10. Aba Central do WhatsApp Comercial</a></li>
+        <li><a href="#modulo-relatorios">11. Aba Relatórios & Fechamento de Caixa</a></li>
+        <li><a href="#modulo-configuracoes">12. Aba Configurações & Backups</a></li>
+        <li><a href="#modulo-suporte">13. Suporte & Sugestões de Melhorias</a></li>
+        <li><a href="#modulo-master">14. Cockpit Master & Planos (SaaS)</a></li>
+      </ul>
+    </div>
 
-    <!-- Módulo 01 -->
-    <h2 class="quebra-pagina">Módulo 01: Acesso, Criação de Conta e Painel Inicial</h2>
-    
-    <h3>1.1. Acesso à Plataforma</h3>
-    <p>Para entrar no sistema:</p>
-    <ul>
-      <li>Abra o navegador e acesse o endereço da sua loja (ex.: <code>central.aoponto.app</code>).</li>
-      <li>Digite seu celular ou e-mail cadastrado e sua senha ou PIN pessoal.</li>
-      <li>Clique no botão <b>Entrar no Sistema</b>.</li>
-    </ul>
+    <div class="btn-print-box" style="margin-bottom: 25px; display: flex; gap: 10px; justify-content: flex-end;">
+      <button class="btn btn-primario" onclick="window.print()">
+        📥 Imprimir ou Salvar este Manual em PDF
+      </button>
+    </div>
 
-    <h3>1.2. Criação de Conta</h3>
-    <p>Caso esteja configurando uma nova unidade:</p>
-    <ul>
-      <li>Clique em <b>Criar minha conta</b> na tela de login.</li>
-      <li>Preencha o <b>Nome da Assadeira</b>, seu <b>WhatsApp de Administrador</b> e defina a senha de segurança.</li>
-      <li>Sua loja é criada imediatamente, pronta para operar.</li>
-    </ul>
+    <!-- Módulo 01: Visão Geral -->
+    <section id="modulo-visao-geral">
+      <h2>1. Visão Geral & Boas-Vindas 🍗</h2>
+      <p>
+        A plataforma <b>Ao Ponto</b> foi desenvolvida com um propósito cirúrgico: <b>organizar o controle de vendas e a operação de pontos de venda de frangos e carnes assadas</b>, especialmente durante a correria extrema dos domingos e feriados.
+      </p>
+      <p>
+        Diferente de sistemas genéricos de restaurante ou marketplaces que cobram comissões abusivas de 12% a 27% sobre suas vendas, o Ao Ponto é uma ferramenta própria e independente para o seu ponto de venda. Com ela, você:
+      </p>
+      <ul>
+        <li>Registra vendas no balcão em <b>menos de 4 segundos</b> por pedido;</li>
+        <li>Gerencia o <b>ciclo do braseiro</b> (1h45 a 2h10 de fogo) para não deixar faltar nem queimar frangos;</li>
+        <li>Elimina filas através da esteira de <b>reservas antecipadas com horários de retirada</b>;</li>
+        <li>Centraliza todos os recebimentos de <b>maquininhas físicas (Stone, Mercado Pago, PagBank, Cielo), Pix e Dinheiro em espécie</b>;</li>
+        <li>Controla reforços e retiradas com o botão de <b>Adicionar Cash</b>;</li>
+        <li>Fideliza a freguesia com o <b>Clube do Frango</b> (cartela de 10 selos);</li>
+        <li>Mantém o contato direto no <b>WhatsApp do seu cliente</b> sem intermediários.</li>
+      </ul>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
 
-    <h3>1.3. Explicação da Tela Início (Painel Direito de Ações Rápidas)</h3>
-    <p>Na tela inicial, o painel lateral direito reúne os atalhos de comando mais importantes:</p>
-    
-    <div class="tela-mockup">
+    <!-- Módulo 02: Instalação PWA -->
+    <section id="modulo-instalacao-pwa" class="quebra-pagina">
+      <h2>2. Instalação Oficial do Aplicativo (PWA no Celular e PC) 📲</h2>
+      <p>
+        O <b>Ao Ponto</b> é um Progressive Web App (PWA) de última geração. Isso significa que ele funciona com a velocidade de um aplicativo nativo, direto no seu smartphone ou computador, <b>sem precisar passar por lojas de aplicativos e sem baixar arquivos perigosos (.apk externos)</b>.
+      </p>
+      
+      <div class="card-dica">
+        <strong>💡 Segurança Garantida:</strong> No Ao Ponto, a instalação é realizada pelo motor seguro do próprio navegador (Google Chrome, Samsung Internet ou Safari). Não há risco de alertas de arquivos perigosos do Samsung Knox ou bloqueios desconhecidos.
+      </div>
+
+      <h3>Como Instalar no Celular Android (Samsung, Motorola, Xiaomi):</h3>
+      <ol>
+        <li>Abra o navegador (Google Chrome ou Samsung Internet) e acesse o endereço do seu ponto;</li>
+        <li>Toque no botão fixo <b>"📲 Instalar Aplicativo"</b> exibido na tela ou toque nos 3 pontinhos do topo do navegador;</li>
+        <li>Selecione <b>"Instalar aplicativo"</b> ou <b>"Adicionar à tela inicial"</b>;</li>
+        <li>O ícone oficial squircle do Ao Ponto (gradiente brasa com a logo branca <b>ao</b>) será fixado na tela do seu aparelho.</li>
+      </ol>
+
+      <h3>Como Instalar no iPhone ou iPad (iOS / Apple):</h3>
+      <ol>
+        <li>Abra o site no <b>Safari</b> (navegador padrão da Apple);</li>
+        <li>Toque no botão de <b>Compartilhar</b> (ícone de um quadrado com uma seta para cima na barra inferior);</li>
+        <li>Role para baixo e selecione <b>"Adicionar à Tela de Início"</b>;</li>
+        <li>Confirme tocando em <b>"Adicionar"</b> no canto superior direito.</li>
+      </ol>
+
+      <h3>Como Instalar no Computador ou Notebook do Balcão (Windows / Mac):</h3>
+      <ol>
+        <li>Abra o sistema no <b>Google Chrome</b>, <b>Edge</b> ou <b>Brave</b>;</li>
+        <li>Na barra de endereços (ao lado da estrela de favoritos), clique no ícone de monitor com seta de instalação <b>"Instalar Ao Ponto"</b>;</li>
+        <li>O sistema abre em janela própria, com atalho na Área de Trabalho e barra de tarefas do Windows.</li>
+      </ol>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
+
+    <!-- Módulo 03: Dark Mode / Modo Claro -->
+    <section id="modulo-dark-mode">
+      <h2>3. Modo Visual (Dark Mode / Modo Claro) & Acessibilidade 🌓</h2>
+      <p>
+        O Ao Ponto conta com <b>duas modalidades visuais completas</b>, projetadas para atender tanto ambientes externos de churrasqueira sob luz forte do sol quanto balcões internos fechados:
+      </p>
+      <ul>
+        <li><b>☀️ Modo Claro (Clear Mode):</b> Fundo creme suave com cartões brancos e contraste alto de tipografia (#14100D), ideal para telas sob iluminação natural ou luz solar direta.</li>
+        <li><b>🌙 Modo Escuro (Dark Mode):</b> Fundo carvão escuro com elementos em brasa e texto claro, economizando bateria do celular e reduzindo o cansaço visual do operador.</li>
+      </ul>
+
+      <h3>Como Alternar o Modo Visual (3 Formas Rápidas):</h3>
+      <ol>
+        <li><b>Atalho Direto no Cabeçalho:</b> Em qualquer tela, toque no botão <code>[ 🌙 / ☀️ ]</code> localizado no canto superior direito da barra de topo;</li>
+        <li><b>Chave Slide no Menu Mobile:</b> Abra a aba <b>Menu</b> e utilize a chave slide no topo da página;</li>
+        <li><b>Configurações Gerais:</b> Acesse <b>Configurações</b> &gt; seção <b>Aparência e Modo Visual</b>.</li>
+      </ol>
+      <div class="card-destaque">
+        <strong>Memorização Automática:</strong> Sua escolha fica gravada no aparelho. Ao reabrir o aplicativo no domingo seguinte, seu tema preferido já estará ativo.
+      </div>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
+
+    <!-- Módulo 04: Aba Início -->
+    <section id="modulo-inicio" class="quebra-pagina">
+      <h2>4. Aba Início / Painel de Desempenho do Ponto 📊</h2>
+      <p>
+        A tela <b>Início</b> é o coração da operação. Ao entrar no sistema, o proprietário e o operador têm acesso imediato ao termômetro de vendas e aos atalhos mais urgentes.
+      </p>
+
+      <div class="tela-mockup">
 ┌────────────────────────────────────────────────────────┐
-│ PAINEL LATERAL DIREITO - AÇÕES RÁPIDAS                 │
+│ INÍCIO — PAINEL OPERACIONAL DO PONTO                   │
 ├────────────────────────────────────────────────────────┤
-│ [ + Nova Venda (Gestão de Vendas) ]  <-- Laranja       │
-│ [ 📅 Novo Pedido (Reserva Domingo)]  <-- Branco        │
-│ [ 📲 Conectar WhatsApp           ]  <-- Status Ativo   │
-│ [ 📊 Relatório Rápido             ]  <-- Acesso Direto  │
-│ [ ⚙️ Configurações da Loja        ]  <-- Ajustes Gerais │
+│ [🟢 PONTO ABERTO]   Hoje: Domingo • 11:45              │
+│                                                        │
+│ 💰 FATURAMENTO DO DIA      🍗 RESERVAS / PEDIDOS        │
+│   R$ 3.840,00                 48 frangos encomendados  │
+│                                                        │
+│ 🔥 NO BRASEIRO             ⭐ TICKET MÉDIO DO DIA      │
+│   36 aves assando             R$ 68,50 por cliente     │
+├────────────────────────────────────────────────────────┤
+│ PAINEL DIREITO — AÇÕES RÁPIDAS:                        │
+│ [ + Nova Venda (Controle de Vendas) ]  &lt;-- Laranja     │
+│ [ 📅 Novo Pedido (Reserva Domingo)  ]  &lt;-- Branco      │
+│ [ 📲 Conectar WhatsApp             ]  &lt;-- Verde        │
+│ [ 📊 Relatório Rápido               ]  &lt;-- Contorno     │
+│ [ ⚙️ Configurações do Ponto         ]  &lt;-- Contorno     │
 └────────────────────────────────────────────────────────┘
-    </div>
+      </div>
 
-    <table class="tabela-manual">
-      <thead>
-        <tr>
-          <th>Botão</th>
-          <th>Tipo</th>
-          <th>O que faz no sistema</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><b>+ Nova Venda</b></td>
-          <td><span class="badge badge-laranja">Prioridade Alta</span></td>
-          <td>Abre instantaneamente a tela de gestão e controle de vendas para atendimento imediato do freguês no balcão.</td>
-        </tr>
-        <tr>
-          <td><b>📅 Novo Pedido</b></td>
-          <td><span class="badge">Operação</span></td>
-          <td>Cadastra reservas de frangos para retirada com data, horário e corte personalizado.</td>
-        </tr>
-        <tr>
-          <td><b>📲 Conectar WhatsApp</b></td>
-          <td><span class="badge badge-verde">Automação</span></td>
-          <td>Abre o QR Code para parear o celular da loja e disparar avisos de preparo.</td>
-        </tr>
-        <tr>
-          <td><b>📊 Relatório Rápido</b></td>
-          <td><span class="badge">Financeiro</span></td>
-          <td>Leva diretamente para a tela de fechamento de caixa e conferência de maquininhas.</td>
-        </tr>
-      </tbody>
-    </table>
+      <table class="tabela-manual">
+        <thead>
+          <tr>
+            <th>Botão / KPI</th>
+            <th>Tipo</th>
+            <th>Finalidade no Ponto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>+ Nova Venda</b></td>
+            <td><span class="badge badge-laranja">Alta Prioridade</span></td>
+            <td>Abre imediatamente a tela de <b>controle de vendas e balcão</b> para registrar o pedido do cliente que está em pé na sua frente.</td>
+          </tr>
+          <tr>
+            <td><b>📅 Novo Pedido</b></td>
+            <td><span class="badge badge-azul">Encomenda</span></td>
+            <td>Cadastra reservas de frangos para retirada com horário marcado, corte especial e observações.</td>
+          </tr>
+          <tr>
+            <td><b>📲 Conectar WhatsApp</b></td>
+            <td><span class="badge badge-verde">Automação</span></td>
+            <td>Abre o leitor de QR Code para parear o número oficial da loja com a plataforma.</td>
+          </tr>
+          <tr>
+            <td><b>Faturamento do Dia</b></td>
+            <td><span class="badge">Métrica</span></td>
+            <td>Soma em tempo real todas as vendas efetuadas em Débito, Crédito, Pix e Dinheiro.</td>
+          </tr>
+          <tr>
+            <td><b>No Braseiro</b></td>
+            <td><span class="badge badge-laranja">Operação</span></td>
+            <td>Mostra quantas unidades estão nos espetos agora para orientar o assador.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
 
-    <!-- Módulo 02 -->
-    <h2 class="quebra-pagina">Módulo 02: Vendas, Pedidos e Estoque</h2>
+    <!-- Módulo 05: Aba Controle de Vendas & Balcão -->
+    <section id="modulo-vendas" class="quebra-pagina">
+      <h2>5. Aba Controle de Vendas & Balcão 🍗🛒</h2>
+      <p>
+        Projetada para não travar nem nos horários de maior pico. A interface é 100% responsiva, adaptada tanto para smartphones quanto para tablets e monitores touch screen.
+      </p>
 
-    <h3>2.1. Tela de Vendas (Gestão e Controle de Vendas)</h3>
-    <p>
-      Na <b>plataforma de gestão e controle de vendas</b>, o operador seleciona os assados na grade visual e o total é calculado na hora:
-    </p>
-    
-    <div class="tela-mockup">
+      <h3>5.1. Novos Ícones Vetoriais Oficiais (.SVG)</h3>
+      <p>
+        O catálogo visual traz ilustrações vetoriais nítidas em alta definição para cada especialidade do seu ponto:
+      </p>
+      <ul>
+        <li>🍗 <b>Frango Inteiro Assado:</b> Ícone oficial com a ave dourada inteira;</li>
+        <li>🍗 <b>Meio Frango Assado:</b> Ícone específico para pedidos fracionados;</li>
+        <li>🥩 <b>Costela Bovina Assada:</b> Corte nobre de costela assada na brasa;</li>
+        <li>🌭 <b>Linguiça Toscana Assada:</b> Porção de gomos tostados no espeto;</li>
+        <li>🥔 <b>Batatas Douradas:</b> Batatas bolinha assadas com especiarias e caldo da carne;</li>
+        <li>🥗 <b>Maionese Caseira de Batata:</b> Pote tradicional de maionese artesanal;</li>
+        <li>🌾 <b>Farofa Crocante Especial:</b> Pacote de farofa torrada temperada.</li>
+      </ul>
+
+      <h3>5.2. Ações nos Cards de Produtos: [+] e [✏️]</h3>
+      <p>
+        Cada card do catálogo possui duas ferramentas estratégicas:
+      </p>
+      <ul>
+        <li><b>Botão Rápido [+] (Squircle Laranja Brasa):</b> Adiciona imediatamente 1 unidade do produto à comanda sem abrir janelas extras. Basta dar um toque para somar ao pedido.</li>
+        <li><b>Botão de Edição Rápida [✏️] (Squircle Branco):</b> Abre o modal completo do produto para alterar preço de venda, nome, categoria e forma de cobrança (se é por <b>Unidade</b> ou por <b>Peso / Kg</b>).</li>
+      </ul>
+
+      <h3>5.3. Cadastro de Novos Produtos (+ Novo Produto)</h3>
+      <p>
+        No topo da tela de vendas, o botão verde <b>"+ Novo Produto"</b> permite inserir novos assados ou acompanhamentos no seu cardápio a qualquer instante:
+      </p>
+      <ol>
+        <li>Toque em <b>"+ Novo Produto"</b>;</li>
+        <li>Informe o <b>Nome</b> (ex.: Costelinha Suína ao Barbecue);</li>
+        <li>Selecione a <b>Categoria</b> (Assados, Carnes Nobres, Acompanhamentos ou Bebidas);</li>
+        <li>Escolha o <b>Tipo de Cobrança</b>: <i>Unidade (R$/un)</i> ou <i>Por Quilo (R$/kg)</i>;</li>
+        <li>Digite o <b>Preço de Venda</b> e, opcionalmente, o <b>Custo de Produção (CMV)</b>;</li>
+        <li>Clique em <b>"Salvar Produto"</b>. O item aparece na hora no balcão.</li>
+      </ol>
+
+      <div class="tela-mockup">
 ┌────────────────────────────────────────────────────────┐
-│ GESTÃO E CONTROLE DE VENDAS (BALCÃO)                   │
+│ CONTROLE DE VENDAS E BALCÃO                            │
 ├────────────────────────────────────────────────────────┤
-│ • Adicionar Produto: Clique no card do item desejado   │
-│ • Frangos e Carnes por Kg: Informe o peso na balança   │
-│ • Comanda Lateral: Ajuste quantidades (+) e (-)        │
-│ • [ Finalizar Venda (F2) ]: Dinheiro, Pix ou Cartão    │
-│ • [ Vincular Cliente ]: Acumula selos de fidelidade    │
+│ [ Categorias: Todos | Assados | Guarnições | Bebidas ] │
+│                                                        │
+│ ┌──────────────────────┐    ┌────────────────────────┐ │
+│ │ 🍗 Frango Assado     │    │ 🥔 Batatas Douradas    │ │
+│ │ R$ 48,00 / un        │    │ R$ 18,00 / un          │ │
+│ │ [ ✏️ ]   [ + ]       │    │ [ ✏️ ]   [ + ]         │ │
+│ └──────────────────────┘    └────────────────────────┘ │
+├────────────────────────────────────────────────────────┤
+│ PEDIDO ATUAL (COMANDA):                                │
+│  • 1x Frango Assado ....................... R$ 48,00   │
+│  • 1x Batatas Douradas .................... R$ 18,00   │
+│  ----------------------------------------------------  │
+│  TOTAL DO PEDIDO: R$ 66,00                             │
+│                                                        │
+│  Freguês: [ 🔍 Buscar / Cadastrar Cliente ]            │
+│  Formas de Pagamento:                                  │
+│  [ Cartão Débito ] [ Cartão Crédito ]                  │
+│  [ Pix Balcão    ] [ Dinheiro (Troco) ]                │
+│                                                        │
+│  [ 🟢 FINALIZAR VENDA & ENVIAR COMPROVANTE ]           │
 └────────────────────────────────────────────────────────┘
-    </div>
+      </div>
 
-    <ul>
-      <li><b>Como adicionar produtos:</b> Basta clicar ou tocar no card do produto no catálogo (ex.: <i>Frango Inteiro Assado</i>). O item vai imediatamente para a comanda lateral.</li>
-      <li><b>Como alterar preços:</b> Acesse a tela de Estoque ou clique no ícone de lápis no produto, digite o novo valor e confirme. O preço atualiza em todas as estações.</li>
-      <li><b>Botão "Finalizar Venda":</b> Abre o modal de cobrança com os métodos: Dinheiro (com cálculo automático de troco), Pix Instantâneo (QR Code) e Cartão de Débito/Crédito.</li>
-      <li><b>Botão "Limpar":</b> Cancela a comanda atual e descarta os itens.</li>
-    </ul>
+      <h3>5.4. Como Fechar a Venda no Balcão</h3>
+      <ol>
+        <li>Toque no botão <b>[+]</b> dos itens solicitados pelo cliente;</li>
+        <li>Para itens por quilo (ex.: Costela Bovina), digite o peso apontado pela balança no campo de gramas/quilos;</li>
+        <li>(Opcional) Vincule o cliente digitando o número de WhatsApp dele para creditar selos do Clube do Frango;</li>
+        <li>Selecione o meio de pagamento (Débito, Crédito, Pix ou Dinheiro);</li>
+        <li>Se for em dinheiro, digite o valor recebido (ex.: "R$ 100,00") que o sistema calcula o troco exato na tela;</li>
+        <li>Toque em <b>"Finalizar Venda"</b>. O sistema emite o comprovante na tela e oferece o envio automático via WhatsApp com 1 toque.</li>
+      </ol>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
 
-    <h3>2.2. Tela de Pedidos (Reservas de Domingo)</h3>
-    <p>Acompanhe e despache as encomendas antecipadas do fim de semana:</p>
-    <table class="tabela-manual">
-      <thead>
-        <tr>
-          <th>KPI / Botão</th>
-          <th>Finalidade</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><b>KPI Total Reservas</b></td>
-          <td>Mostra a quantidade de famílias que já reservaram almoço para o domingo.</td>
-        </tr>
-        <tr>
-          <td><b>KPI Frangos no Fogo</b></td>
-          <td>Total de aves que já devem estar no braseiro para atender a próxima hora.</td>
-        </tr>
-        <tr>
-          <td><b>Botão "+ Nova Reserva"</b></td>
-          <td>Cadastra o cliente, horário de retirada (ex.: 12:30) e itens encomendados.</td>
-        </tr>
-        <tr>
-          <td><b>Botão "No Espeto"</b></td>
-          <td>Muda o status do frango para assando e avisa o cliente no WhatsApp.</td>
-        </tr>
-        <tr>
-          <td><b>Botão "Pronto na Estufa"</b></td>
-          <td>Alerta o freguês que o frango já dourou e pode ser retirado no balcão.</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Módulo 06: Aba Pedidos -->
+    <section id="modulo-pedidos" class="quebra-pagina">
+      <h2>6. Aba Pedidos & Reservas de Assados (Foco nos Domingos) 📅🔥</h2>
+      <p>
+        O domingo é o dia de ouro do ponto de venda. A aba <b>Pedidos</b> foi arquitetada para que o assador saiba exatamente quantos frangos precisa colocar no braseiro para cada faixa de horário, evitando tanto o cliente esperando quanto o frango ressecando na estufa.
+      </p>
 
-    <h3>2.3. Tela de Estoque (Ciclo da Brasa)</h3>
-    <ul>
-      <li><b>Frangos Crus Marinando:</b> Quantidade de aves temperadas refrigeradas prontas para entrar na churrasqueira.</li>
-      <li><b>Frangos no Braseiro:</b> Lotes que estão assando ativamente nos espetos.</li>
-      <li><b>Frangos Prontos na Estufa:</b> Estoque quente pronto para entrega imediata.</li>
-      <li><b>Botão "+ Entrada de Estoque":</b> Lança compras de aves cruas, carvão, lenha e embalagens térmicas.</li>
-    </ul>
+      <h3>6.1. Ciclo Visual do Assado (Status de Preparo)</h3>
+      <table class="tabela-manual">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Cor do Badge</th>
+            <th>Significado na Operação</th>
+            <th>Ação no WhatsApp</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Confirmado</b></td>
+            <td><span class="badge badge-azul">Azul</span></td>
+            <td>Reserva agendada pelo cliente para o domingo. Frango cru já separado na marinada.</td>
+            <td>Envia confirmação do pedido com horário agendado.</td>
+          </tr>
+          <tr>
+            <td><b>No Espeto</b></td>
+            <td><span class="badge badge-laranja">Laranja</span></td>
+            <td>O frango foi colocado no braseiro (tempo de preparo estimado: 1h45 a 2h10).</td>
+            <td>Avisa o cliente que o frango dele já está assando na brasa.</td>
+          </tr>
+          <tr>
+            <td><b>Pronto na Estufa</b></td>
+            <td><span class="badge badge-verde">Verde</span></td>
+            <td>Frango dourado, crocante e mantido quente na estufa aguardando retirada.</td>
+            <td>Dispara mensagem avisando que o pedido já pode ser retirado quentinho.</td>
+          </tr>
+          <tr>
+            <td><b>Entregue</b></td>
+            <td><span class="badge">Cinza</span></td>
+            <td>Cliente retirou e pagou no balcão. Pedido concluído.</td>
+            <td>Envia comprovante e extrato de selos de fidelidade.</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <!-- Módulo 03 -->
-    <h2 class="quebra-pagina">Módulo 03: Clientes, Equipe e Atendimento WhatsApp</h2>
+      <h3>6.2. Cadastrando uma Nova Reserva (+ Nova Reserva)</h3>
+      <ol>
+        <li>Toque no botão <b>"+ Nova Reserva"</b>;</li>
+        <li>Preencha o <b>Nome do Freguês</b> e <b>WhatsApp</b>;</li>
+        <li>Defina o <b>Horário de Retirada</b> (ex.: 11h30, 12h00, 12h30 ou 13h00);</li>
+        <li>Selecione os produtos (ex.: 1 Frango Inteiro + 1 Maionese + 1 Farofa);</li>
+        <li>Escolha a <b>Preferência de Corte</b>: Inteiro, Cortado ao Meio ou Cortado em Pedaços (Passarinho);</li>
+        <li>Adicione observações (ex.: "bem moreninho", "molho à parte");</li>
+        <li>Clique em <b>"Confirmar Reserva"</b>. O freguês recebe a mensagem instantânea no celular.</li>
+      </ol>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
 
-    <h3>3.1. Tela de Clientes & Clube do Frango</h3>
-    <p>Gerencie o cadastro de fregueses e a cartela de fidelidade:</p>
-    <ul>
-      <li><b>Botão "+ Novo Cliente":</b> Cadastra nome, celular, bairro e as <i>preferências gastronômicas</i> (ex.: "gosta de frango bem tostado", "caprichar na farofa").</li>
-      <li><b>Botão "📥 Importar Contatos":</b> Puxa centenas de contatos de uma só vez colando números ou subindo arquivo CSV/VCF do WhatsApp.</li>
-      <li><b>Botão "⭐ Regras do Clube":</b> Define a meta da cartela (padrão: 10 selos) e qual prêmio de cortesia o cliente ganha.</li>
-      <li><b>Botão "🎁 Resgatar Prêmio":</b> Quando o cliente completa 10 selos, esse botão fica verde e zera a cartela, registrando o frango grátis entregue.</li>
-    </ul>
+    <!-- Módulo 07: Aba Pagamentos, Maquininhas & Cash -->
+    <section id="modulo-pagamentos" class="quebra-pagina">
+      <h2>7. Aba Pagamentos, Maquininhas & Entradas de Recursos 💳💵</h2>
+      <p>
+        A aba <b>Pagamentos</b> fica permanentemente acessível no menu principal inferior (mobile e tablet) e no menu lateral (computador). Ela centraliza todas as entradas de recursos do caixa da loja, faz a gestão de maquininhas físicas e controla as entradas de dinheiro em espécie.
+      </p>
 
-    <h3>3.2. Tela de Usuários & Equipe</h3>
-    <ul>
-      <li><b>Botão "+ Convidar Usuário":</b> Cadastra novos membros da equipe definindo o cargo: <i>Proprietário</i> (acesso total), <i>Gerente</i>, <i>Operador de Caixa</i> ou <i>Assador/Frangueiro</i>.</li>
-      <li><b>Botão "Bloquear / Ativar":</b> Desativa o acesso de colaboradores que não fazem mais parte da equipe.</li>
-    </ul>
-
-    <h3>3.3. Central WhatsApp & Automações</h3>
-    <ul>
-      <li><b>Conexão:</b> Clique em <b>Conexão WhatsApp</b> e leia o QR Code com o aparelho celular da loja.</li>
-      <li><b>Gatilhos Automáticos:</b> Mensagens disparadas sozinhas: Confirmação de Reserva, Frango no Espeto, Pronto na Estufa e Extrato de Selos de Fidelidade.</li>
-      <li><b>Botão "+ Novo Disparo":</b> Envia avisos e ofertas do cardápio de domingo para toda a sua base de fregueses.</li>
-    </ul>
-
-    <!-- Módulos Finais -->
-    <h2 class="quebra-pagina">Pagamentos, Relatórios e Configurações</h2>
-
-    <h3>4.1. Pagamentos & Provedores</h3>
-    <p>Conecte suas maquininhas de cartão físicas e configure o Pix oficial:</p>
-    <ul>
-      <li><b>Provedores Homologados:</b> Alterne com 1 clique entre <i>Mercado Pago</i>, <i>Stone</i>, <i>PagBank</i> ou <i>Cielo</i>.</li>
-      <li><b>Botão "+ Conectar Maquininha":</b> Cadastre o modelo físico do seu balcão e ative o <b>Modo Push Inteligente</b>.</li>
-      <li><b>Botão "📶 Testar Conexão":</b> Envia um comando de teste de sinal em milissegundos para o aparelho.</li>
-      <li><b>Botão "📋 Placa Pix de Balcão":</b> Imprime a placa com QR Code e chave Pix da loja para colocar no balcão.</li>
-      <li><b>KPI Líquido na Conta:</b> Exibe o lucro real das vendas já deduzindo as taxas de cartão cadastradas.</li>
-    </ul>
-
-    <h3>5.1. Relatórios Avançados & Fechamento de Caixa</h3>
-    <ul>
-      <li><b>Filtros de Período:</b> Escolha entre <i>Hoje</i>, <i>Último Domingo 🔥</i>, <i>Últimos 7 dias</i> ou <i>Mês Atual</i>.</li>
-      <li><b>DRE Operacional:</b> Faturamento Bruto `->` Dedução de Taxas `->` Custo de Insumos (CMV ~39%) `->` <b>Lucro Real Operacional</b>.</li>
-      <li><b>Botão "🖨️ Imprimir Fechamento de Caixa":</b> Emite o cupom diário com a conferência de dinheiro em gaveta, Pix e cartões para o contador assinar.</li>
-      <li><b>Botão "📥 Exportar Relatório (CSV)":</b> Baixa planilha completa formatada para Excel e Google Sheets.</li>
-      <li><b>Aba "🍗 Curva ABC de Produtos":</b> Mostra quais produtos geram a maior parte do lucro da loja.</li>
-      <li><b>Aba "⏰ Picos de Horário":</b> Gráfico horário da saída dos frangos para calibrar o acendimento do braseiro.</li>
-    </ul>
-
-    <h3>6.1. Configurações da Loja</h3>
-    <ul>
-      <li><b>Nome do Estabelecimento:</b> Personaliza a marca em todas as mensagens e impressões.</li>
-      <li><b>Chave Pix e Favorecido:</b> Dados bancários para recebimento instantâneo.</li>
-      <li><b>Subdomínio & Domínio Próprio:</b> Conecte o endereço oficial da sua loja na internet.</li>
-    </ul>
-
-    <!-- Módulo Master SaaS -->
-    <h2 class="quebra-pagina">Painel Master do Dono da Plataforma (SaaS SuperAdmin) 👑</h2>
-    <p>
-      Área exclusiva para o <b>Dono da Plataforma Ao Ponto</b> gerenciar suas assadeiras clientes em todo o Brasil, cobrar assinaturas e controlar acessos:
-    </p>
-
-    <div class="tela-mockup">
+      <div class="tela-mockup">
 ┌────────────────────────────────────────────────────────┐
-│ PAINEL MASTER - GESTÃO DO SAAS AO PONTO 👑             │
+│ PAGAMENTOS, MAQUININHAS & PROVEDORES                   │
 ├────────────────────────────────────────────────────────┤
-│ • MRR Recorrente: R$ 386,00/mês                        │
-│ • Assadeiras Cadastradas: 5 lojas (4 ativas / 1 suspensa)│
-│ • Inadimplência: 1 mensalidade pendente ⚠️             │
-│ • [ + Cadastrar Nova Assadeira ]: Contrato direto      │
-│ • [ 🛑 Bloquear Acesso ]: Impede uso por falta de pag. │
-│ • [ 🚀 Alterar Plano ]: Upgrades e ampliação de limite │
-│ • [ 👁️ Acessar Loja ]: Entra na conta para suporte     │
+│ [ + Adicionar Cash ]  [ + Conectar Maquininha ]        │
+│ [ 📋 Placa Pix de Balcão ]                             │
+│                                                        │
+│ ENTRADAS DE RECURSOS DO CAIXA:                         │
+│ ┌───────────────────────────┐ ┌──────────────────────┐ │
+│ │ 💳 CARTÃO DÉBITO          │ │ 💳 CARTÃO CRÉDITO    │ │
+│ │   R$ 1.240,00             │ │   R$ 980,00          │ │
+│ └───────────────────────────┘ └──────────────────────┘ │
+│ ┌───────────────────────────┐ ┌──────────────────────┐ │
+│ │ ⚡ PIX BALCÃO (0% TAXA)    │ │ 💵 DINHEIRO (CASH)   │ │
+│ │   R$ 1.820,00             │ │   R$ 640,00          │ │
+│ └───────────────────────────┘ └──────────────────────┘ │
+├────────────────────────────────────────────────────────┤
+│ MAQUININHAS DE CARTÃO PAREADAS NO BALCÃO:              │
+│  • Stone SmartPOS S920  (Balcão 01)  [📶 Testar Sinais]│
+│  • Mercado Pago Point Pro 2 (Retirada) [📶 Conectada]  │
 └────────────────────────────────────────────────────────┘
-    </div>
+      </div>
 
-    <ul>
-      <li><b>Gestão de Mensalidades & Bloqueio:</b> Se uma assadeira não pagar a assinatura, o dono da plataforma pode clicar em <b>Bloquear Acesso</b>. A loja é imediatamente impedida de usar o sistema e vê uma tela com o motivo e o link do seu WhatsApp para quitação.</li>
-      <li><b>Ampliação de Plano & Limites:</b> Altere o plano da assadeira com 1 clique (ex.: de <i>Comece Grátis</i> para <i>Plano Balcão R$ 79</i> ou <i>Redes & Franquias R$ 149</i>) ou estenda os limites de vendas mensais.</li>
-      <li><b>Acesso de Suporte (Impersonate):</b> Permite a você entrar na conta do cliente como se fosse ele para tirar dúvidas ou configurar cardápios sem pedir a senha pessoal dele.</li>
-    </ul>
+      <h3>7.1. Botão "+ Adicionar Cash" (Suprimento de Troco e Entradas em Espécie)</h3>
+      <p>
+        O botão verde <b>"+ Adicionar Cash"</b> resolve a necessidade diária de colocar dinheiro para troco na gaveta ou registrar aportes financeiros avulsos sem misturar com as vendas de produtos:
+      </p>
+      <ol>
+        <li>Toque em <b>"+ Adicionar Cash"</b> no topo da aba de pagamentos;</li>
+        <li>Digite o <b>Valor em Reais</b> (ex.: R$ 200,00 para fundo de troco);</li>
+        <li>Selecione o <b>Motivo do Aporte</b>: <i>Troco Inicial de Abertura</i>, <i>Reforço de Caixa</i> ou <i>Outra Entrada em Espécie</i>;</li>
+        <li>Confirme em <b>"Registrar Entrada de Cash"</b>;</li>
+        <li>O valor é somado na categoria Dinheiro e discriminado no fechamento de caixa diário.</li>
+      </ol>
 
-    <div class="card-destaque" style="margin-top: 40px; text-align: center;">
-      <strong>Plataforma Ao Ponto — Gestão Inteligente para Assadeiras e Rotisseries</strong><br/>
-      <small style="color: var(--cor-texto-suave);">Para imprimir este manual em PDF de alta qualidade, use o botão no topo da página ou pressione Ctrl + P.</small>
-    </div>
+      <h3>7.2. Conexão de Maquininhas Físicas (+ Conectar Maquininha)</h3>
+      <p>
+        O Ao Ponto suporta comunicação direta com as principais adquirentes do mercado: <b>Stone, Mercado Pago, PagBank (PagSeguro) e Cielo</b>.
+      </p>
+      <ul>
+        <li><b>Número de Série / Código da Máquina:</b> Insira o número de série localizado atrás do aparelho ou no menu da maquininha;</li>
+        <li><b>Modo Push SmartPOS:</b> Ao selecionar pagamento no balcão, o sistema pode enviar o valor da venda direto para a maquininha sem que o operador precise digitar o preço manualmente;</li>
+        <li><b>Botão "Testar Comunicação":</b> Faz um disparo de ping em milissegundos para comprovar que o terminal físico está online e pronto para receber cobranças.</li>
+      </ul>
+
+      <h3>7.3. Placa Pix de Balcão (Imprimir Placa)</h3>
+      <p>
+        O botão <b>"📋 Placa Pix de Balcão"</b> gera uma folha personalizada em alta definição com o logotipo do seu ponto, a chave Pix oficial cadastrada e o QR Code dinâmico para você colar no vidro ou no balcão. Cada real recebido via Pix direto cai na hora na sua conta, <b>com 0% de taxa de intermediação</b>.
+      </p>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
+
+    <!-- Módulo 08: Aba Estoque -->
+    <section id="modulo-estoque" class="quebra-pagina">
+      <h2>8. Aba Estoque & Ciclo da Brasa 📦🔥</h2>
+      <p>
+        No ponto de venda de assados, estoque não é apenas produto na prateleira: é o <b>ciclo de temperatura e tempo da carne</b>.
+      </p>
+      <ul>
+        <li><b>1. Frangos Crus Marinando:</b> Quantidade de aves temperadas armazenadas na câmara fria ou geladeira, prontas para ir para o espeto;</li>
+        <li><b>2. Frangos no Braseiro:</b> Aves que já estão assando no fogo (tempo padrão: 1h45 a 2h10). O sistema calcula a hora exata em que o lote vai dourar;</li>
+        <li><b>3. Frangos Prontos na Estufa:</b> Estoque aquecido disponível para venda imediata a quem chega sem reserva;</li>
+        <li><b>4. Insumos & Carvão:</b> Controle de sacos de carvão vegetal de qualidade, lenha frutífera, embalagens térmicas aluminizadas, sacolas reforçadas e temperos.</li>
+      </ul>
+
+      <h3>Como Lançar Entradas (+ Entrada de Estoque):</h3>
+      <ol>
+        <li>Toque no botão <b>"+ Entrada de Estoque"</b>;</li>
+        <li>Selecione o insumo (ex.: <i>Frango Inteiro Cru Resfriado</i>);</li>
+        <li>Digite a quantidade comprada (ex.: 80 unidades) e o valor total da nota fiscal;</li>
+        <li>O sistema calcula o <b>CMV unitário</b> (ex.: R$ 16,80 por ave crua) para alimentar automaticamente a margem de lucro nos relatórios.</li>
+      </ol>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
+
+    <!-- Módulo 09: Aba Clientes -->
+    <section id="modulo-clientes" class="quebra-pagina">
+      <h2>9. Aba Clientes & Clube do Frango (Fidelidade) ⭐🎁</h2>
+      <p>
+        O maior patrimônio do seu ponto são os fregueses fiéis que compram assados todo final de semana. A aba <b>Clientes</b> transforma compradores esporádicos em fregueses fiéis através do <b>Clube do Frango</b>.
+      </p>
+
+      <h3>9.1. A Cartela de 10 Selos de Fidelidade</h3>
+      <p>
+        A cada frango inteiro ou corte principal adquirido, o sistema carimba automaticamente 1 selo na cartela digital do WhatsApp do cliente:
+      </p>
+      <div class="tela-mockup">
+┌────────────────────────────────────────────────────────┐
+│ CARTELA DO CLUBE DO FRANGO (WHATSAPP DO FREGUÊS)       │
+├────────────────────────────────────────────────────────┤
+│ Olá, Marcos! Você acabou de ganhar +1 selo! 🍗         │
+│ Sua cartela atual:                                     │
+│ [ 🍗 🍗 🍗 🍗 🍗 🍗 🍗 🍗 🍗 🎁 ]  (10/10 Selos)         │
+│                                                        │
+│ PARABÉNS! Você completou sua cartela! 🎉               │
+│ No próximo domingo seu frango assado é por nossa conta!│
+└────────────────────────────────────────────────────────┘
+      </div>
+
+      <h3>9.2. Como Resgatar o Prêmio (Botão "🎁 Resgatar Prêmio")</h3>
+      <ol>
+        <li>Ao identificar o cliente no balcão de vendas, o sistema sinaliza com um badge verde: <b>"10 Selos Atingidos"</b>;</li>
+        <li>O operador clica no botão <b>"🎁 Resgatar Prêmio"</b>;</li>
+        <li>O frango é lançado com desconto de 100% de cortesia e a cartela é zerada para iniciar um novo ciclo;</li>
+        <li>O cliente se sente valorizado e continua comprando com você por anos.</li>
+      </ol>
+
+      <h3>9.3. Importação em Lote de Contatos (📥 Importar Contatos)</h3>
+      <p>
+        Se você já possui contatos salvos no WhatsApp do seu ponto ou em uma planilha, clique no botão <b>"📥 Importar Contatos"</b>. Você pode colar a lista de telefones de uma só vez para começar a disparar cardápios para centenas de pessoas.
+      </p>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
+
+    <!-- Módulo 10: Aba WhatsApp -->
+    <section id="modulo-whatsapp" class="quebra-pagina">
+      <h2>10. Aba Central do WhatsApp Comercial 📲💬</h2>
+      <p>
+        O Ao Ponto integra-se diretamente ao WhatsApp sem cobrar mensalidades abusivas por disparador. Toda a comunicação ocorre do seu número comercial para o cliente final.
+      </p>
+      <ul>
+        <li><b>Como Conectar:</b> Acesse a aba WhatsApp e clique em <b>"Conectar WhatsApp"</b>. Abra o WhatsApp no seu smartphone, vá em <i>Aparelhos Conectados &gt; Conectar um Aparelho</i> e aponte a câmera para o QR Code na tela.</li>
+        <li><b>Disparos de Domingo (+ Novo Disparo):</b> Às quintas ou sextas-feiras, clique em <i>Novo Disparo</i> para enviar o cardápio oficial de domingo para todos os clientes cadastrados com 1 clique, estimulando reservas antecipadas.</li>
+        <li><b>Mensagens de Status Automáticas:</b> O cliente recebe atualizações sem o operador precisar digitar nada: aviso de reserva confirmada, aviso de frango assando e aviso de pedido pronto na estufa.</li>
+      </ul>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
+
+    <!-- Módulo 11: Aba Relatórios -->
+    <section id="modulo-relatorios" class="quebra-pagina">
+      <h2>11. Aba Relatórios & Fechamento de Caixa 📈🖨️</h2>
+      <p>
+        Chega de fechar o domingo somando comprovantes amassados de papel. A aba <b>Relatórios</b> faz o fechamento completo em segundos.
+      </p>
+
+      <h3>11.1. DRE Operacional da Brasa (Demonstrativo do Lucro Real)</h3>
+      <div class="tela-mockup">
+┌────────────────────────────────────────────────────────┐
+│ FECHAMENTO DO DOMINGO — DRE OPERACIONAL                │
+├────────────────────────────────────────────────────────┤
+│ (+) Faturamento Bruto Total .............. R$ 5.420,00 │
+│     • Cartão Débito: .................... R$ 1.540,00 │
+│     • Cartão Crédito: ................... R$ 1.120,00 │
+│     • Pix Balcão (0% taxa): ............. R$ 2.060,00 │
+│     • Dinheiro em Gaveta (Cash): ........ R$   700,00 │
+│                                                        │
+│ (-) Taxas de Maquininhas ................. R$  -58,20  │
+│ (-) CMV (Custo dos Frangos e Insumos) .... R$ -2.110,00│
+│ ------------------------------------------------------ │
+│ (=) LUCRO LÍQUIDO REAL OPERACIONAL ....... R$ 3.251,80 │
+│     Margem Líquida da Operação: 59,9%                  │
+└────────────────────────────────────────────────────────┘
+      </div>
+
+      <h3>11.2. Recursos da Aba Relatórios:</h3>
+      <ul>
+        <li><b>Filtros de Período:</b> Alterne com 1 toque entre <i>Hoje</i>, <i>Último Domingo 🔥</i>, <i>Últimos 7 dias</i> ou <i>Mês Inteiro</i>;</li>
+        <li><b>Curva ABC de Produtos:</b> Descubra quais itens trazem mais lucro (ex.: a maionese e a farofa costumam ter margem líquida superior a 70%);</li>
+        <li><b>Gráfico de Picos de Horário:</b> Visualize graficamente em que minutos ocorrem os maiores fluxos de retirada (geralmente entre 11h45 e 12h45) para antecipar as fornadas;</li>
+        <li><b>Botão "🖨️ Imprimir Fechamento de Caixa":</b> Emite a folha de conferência com a separação exata de gaveta, maquininhas e Pix para arquivamento ou envio ao contador;</li>
+        <li><b>Botão "📥 Exportar Relatório (CSV)":</b> Baixa uma planilha compatível com Microsoft Excel e Google Planilhas.</li>
+      </ul>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
+
+    <!-- Módulo 12: Aba Configurações -->
+    <section id="modulo-configuracoes" class="quebra-pagina">
+      <h2>12. Aba Configurações do Ponto & Backups ⚙️☁️</h2>
+      <p>
+        Na aba <b>Configurações</b>, o proprietário personaliza todos os parâmetros da loja e protege os dados da empresa.
+      </p>
+
+      <h3>12.1. Seções de Configuração:</h3>
+      <ul>
+        <li><b>Dados do Estabelecimento:</b> Nome comercial do ponto, WhatsApp oficial, endereço e chave Pix;</li>
+        <li><b>Aparência & Modo Visual:</b> Alternância entre Dark Mode e Modo Claro, além do <b>Seletor de Tamanho de Fonte</b> (Padrão 17px, Médio 18px, Grande 19px e Extra Grande 20px) para facilitar a leitura no ambiente de trabalho;</li>
+        <li><b>Código de Máquinas & Provedores:</b> Cadastro dos números de série de maquininhas físicas e definição das taxas praticadas;</li>
+        <li><b>Backup & Rollback (Segurança Total):</b> Botão para gerar <b>Snapshot JSON</b> de todas as vendas e clientes no seu computador com proteção contra perda de dados;</li>
+        <li><b>Salvar no Google Drive Oficial (☁️):</b> Integração em nuvem com botão azul para salvar o backup diretamente na sua pasta do Google Drive via Google Picker OAuth homologado.</li>
+      </ul>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
+
+    <!-- Módulo 13: Suporte Técnico & Sugestões -->
+    <section id="modulo-suporte">
+      <h2>13. Suporte Técnico & Sugestões de Melhorias 💬💡</h2>
+      <p>
+        Para garantir que o operador nunca fique sem atendimento, links padronizados estão disponíveis na barra lateral do computador e no menu mobile:
+      </p>
+      <ul>
+        <li><b>💬 Suporte Técnico:</b> Abre um modal inteligente onde o operador descreve a dúvida ou dificuldade. A mensagem é sincronizada com a base de dados e abre uma conversa direta com a equipe de suporte no WhatsApp;</li>
+        <li><b>💡 Sugestões de Melhorias:</b> Canal direto com a equipe de engenharia da plataforma para envio de novas ideias, pedidos de novos ícones ou melhorias de fluxo;</li>
+        <li><b>🚪 Sair com Segurança:</b> Botão padronizado no rodapé do menu para encerrar a sessão e proteger o caixa.</li>
+      </ul>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
+
+    <!-- Módulo 14: Cockpit Master SaaS -->
+    <section id="modulo-master" class="quebra-pagina">
+      <h2>14. Cockpit Master & Planos (SaaS SuperAdmin) 👑</h2>
+      <p>
+        Módulo restrito exclusivo para o <b>Dono da Plataforma Ao Ponto</b> gerenciar os pontos clientes em nível nacional:
+      </p>
+      <ul>
+        <li><b>Controle de Assinaturas & Vencimento (Dia 10):</b> Gestão automatizada das mensalidades de R$ 79,00/mês com geração de Pix copia e cola, QR Code e Boleto bancário integrado ao Mercado Pago;</li>
+        <li><b>Bloqueio Automático por Inadimplência:</b> Pontos com faturas vencidas são bloqueados de forma segura, exibindo uma tela informativa com link direto para quitação no WhatsApp do Dono da Plataforma;</li>
+        <li><b>Descontos Relâmpago & Promoções em Lote:</b> Modal administrativo para lançar promoções temporárias com data limite e aplicar descontos para todos os assinantes com 1 clique;</li>
+        <li><b>Gestão de Leads Comerciais:</b> Tabela de restaurantes e pontos interessados captados pela Landing Page, com botão direto para chamar o interessado no WhatsApp.</li>
+      </ul>
+
+      <div class="card-destaque" style="margin-top: 35px; text-align: center;">
+        <strong style="font-size: 16px; color: var(--cor-primaria-escura);">Ao Ponto — O Ponto Certo da Sua Gestão e Vendas 🍗</strong><br>
+        <p style="margin-top: 8px; color: var(--cor-texto-suave);">
+          Para imprimir este manual em alta resolução ou salvar o arquivo em formato PDF, utilize o botão abaixo ou pressione <b>Ctrl + P</b> no seu teclado.
+        </p>
+        <div style="margin-top: 15px;">
+          <button class="btn btn-primario" onclick="window.print()" style="font-size: 14px; padding: 10px 22px;">
+            📥 Baixar / Imprimir Manual Completo em PDF
+          </button>
+        </div>
+      </div>
+      <div class="voltar-topo"><a href="#conteudo-manual">▲ Voltar ao Sumário</a></div>
+    </section>
 
   </main>
 
+  <script>
+    // Rolagem suave para âncoras internas
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
 </body>
 </html>
-

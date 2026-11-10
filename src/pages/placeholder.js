@@ -61,6 +61,22 @@ export function renderMenu(raiz, irPara) {
   <div style="margin-top:24px; margin-bottom:12px;">
     <h3 style="font-size:16px; font-weight:700; color:var(--carvao); margin:0 0 10px 0;">Ajuda & Apoio</h3>
     <div class="menu-grade">
+      <a href="/manual.html" target="_blank" class="menu-card" style="text-decoration:none;">
+        <span class="mc-ic">${icone('info')}</span>
+        <div class="menu-card-conteudo">
+          <strong class="menu-card-titulo">Manual do Usuário (PDF)</strong>
+          <span class="menu-card-desc">Guia passo a passo completo de cada ferramenta</span>
+        </div>
+        <span class="menu-card-seta">&rarr;</span>
+      </a>
+      <a href="/treinamento-video.html" target="_blank" class="menu-card" style="text-decoration:none;">
+        <span class="mc-ic">${icone('grafico')}</span>
+        <div class="menu-card-conteudo">
+          <strong class="menu-card-titulo">Vídeo de Treinamento</strong>
+          <span class="menu-card-desc">Apresentação narrada interativa em Full HD 1080p</span>
+        </div>
+        <span class="menu-card-seta">&rarr;</span>
+      </a>
       <button class="menu-card" id="menu-btn-suporte">
         <span class="mc-ic">${icone('suporte')}</span>
         <div class="menu-card-conteudo">
