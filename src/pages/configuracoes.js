@@ -54,7 +54,7 @@ export function renderConfiguracoes(raiz, irPara) {
           </div>
         ` : '<p class="config-plano-desc">Vendas ilimitadas ✅</p>'}
       </div>
-      <button class="btn btn-contorno" id="btn-ver-planos" style="margin-top:16px">
+      <button class="btn btn-contorno" id="btn-ver-planos" style="margin-top:16px; width:100%; box-sizing:border-box; justify-content:center;">
         ${isPago ? 'Ver detalhes do plano' : 'Fazer upgrade'} ${icone('grafico')}
       </button>
     </section>
@@ -80,7 +80,7 @@ export function renderConfiguracoes(raiz, irPara) {
           <button class="btn btn-contorno btn-icone" id="btn-copiar-link" title="Copiar link">${icone('copiar')}</button>
         </div>
       </div>
-      <button class="btn btn-primario" id="btn-salvar-nome" style="margin-top:4px">
+      <button class="btn btn-primario" id="btn-salvar-nome" style="margin-top:10px; width:100%; box-sizing:border-box; justify-content:center;">
         Salvar alterações
       </button>
     </section>
@@ -122,7 +122,7 @@ export function renderConfiguracoes(raiz, irPara) {
             ${domStatus === 'pendente' ? `<button class="btn btn-contorno" id="btn-verificar-cname">Verificar agora</button>` : ''}
           </div>
         ` : ''}
-        <button class="btn btn-primario" id="btn-salvar-dominio" style="margin-top:8px">
+        <button class="btn btn-primario" id="btn-salvar-dominio" style="margin-top:12px; width:100%; box-sizing:border-box; justify-content:center;">
           Salvar domínio
         </button>
       `}
@@ -142,19 +142,19 @@ export function renderConfiguracoes(raiz, irPara) {
         Proteja seu ponto contra perda de celular, pane no computador do caixa ou instabilidade de rede. Baixe um snapshot local em arquivo JSON seguro ou restaure dados anteriores com 1 clique.
       </div>
 
-      <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;">
+      <div class="config-backup-grid">
         <button class="btn btn-primario" id="btn-baixar-backup">
-          ${icone('download')} Baixar Backup (.JSON)
+          ${icone('download')} <span>Baixar Backup (.JSON)</span>
         </button>
         <button class="btn btn-primario" id="btn-gdrive-backup" style="background:linear-gradient(135deg, #1A73E8, #4285F4); border-color:#1A73E8;">
-          ☁️ Salvar no Google Drive
+          <span>☁️ Salvar no Google Drive</span>
         </button>
         <button class="btn btn-contorno" id="btn-abrir-restaurar">
-          ${icone('upload')} Restaurar de Arquivo
+          ${icone('upload')} <span>Restaurar de Arquivo</span>
         </button>
         ${temRollbackDisponivel() ? `
           <button class="btn btn-contorno" id="btn-desfazer-restauracao" style="color:#DC2626; border-color:#FECACA;" title="Desfazer a última restauração e voltar aos dados anteriores">
-            ↩️ Desfazer Restauração (Rollback)
+            <span>↩️ Desfazer Restauração (Rollback)</span>
           </button>
         ` : ''}
       </div>
@@ -169,29 +169,29 @@ export function renderConfiguracoes(raiz, irPara) {
           <div class="card-sub">Ajuste o tamanho dos textos para facilitar a visualização no balcão e smartphone</div>
         </div>
       </div>
-      <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+      <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px; width:100%; box-sizing:border-box;">
         <p style="font-size:14px; color:var(--texto-suave); margin:0;">
           Escolha o tamanho ideal para você e seus operadores lerem no celular sem esforço:
         </p>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px;">
-          <button type="button" class="btn btn-contorno btn-fonte-opcao" data-tamanho="1" id="btn-fonte-padrao">
+        <div class="config-fontes-grade">
+          <button type="button" class="btn-fonte-opcao" data-tamanho="1" id="btn-fonte-padrao">
             <strong>Padrão</strong>
-            <small style="display:block; font-size:11px; color:var(--texto-suave)">17px (Recomendado)</small>
+            <small>17px (Recomendado)</small>
           </button>
-          <button type="button" class="btn btn-contorno btn-fonte-opcao" data-tamanho="1.06" id="btn-fonte-media">
+          <button type="button" class="btn-fonte-opcao" data-tamanho="1.06" id="btn-fonte-media">
             <strong>Médio</strong>
-            <small style="display:block; font-size:11px; color:var(--texto-suave)">+1px (18px)</small>
+            <small>+1px (18px)</small>
           </button>
-          <button type="button" class="btn btn-contorno btn-fonte-opcao" data-tamanho="1.12" id="btn-fonte-grande">
+          <button type="button" class="btn-fonte-opcao" data-tamanho="1.12" id="btn-fonte-grande">
             <strong>Grande</strong>
-            <small style="display:block; font-size:11px; color:var(--texto-suave)">+2px (19px)</small>
+            <small>+2px (19px)</small>
           </button>
-          <button type="button" class="btn btn-contorno btn-fonte-opcao" data-tamanho="1.20" id="btn-fonte-extragrande">
+          <button type="button" class="btn-fonte-opcao" data-tamanho="1.20" id="btn-fonte-extragrande">
             <strong>Extra Grande</strong>
-            <small style="display:block; font-size:11px; color:var(--texto-suave)">+3px (20px)</small>
+            <small>+3px (20px)</small>
           </button>
         </div>
-        <div style="background:var(--creme); border:1px solid var(--borda); border-radius:10px; padding:12px; font-size:14px;">
+        <div style="background:var(--creme); border:1px solid var(--borda); border-radius:10px; padding:12px; font-size:14px; box-sizing:border-box; width:100%;">
           <span style="color:var(--texto-suave)">Exemplo de visualização:</span>
           <strong style="color:var(--carvao); display:block; margin-top:2px;">
             🍗 1x Frango Inteiro Assado com Farofa — R$ 45,00
@@ -435,19 +435,16 @@ export function renderConfiguracoes(raiz, irPara) {
   const escalaAtual = localStorage.getItem('ao-ponto-tamanho-fonte') || '1';
   raiz.querySelectorAll('.btn-fonte-opcao').forEach((btn) => {
     if (btn.dataset.tamanho === escalaAtual) {
-      btn.classList.remove('btn-contorno');
-      btn.classList.add('btn-primario');
+      btn.classList.add('ativo');
+    } else {
+      btn.classList.remove('ativo');
     }
     btn.addEventListener('click', () => {
       const escala = btn.dataset.tamanho;
       document.documentElement.style.setProperty('--escala-fonte', escala);
       localStorage.setItem('ao-ponto-tamanho-fonte', escala);
-      raiz.querySelectorAll('.btn-fonte-opcao').forEach((b) => {
-        b.classList.remove('btn-primario');
-        b.classList.add('btn-contorno');
-      });
-      btn.classList.remove('btn-contorno');
-      btn.classList.add('btn-primario');
+      raiz.querySelectorAll('.btn-fonte-opcao').forEach((b) => b.classList.remove('ativo'));
+      btn.classList.add('ativo');
       toast('Tamanho da fonte atualizado! 🔤', 'sucesso');
     });
   });
