@@ -374,14 +374,28 @@ svg.ic.ic-suave { color: var(--texto-suave) !important; }
   color: #8A5A10;
 }
 
-.badge-verde {
+.badge-verde,
+.badge-sucesso {
   background: var(--verde-claro);
   color: var(--verde);
 }
 
-.badge-vermelho {
+.badge-vermelho,
+.badge-perigo {
   background: var(--vermelho-claro);
   color: var(--vermelho);
+}
+
+.badge-neutro {
+  background: var(--creme-2);
+  color: var(--texto);
+  border: 1px solid var(--borda);
+}
+
+.badge-laranja {
+  background: #FFF7ED;
+  color: #C2410C;
+  border: 1px solid rgba(194, 65, 12, 0.25);
 }
 
 /* ---------- Modal ---------- */

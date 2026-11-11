@@ -2,7 +2,7 @@
  * Telas ainda não construídas ("Em breve") e a tela de Menu do celular.
  */
 import { icone } from '../components/icons.js';
-import { ROTAS, rotasDoPerfil, modalPerfil, sair } from '../components/shell.js';
+import { ROTAS, rotasDoPerfil, modalPerfil, modalMeuPerfil, sair } from '../components/shell.js';
 import { store } from '../state/store.js';
 import { abrirModalSuporte, abrirModalSugestoes } from '../components/modal-ajuda.js';
 
@@ -19,14 +19,19 @@ export function renderEmBreve(raiz, rotaId, irPara) {
 }
 
 export function renderMenu(raiz, irPara) {
+  const st = store.get();
   const perfil = store.perfil();
+  const isDemo = store.isDemo ? store.isDemo() : (!st.usuario || st.usuario.id === 'user_demo');
+  const tenant = store.getTenant ? store.getTenant() : st.tenant;
+  const nomeExibicao = (!isDemo && st.usuario?.nome) ? st.usuario.nome : perfil.nome;
+  const papelExibicao = (!isDemo && (st.usuario?.role || tenant?.nome)) ? (st.usuario.role || 'Administrador') : perfil.papel;
   const itens = rotasDoPerfil().filter((r) => !r.principal);
   const isDark = document.documentElement.classList.contains('dark');
 
   raiz.innerHTML = `
   <div style="margin-bottom: 16px;">
     <h1 style="font-size:24px;margin-bottom:4px">Menu</h1>
-    <p style="color:var(--texto-suave);margin:0">Módulos e ferramentas disponíveis para: <strong>${perfil.papel}</strong></p>
+    <p style="color:var(--texto-suave);margin:0">Módulos e ferramentas disponíveis para: <strong>${papelExibicao}</strong></p>
   </div>
 
   <!-- Chave Slide Dark Mode / Clear Mode no topo do Menu -->
@@ -98,14 +103,25 @@ export function renderMenu(raiz, irPara) {
   <div style="margin-top:24px; margin-bottom:12px;">
     <h3 style="font-size:16px; font-weight:700; color:var(--carvao); margin:0 0 10px 0;">Sessão & Conta</h3>
     <div class="menu-grade">
-      <button class="menu-card" id="menu-trocar-perfil">
-        <span class="mc-ic">${perfil.emoji}</span>
-        <div class="menu-card-conteudo">
-          <strong class="menu-card-titulo">Trocar perfil (demonstração)</strong>
-          <span class="menu-card-desc">Logado como ${perfil.nome} (${perfil.papel})</span>
-        </div>
-        <span class="menu-card-seta">&rarr;</span>
-      </button>
+      ${isDemo ? `
+        <button class="menu-card" id="menu-trocar-perfil">
+          <span class="mc-ic">${perfil.emoji}</span>
+          <div class="menu-card-conteudo">
+            <strong class="menu-card-titulo">Trocar perfil (demonstração)</strong>
+            <span class="menu-card-desc">Logado como ${perfil.nome} (${perfil.papel})</span>
+          </div>
+          <span class="menu-card-seta">&rarr;</span>
+        </button>
+      ` : `
+        <button class="menu-card" id="menu-meu-perfil">
+          <span class="mc-ic" style="color: var(--brasa); background: var(--creme);">${icone('usuarios')}</span>
+          <div class="menu-card-conteudo">
+            <strong class="menu-card-titulo">Meu Perfil</strong>
+            <span class="menu-card-desc">Logado como ${nomeExibicao} &bull; ${tenant?.nome || 'Minha Loja'}</span>
+          </div>
+          <span class="menu-card-seta">&rarr;</span>
+        </button>
+      `}
       <button class="menu-card" id="menu-sair" style="border-color: rgba(220, 38, 38, 0.25);">
         <span class="mc-ic" style="color: #DC2626; background: #FEE2E2;">${icone('sair')}</span>
         <div class="menu-card-conteudo">
@@ -134,6 +150,10 @@ export function renderMenu(raiz, irPara) {
 
   raiz.querySelector('#menu-btn-suporte')?.addEventListener('click', () => abrirModalSuporte());
   raiz.querySelector('#menu-btn-sugestoes')?.addEventListener('click', () => abrirModalSugestoes());
-  raiz.querySelector('#menu-trocar-perfil').addEventListener('click', () => modalPerfil(irPara));
+  if (isDemo) {
+    raiz.querySelector('#menu-trocar-perfil')?.addEventListener('click', () => modalPerfil(irPara));
+  } else {
+    raiz.querySelector('#menu-meu-perfil')?.addEventListener('click', () => modalMeuPerfil(irPara));
+  }
   raiz.querySelector('#menu-sair').addEventListener('click', () => sair(irPara));
 }

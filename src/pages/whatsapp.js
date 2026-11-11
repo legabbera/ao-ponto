@@ -16,6 +16,7 @@ let telefoneTesteSimulador = '';
 export function renderWhatsapp(raiz, irPara) {
   const st = store.get();
   const perfil = store.perfil();
+  const isDemo = store.isDemo ? store.isDemo() : (!st.usuario || st.usuario.id === 'user_demo');
   const nomePonto = st.ponto === 'todos' 
     ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome) 
     : PONTOS.find((p) => p.id === st.ponto)?.nome;
@@ -43,7 +44,7 @@ export function renderWhatsapp(raiz, irPara) {
         <div class="whatsapp-topo-info">
           <h1>Central WhatsApp &bull; Automações & Disparos 💬🍗</h1>
           <p>
-            <span class="badge badge-demo">${icone('local', 'mini')} ${nomePonto}</span>
+            <span class="badge ${isDemo ? 'badge-demo' : 'badge-neutro'}">${icone('local', 'mini')} ${nomePonto}</span>
             &bull; Notificações automáticas de encomendas, reservas de domingo e fidelidade
           </p>
         </div>
@@ -169,7 +170,7 @@ export function renderWhatsapp(raiz, irPara) {
                   <strong>Abertura de Reservas do Almoço de Domingo</strong>
                   <small>Disparo sugerido: Sexta às 18h ou Sábado às 10h</small>
                 </div>
-                <span class="badge badge-demo">Alta Conversão</span>
+                <span class="badge badge-laranja">Alta Conversão</span>
               </div>
               <div class="campanha-texto-preview">
                 "Bom dia, {cliente}! 🍗 Já estamos aceitando as reservas para o almoço deste domingo no Ao Ponto! Garanta o seu frango assado douradinho antes que esgote..."
@@ -198,7 +199,7 @@ export function renderWhatsapp(raiz, irPara) {
                   <strong>Últimas Vagas na Máquina / Braseiro</strong>
                   <small>Disparo sugerido: Domingo às 09h30</small>
                 </div>
-                <span class="badge badge-demo">Urgência</span>
+                <span class="badge badge-perigo">Urgência 🔥</span>
               </div>
               <div class="campanha-texto-preview">
                 "Oi {cliente}! Nossos frangos do braseiro já estão na última rodada na máquina giratória! Ainda dá tempo de garantir o almoço da família..."
@@ -227,7 +228,7 @@ export function renderWhatsapp(raiz, irPara) {
                   <strong>Resgate de Cortesia & Selos Pendentes</strong>
                   <small>Disparo para clientes com 8 a 10 selos</small>
                 </div>
-                <span class="badge badge-sucesso">Fidelização</span>
+                <span class="badge badge-sucesso">Fidelização 🎁</span>
               </div>
               <div class="campanha-texto-preview">
                 "Olá {cliente}! Você já tem {selos}/10 selos no Clube do Frango! Venha retirar o seu frango assado de cortesia neste fim de semana..."
