@@ -147,7 +147,7 @@ export function renderPagamentos(raiz, irPara) {
         <div class="kpi-card">
           <div class="kpi-rotulo">Faturamento Bruto (Hoje)</div>
           <div class="kpi-valor" style="color: var(--carvao);">${fmtMoeda(brutoHoje)}</div>
-          <div class="kpi-sub">Total de vendas registradas no PDV</div>
+          <div class="kpi-sub">Total de vendas registradas no balcão</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-rotulo">Taxas de Operação (Estimadas)</div>
@@ -175,10 +175,10 @@ export function renderPagamentos(raiz, irPara) {
             <h3 style="margin: 0; font-size: 15px; font-weight: 800; color: var(--carvao);">
               Provedor Principal Ativo
             </h3>
-            <span class="badge badge-sucesso">Integrado ao PDV</span>
+            <span class="badge badge-sucesso">Integrado ao Balcão</span>
           </div>
           <p style="font-size: 13px; color: var(--texto-suave); margin: 0;">
-            Selecione o ecossistema de pagamentos utilizado na sua assadeira para sincronizar as vendas:
+            Selecione o ecossistema de pagamentos utilizado no seu ponto para sincronizar as vendas:
           </p>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -934,7 +934,7 @@ function simularEnvioMaquininha(nomeMaq) {
 
         <strong style="font-size: 15px; color: #166534; display: block;">Sinal enviado com 100% de sucesso!</strong>
         <p style="font-size: 13px; color: var(--texto-suave); margin: 6px 0 16px;">
-          A maquininha respondeu em <b>84ms</b>. Pronta para receber comandos diretos do PDV.
+          A maquininha respondeu em <b>84ms</b>. Pronta para receber comandos diretos do balcão.
         </p>
 
         <button class="btn btn-primario" data-fechar>Fechar</button>

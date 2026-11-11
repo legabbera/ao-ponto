@@ -216,7 +216,7 @@ export function renderEstoque(raiz, irPara) {
             <div class="etapa-barra"><div class="barra-preenchimento" style="width: ${Math.min(100, (frangos.pronto / 40) * 100)}%"></div></div>
             <div class="etapa-acoes">
               <button class="btn btn-pequeno btn-sucesso btn-acao-ciclo" data-acao="ir-pdv">
-                ${icone('vendas', 'mini')} Vender no PDV
+                ${icone('vendas', 'mini')} Vender no Balcão
               </button>
             </div>
             <button class="btn-link-pequeno" data-acao="perda-etapa" data-origem="pronto">Registrar perda</button>

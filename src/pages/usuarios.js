@@ -121,7 +121,7 @@ export function renderUsuarios(raiz, irPara) {
               <span class="badge" style="background: #DCFCE7; color: #16A34A; font-size: 10px;">Operação</span>
             </div>
             <p style="font-size: 12px; color: var(--texto-suave); margin: 0; line-height: 1.4;">
-              Focado na agilidade: PDV de caixa rápido com pesagem, registro de reservas, pedidos na máquina e consulta de saldo de selos.
+              Focado na agilidade: controle de vendas e balcão com pesagem, registro de reservas, pedidos na máquina e consulta de saldo de selos.
             </p>
           </div>
 
@@ -312,7 +312,7 @@ function abrirModalNovoUsuario(onSalvar) {
           <div class="campo">
             <label>Nível de Permissão: *</label>
             <select id="novo-user-perfil" class="select">
-              <option value="vendedor">🍗 Vendedor / Caixa (PDV e Pedidos)</option>
+              <option value="vendedor">🍗 Vendedor / Caixa (Vendas e Pedidos)</option>
               <option value="admin">👔 Gerente / Admin (Estoque e Clientes)</option>
               <option value="owner">👑 Proprietário (Acesso Completo)</option>
             </select>

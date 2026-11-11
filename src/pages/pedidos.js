@@ -59,7 +59,7 @@ export function renderPedidos(raiz, irPara) {
         </div>
         <div class="pedidos-topo-acoes">
           <button class="btn btn-primario" id="btn-nova-reserva">${icone('mais')} Nova Reserva</button>
-          <button class="btn btn-contorno" id="btn-ir-pdv">${icone('vendas')} Abrir Caixa PDV</button>
+          <button class="btn btn-contorno" id="btn-ir-pdv">${icone('vendas')} Vendas & Balcão</button>
           <button class="btn btn-contorno" id="btn-ir-clientes">${icone('clientes')} Clientes & Fidelidade</button>
         </div>
       </div>

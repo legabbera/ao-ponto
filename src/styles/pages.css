@@ -62,8 +62,23 @@
   gap: 10px;
 }
 
+.acoes-rapidas #btn-ir-calculadora {
+  grid-column: span 2;
+}
+
+@media (min-width: 640px) {
+  .acoes-rapidas {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .acoes-rapidas #btn-ir-calculadora {
+    grid-column: span 1;
+  }
+}
+
 .acoes-rapidas .btn {
-  min-height: 54px;
+  min-height: 52px;
+  justify-content: center;
+  font-size: 14px;
 }
 
 /* KPIs do Dashboard */

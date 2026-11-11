@@ -428,7 +428,7 @@ export function renderLanding(raiz, irPara) {
             📊 Visão Geral (Dashboard)
           </button>
           <button class="lp-demo-tab-btn" data-tab="tab-pdv">
-            🍗 Caixa Rápido (PDV)
+            🍗 Vendas & Balcão
           </button>
           <button class="lp-demo-tab-btn" data-tab="tab-pedidos">
             📅 Encomendas e Reservas
@@ -530,7 +530,7 @@ export function renderLanding(raiz, irPara) {
             </div>
 
             <div class="lp-demo-legend">
-              <span><strong>Caixa Rápido (PDV):</strong> Suporte a produtos inteiros, porções e itens pesados por kg com troco descomplicado.</span>
+              <span><strong>Controle de Vendas & Balcão:</strong> Suporte a produtos inteiros, porções e itens pesados por kg com troco descomplicado.</span>
               <span class="badge badge-demo">Simulação de tela</span>
             </div>
           </div>
@@ -612,7 +612,7 @@ export function renderLanding(raiz, irPara) {
             <div class="lp-etapa-num">1</div>
             <h3>Conheça o sistema</h3>
             <p>
-              <span class="f-lead">Entenda as ferramentas</span> disponíveis para sua rotina: navegue pelo PDV rápido, consulte o painel de pedidos e veja como os números se organizam na tela.
+              <span class="f-lead">Entenda as ferramentas</span> disponíveis para sua rotina: navegue pelo controle de vendas de balcão, consulte o painel de pedidos e veja como os números se organizam na tela.
             </p>
           </div>
 
