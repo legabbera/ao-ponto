@@ -150,12 +150,16 @@ export function renderPedidos(raiz, irPara) {
               <div class="pedido-cliente-dados">
                 <div class="p-cliente-nome">
                   <strong>${escapeHtml(p.cliente)}</strong>
-                  <span class="p-cliente-tel">${icone('telefone', 'mini')} ${escapeHtml(p.telefone)}</span>
+                  <span class="p-cliente-tel">${p.telefone && p.telefone !== 'Sem WhatsApp' ? `${icone('telefone', 'mini')} ${escapeHtml(p.telefone)}` : '<span style="color:var(--texto-suave);font-size:11px;">Sem WhatsApp</span>'}</span>
                 </div>
                 <div class="p-cliente-acoes">
-                  <a href="https://wa.me/55${sanitizarTelefone(p.telefone)}?text=${encodeURIComponent(`*${store.getWhatsapp()?.config?.nomeEstabelecimento || 'Ao Ponto Assados'}*\nOlá *${p.cliente}*! Sobre sua reserva (#${p.id}): seu pedido de frango assado para ${dataFmt} às ${p.hora}h está confirmado.`)}" target="_blank" class="btn btn-whatsapp btn-sm">
-                    ${icone('whatsapp')} WhatsApp
-                  </a>
+                  ${p.telefone && p.telefone !== 'Sem WhatsApp' ? `
+                    <a href="https://wa.me/55${sanitizarTelefone(p.telefone)}?text=${encodeURIComponent(`*${store.getWhatsapp()?.config?.nomeEstabelecimento || 'Ao Ponto Assados'}*\nOlá *${p.cliente}*! Sobre sua reserva (#${p.id}): seu pedido de frango assado para ${dataFmt} às ${p.hora}h está confirmado.`)}" target="_blank" class="btn btn-whatsapp btn-sm">
+                      ${icone('whatsapp')} WhatsApp
+                    </a>
+                  ` : `
+                    <span class="badge badge-neutro" style="font-size:11px; opacity:.7;">Sem WhatsApp</span>
+                  `}
                 </div>
               </div>
 
@@ -306,8 +310,8 @@ export function renderPedidos(raiz, irPara) {
       </div>
 
       <div class="campo">
-        <label for="nr-telefone">WhatsApp para aviso *</label>
-        <input type="tel" id="nr-telefone" class="input" placeholder="Ex: 11988887777" required />
+        <label for="nr-telefone">WhatsApp para aviso <small style="color:var(--texto-suave); font-weight:normal;">(opcional)</small></label>
+        <input type="tel" id="nr-telefone" class="input" placeholder="Ex: 11988887777" />
       </div>
 
       <div class="grade-2-colunas">
@@ -413,8 +417,12 @@ export function renderPedidos(raiz, irPara) {
         const obsGeral = sanitizarTexto(modal.querySelector('#nr-obs').value, 200);
         const pagMetodo = modal.querySelector('#nr-pagamento').value;
 
-        if (!cliente) return toast('Informe o nome do cliente.', 'erro');
-        if (!telefone) return toast('Informe o WhatsApp do cliente.', 'erro');
+        if (!cliente) {
+          modal.querySelector('#nr-cliente')?.focus();
+          return toast('Informe o nome do cliente.', 'erro');
+        }
+
+        const telSeguro = telefone || 'Sem WhatsApp';
 
         const itensAtivos = itensSelecionados.filter((it) => it.qtd > 0).map((it) => ({
           produtoId: it.produtoId,
@@ -427,7 +435,7 @@ export function renderPedidos(raiz, irPara) {
         if (itensAtivos.length === 0) return toast('Selecione ao menos 1 item para a reserva.', 'erro');
 
         const total = itensAtivos.reduce((acc, it) => acc + (it.qtd * it.precoUnit), 0);
-        const assinaturaPedido = `pedido_${cliente}_${telefone.replace(/\D/g, '')}_${data}_${hora}_${total.toFixed(2)}`;
+        const assinaturaPedido = `pedido_${cliente}_${telefone || 'semtel'}_${data}_${hora}_${total.toFixed(2)}`;
 
         try {
           await executarComIdempotencia(assinaturaPedido, async () => {
@@ -441,7 +449,7 @@ export function renderPedidos(raiz, irPara) {
 
             store.adicionarPedido({
               cliente,
-              telefone,
+              telefone: telSeguro,
               ponto: st.ponto === 'todos' ? 'centro' : st.ponto,
               data,
               hora,
