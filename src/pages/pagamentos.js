@@ -220,7 +220,7 @@ export function renderPagamentos(raiz, irPara) {
         <div class="cartao" style="display: flex; flex-direction: column; gap: 12px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <h3 style="margin: 0; font-size: 15px; font-weight: 800; color: var(--carvao);">
-              Configuração Pix da Assadeira ⚡
+              Configuração Pix do Ponto ⚡
             </h3>
             <button class="btn btn-pequeno btn-secundario" id="btn-editar-chave-pix">
               ✏️ Editar Chave
