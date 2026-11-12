@@ -4,6 +4,7 @@
 import { icone } from '../components/icons.js';
 import { ROTAS, rotasDoPerfil, modalPerfil, modalMeuPerfil, sair } from '../components/shell.js';
 import { store } from '../state/store.js';
+import { PERFIS } from '../data/mock.js';
 import { abrirModalSuporte, abrirModalSugestoes } from '../components/modal-ajuda.js';
 
 export function renderEmBreve(raiz, rotaId, irPara) {

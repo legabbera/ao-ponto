@@ -123,7 +123,6 @@ function render() {
     else                                   renderDashboard(conteudo, irPara);
   } catch (err) {
     console.error(`Erro ao renderizar rota ${hashRota}:`, err);
-    renderMenu(conteudo, irPara);
   }
 }
 
