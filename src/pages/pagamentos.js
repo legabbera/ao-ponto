@@ -944,6 +944,11 @@ function simularEnvioMaquininha(nomeMaq) {
 }
 
 function abrirModalAdicionarCash(onConcluir) {
+  const perfil = store.perfil();
+  const st = store.get();
+  const isDemo = store.isDemo ? store.isDemo() : (!st.usuario || st.usuario.id === 'user_demo');
+  const nomePadrao = (!isDemo && st.usuario?.nome) ? st.usuario.nome : (perfil?.nome || 'Operador do Caixa');
+
   abrirModal(`
     <div style="max-width:440px; text-align:left;">
       <div style="text-align:center; margin-bottom:16px;">
@@ -966,6 +971,10 @@ function abrirModalAdicionarCash(onConcluir) {
             <label style="display:block; font-size:12px; font-weight:700; color:var(--carvao); margin-bottom:4px;">Motivo / Descrição *</label>
             <input type="text" id="cash-motivo" class="input" placeholder="Ex: Fundo de troco inicial, Reforço de moedas..." required />
           </div>
+          <div>
+            <label style="display:block; font-size:12px; font-weight:700; color:var(--carvao); margin-bottom:4px;">Operador Responsável *</label>
+            <input type="text" id="cash-operador" class="input" value="${escapeHtml(nomePadrao)}" placeholder="Nome do operador" required />
+          </div>
         </div>
 
         <div class="modal-acoes" style="flex-direction:column; gap:8px;">
@@ -981,11 +990,12 @@ function abrirModalAdicionarCash(onConcluir) {
       e.preventDefault();
       const valor = parseFloat(modal.querySelector('#cash-valor')?.value) || 0;
       const motivo = modal.querySelector('#cash-motivo')?.value.trim();
+      const operador = modal.querySelector('#cash-operador')?.value.trim() || nomePadrao;
       if (valor <= 0 || !motivo) return;
 
-      store.adicionarCash({ valor, motivo });
+      store.adicionarCash({ valor, motivo, operador });
       fechar();
-      toast(`Entrada de R$ ${valor.toFixed(2)} adicionada ao caixa! 💵`, 'sucesso');
+      toast(`Entrada de R$ ${valor.toFixed(2)} adicionada ao caixa por ${operador}! 💵`, 'sucesso');
       onConcluir?.();
     });
   });
