@@ -847,11 +847,11 @@ function abrirModalQrCodePix() {
           O cliente abre o app do banco, aponta a câmera e transfere na hora sem taxas.
         </small>
 
-        <div style="margin-top: 18px; display: flex; justify-content: center; gap: 8px;">
+        <div style="margin-top: 18px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
           <button class="btn btn-contorno" data-fechar>Fechar</button>
-          <button class="btn btn-primario" onclick="window.print()">
-            🖨️ Imprimir QR Code
-          </button>
+          <a href="/placa-pix.html?print=true" target="_blank" class="btn btn-primario" style="text-decoration:none; display:inline-flex; align-items:center;">
+            🖨️ Imprimir Placa A4
+          </a>
         </div>
       </div>
     `,
@@ -861,20 +861,22 @@ function abrirModalQrCodePix() {
 function abrirModalPlacaBalcao() {
   const pix = store.getPagamentos().pix || {};
   const tenant = store.getTenant();
+  const nomeLoja = tenant?.nome || 'Ao Ponto Assados';
+  const chavePix = pix.chave || '12.345.678/0001-90';
 
   abrirModal({
     titulo: 'Placa de Balcão para Impressão 🖨️',
     html: `
-      <div id="placa-balcao-impressao" style="text-align: center; border: 3px solid #C2410C; border-radius: 16px; padding: 24px; background: #FFFBF5; margin: 10px 0;">
+      <div id="placa-balcao-impressao" style="text-align: center; border: 3px solid #C2410C; border-radius: 16px; padding: 20px; background: #FFFBF5; margin: 8px 0;">
         <span style="font-size: 32px; display: block; margin-bottom: 4px;">🍗</span>
-        <h2 style="margin: 0; color: #C2410C; font-size: 22px; font-weight: 900; text-transform: uppercase;">
-          ${tenant?.nome || 'Ao Ponto Assados'}
+        <h2 style="margin: 0; color: #C2410C; font-size: 20px; font-weight: 900; text-transform: uppercase;">
+          ${escapeHtml(nomeLoja)}
         </h2>
-        <p style="margin: 4px 0 16px; font-size: 14px; font-weight: 700; color: #166534;">
-          PAGAMENTO INSTANTÂNEO VIA PIX
+        <p style="margin: 4px 0 14px; font-size: 13px; font-weight: 800; color: #166534; text-transform: uppercase;">
+          ⚡ PAGAMENTO INSTANTÂNEO VIA PIX
         </p>
 
-        <div style="width: 190px; height: 190px; margin: 0 auto 12px; background: #fff; border: 1.5px solid #FED7AA; border-radius: 12px; display: grid; place-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <div style="width: 180px; height: 180px; margin: 0 auto 12px; background: #fff; border: 1.5px solid #FED7AA; border-radius: 12px; display: grid; place-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); padding: 8px;">
           <svg viewBox="0 0 100 100" width="160" height="160">
             <rect width="100" height="100" fill="white"/>
             <rect x="10" y="10" width="25" height="25" fill="#000"/>
@@ -895,26 +897,52 @@ function abrirModalPlacaBalcao() {
           </svg>
         </div>
 
-        <div style="background: #fff; border: 1px dashed #C2410C; border-radius: 8px; padding: 10px; margin: 12px auto; max-width: 320px;">
-          <small style="color: var(--texto-suave); font-size: 11px; text-transform: uppercase;">Chave Pix:</small>
-          <strong style="display: block; font-family: monospace; font-size: 15px; color: var(--carvao);">
-            ${pix.chave || '12.345.678/0001-90'}
+        <div style="background: #fff; border: 1.5px dashed #C2410C; border-radius: 8px; padding: 10px; margin: 10px auto; max-width: 320px;">
+          <small style="color: var(--texto-suave); font-size: 11px; text-transform: uppercase; font-weight:700;">Chave Pix (${pix.tipoChave ? pix.tipoChave.toUpperCase() : 'CNPJ'}):</small>
+          <strong style="display: block; font-family: monospace; font-size: 15px; color: var(--carvao); word-break: break-all; margin: 2px 0;">
+            ${escapeHtml(chavePix)}
           </strong>
-          <small style="color: var(--texto-suave); font-size: 12px;">Favorecido: ${pix.titular || 'Ao Ponto Assados'}</small>
+          <small style="color: var(--texto-suave); font-size: 12px;">Favorecido: <b>${escapeHtml(pix.titular || nomeLoja)}</b></small>
         </div>
 
-        <small style="color: var(--texto-suave); font-weight: 600;">
+        <small style="color: var(--texto-suave); font-weight: 600; display: block; font-size: 12px; line-height: 1.3;">
           Aponte a câmera do seu celular no aplicativo do banco e confirme o valor!
         </small>
       </div>
 
-      <div style="margin-top: 14px; display: flex; justify-content: flex-end; gap: 8px;">
-        <button class="btn btn-contorno" data-fechar>Fechar</button>
-        <button class="btn btn-primario" onclick="window.print()">
-          🖨️ Imprimir para o Caixa
-        </button>
+      <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px;">
+        <a href="/placa-pix.html?print=true" target="_blank" class="btn btn-primario btn-bloco" id="btn-abrir-placa-print" style="text-decoration:none; display:flex; align-items:center; justify-content:center; padding:12px; font-size:14px;">
+          🖨️ Abrir & Imprimir Placa A4 (Display)
+        </a>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-contorno" id="btn-copiar-chave-placa" style="flex:1; justify-content:center; font-size:13px;">
+            📋 Copiar Chave
+          </button>
+          <button type="button" class="btn btn-fantasma" data-fechar style="flex:1; justify-content:center; font-size:13px;">
+            Fechar
+          </button>
+        </div>
       </div>
     `,
+    aoAbrir: (el, fechar) => {
+      el.querySelector('#btn-copiar-chave-placa')?.addEventListener('click', () => {
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(chavePix);
+          } else {
+            const ta = document.createElement('textarea');
+            ta.value = chavePix;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+          }
+          toast('Chave Pix copiada com sucesso!', 'sucesso');
+        } catch (e) {
+          toast('Chave: ' + chavePix, 'info');
+        }
+      });
+    }
   });
 }
 
