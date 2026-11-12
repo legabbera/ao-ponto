@@ -849,6 +849,9 @@ function abrirModalQrCodePix() {
 
         <div style="margin-top: 18px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
           <button class="btn btn-contorno" data-fechar>Fechar</button>
+          <a href="/placa-pix.html?share=pdf" target="_blank" class="btn" style="background:#25D366; color:#fff; text-decoration:none; display:inline-flex; align-items:center; font-weight:700;">
+            💬 Enviar PDF no WhatsApp
+          </a>
           <a href="/placa-pix.html?print=true" target="_blank" class="btn btn-primario" style="text-decoration:none; display:inline-flex; align-items:center;">
             🖨️ Imprimir Placa A4
           </a>
@@ -911,17 +914,20 @@ function abrirModalPlacaBalcao() {
       </div>
 
       <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px;">
-        <a href="/placa-pix.html?print=true" target="_blank" class="btn btn-primario btn-bloco" id="btn-abrir-placa-print" style="text-decoration:none; display:flex; align-items:center; justify-content:center; padding:12px; font-size:14px;">
-          🖨️ Abrir & Imprimir Placa A4 (Display)
+        <a href="/placa-pix.html?share=pdf" target="_blank" class="btn btn-bloco" id="btn-enviar-zap-placa" style="text-decoration:none; display:flex; align-items:center; justify-content:center; padding:12px; font-size:14px; background:#25D366; color:#fff; font-weight:700;">
+          💬 Enviar PDF da Placa no WhatsApp (1 Folha)
         </a>
         <div style="display: flex; gap: 8px;">
+          <a href="/placa-pix.html?print=true" target="_blank" class="btn btn-primario" style="flex:1; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; font-size:13px;">
+            🖨️ Imprimir (1 Folha)
+          </a>
           <button type="button" class="btn btn-contorno" id="btn-copiar-chave-placa" style="flex:1; justify-content:center; font-size:13px;">
             📋 Copiar Chave
           </button>
-          <button type="button" class="btn btn-fantasma" data-fechar style="flex:1; justify-content:center; font-size:13px;">
-            Fechar
-          </button>
         </div>
+        <button type="button" class="btn btn-fantasma" data-fechar style="width:100%; justify-content:center; font-size:13px; margin-top:2px;">
+          Fechar
+        </button>
       </div>
     `,
     aoAbrir: (el, fechar) => {

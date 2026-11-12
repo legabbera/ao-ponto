@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Placa Pix de Balcão — Ao Ponto</title>
+  <title>Placa Pix de Balcão (1 Folha A4) — Ao Ponto</title>
   <link rel="icon" type="image/png" href="./favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Fira+Code:wght@600;700&display=swap" rel="stylesheet">
+  <!-- jsPDF offline para geração de PDF de 1 página exata -->
+  <script src="./js/jspdf.umd.min.js"></script>
   <style>
     :root {
       --brasa: #EA580C;
       --brasa-escura: #C2410C;
-      --verde-pix: #0D9488;
+      --verde-pix: #16A34A;
       --carvao: #18181B;
       --creme: #FFFBF5;
     }
@@ -26,7 +28,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px 10px;
+      padding: 16px 10px;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
@@ -34,32 +36,54 @@
     /* Barra Superior de Ações na Tela */
     .barra-acoes {
       width: 100%;
-      max-width: 520px;
+      max-width: 460px;
       background: #FFFFFF;
       border: 1.5px solid #E4E4E7;
       border-radius: 14px;
-      padding: 12px 16px;
-      margin-bottom: 20px;
+      padding: 12px;
+      margin-bottom: 16px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      gap: 8px;
       box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    }
+
+    .linha-botoes {
+      display: flex;
+      gap: 8px;
+      width: 100%;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
-      padding: 10px 16px;
+      padding: 11px 14px;
       border-radius: 10px;
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
       text-decoration: none;
       transition: all .15s ease;
       border: none;
+      flex: 1;
+      text-align: center;
     }
+
+    .btn-zap {
+      background: #25D366;
+      color: #FFFFFF;
+      font-size: 14px;
+      padding: 12px;
+    }
+    .btn-zap:hover { background: #1EBE5D; }
+
+    .btn-pdf {
+      background: #DC2626;
+      color: #FFFFFF;
+    }
+    .btn-pdf:hover { background: #B91C1C; }
 
     .btn-imprimir {
       background: #16A34A;
@@ -71,35 +95,37 @@
       background: #F4F4F5;
       color: #3F3F46;
       border: 1px solid #D4D4D8;
+      width: 100%;
     }
     .btn-voltar:hover { background: #E4E4E7; }
 
-    /* Folha da Placa (A4 / Display) */
+    /* Folha da Placa (Prévia na Tela) */
     .placa-folha {
       width: 100%;
-      max-width: 500px;
+      max-width: 440px;
       background: #FFFFFF;
-      border: 5px solid var(--brasa);
-      border-radius: 24px;
-      padding: 36px 28px;
+      border: 4px solid var(--brasa);
+      border-radius: 20px;
+      padding: 22px 18px;
       text-align: center;
-      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
       position: relative;
       box-sizing: border-box;
     }
 
     .placa-cabecalho {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     .logo-chama {
-      font-size: 42px;
+      font-size: 34px;
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 2px;
+      line-height: 1;
     }
 
     .nome-ponto {
-      font-size: 26px;
+      font-size: 21px;
       font-weight: 900;
       color: var(--brasa-escura);
       text-transform: uppercase;
@@ -108,29 +134,29 @@
     }
 
     .subtitulo-pix {
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 800;
       color: #166534;
       background: #DCFCE7;
       display: inline-block;
-      padding: 4px 14px;
+      padding: 3px 12px;
       border-radius: 999px;
-      margin-top: 8px;
+      margin-top: 5px;
       letter-spacing: 0.5px;
     }
 
-    /* Container do QR Code */
+    /* Container do QR Code Otimizado */
     .qr-container {
-      width: 240px;
-      height: 240px;
-      margin: 18px auto;
+      width: 180px;
+      height: 180px;
+      margin: 10px auto;
       background: #FFFFFF;
       border: 2px solid #FED7AA;
-      border-radius: 18px;
+      border-radius: 16px;
       display: grid;
       place-items: center;
-      box-shadow: 0 6px 18px rgba(234, 88, 12, 0.08);
-      padding: 12px;
+      box-shadow: 0 4px 14px rgba(234, 88, 12, 0.08);
+      padding: 8px;
     }
 
     .qr-container svg {
@@ -143,9 +169,9 @@
     .chave-bloco {
       background: var(--creme);
       border: 2px dashed var(--brasa);
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin: 18px 0 14px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin: 10px 0 8px;
     }
 
     .chave-tipo {
@@ -155,12 +181,12 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .chave-valor {
       font-family: 'Fira Code', monospace;
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--carvao);
       word-break: break-all;
@@ -169,35 +195,46 @@
     }
 
     .favorecido-linha {
-      font-size: 13px;
+      font-size: 12px;
       color: #52525B;
-      margin-top: 6px;
+      margin-top: 4px;
       display: block;
     }
 
     .instrucao-rodape {
-      font-size: 13.5px;
+      font-size: 11.5px;
       font-weight: 700;
       color: #3F3F46;
-      line-height: 1.4;
-      margin-top: 14px;
+      line-height: 1.35;
+      margin-top: 8px;
     }
 
     .rodape-creditos {
-      margin-top: 22px;
-      font-size: 11px;
+      margin-top: 10px;
+      font-size: 9.5px;
       color: #A1A1AA;
       text-transform: uppercase;
       letter-spacing: 1px;
       font-weight: 600;
     }
 
-    /* Regras Estritas de Impressão (A4) */
+    /* Regras Físicas Estritas de 1 Única Página A4 */
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
     @media print {
-      body {
-        background: #FFFFFF !important;
-        padding: 0 !important;
+      html, body {
+        width: 210mm !important;
+        height: 297mm !important;
+        max-height: 297mm !important;
         margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        background: #FFFFFF !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
 
       .barra-acoes, .no-print {
@@ -205,36 +242,75 @@
       }
 
       .placa-folha {
-        max-width: 100% !important;
-        width: 100% !important;
+        box-sizing: border-box !important;
+        width: 190mm !important;
+        max-width: 190mm !important;
+        height: 275mm !important;
+        max-height: 275mm !important;
+        margin: 11mm auto !important;
+        padding: 16mm 14mm !important;
+        border: 4mm solid #EA580C !important;
+        border-radius: 6mm !important;
         box-shadow: none !important;
-        border: 4px solid #C2410C !important;
-        border-radius: 16px !important;
-        padding: 30px 20px !important;
-        page-break-inside: avoid;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+        page-break-before: avoid !important;
+        break-before: avoid !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-around !important;
       }
 
+      .logo-chama { font-size: 18mm !important; margin-bottom: 2mm !important; }
+      .nome-ponto { font-size: 9mm !important; line-height: 1.1 !important; }
+      .subtitulo-pix { font-size: 4.5mm !important; padding: 1.5mm 6mm !important; margin-top: 3mm !important; }
+
       .qr-container {
-        border-color: #000 !important;
-        box-shadow: none !important;
+        width: 68mm !important;
+        height: 68mm !important;
+        margin: 6mm auto !important;
+        border-width: 1mm !important;
+        padding: 3mm !important;
       }
+
+      .chave-bloco {
+        padding: 4mm 6mm !important;
+        margin: 4mm 0 !important;
+      }
+      .chave-tipo { font-size: 4mm !important; }
+      .chave-valor { font-size: 6mm !important; }
+      .favorecido-linha { font-size: 4mm !important; }
+
+      .instrucao-rodape { font-size: 4.2mm !important; line-height: 1.3 !important; }
+      .rodape-creditos { font-size: 3.2mm !important; margin-top: 2mm !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Barra de Ações Superior (Não sai na impressão) -->
+  <!-- Barra de Ações Superior (Não sai na impressão nem no PDF) -->
   <div class="barra-acoes no-print">
-    <a href="/#/pagamentos" class="btn btn-voltar">
-      &larr; Voltar ao Sistema
-    </a>
-    <button class="btn btn-imprimir" onclick="window.print()">
-      🖨️ Imprimir Placa de Balcão
+    <button class="btn btn-zap" id="btn-share-whatsapp" onclick="gerarECompartilharPDF()">
+      💬 Enviar PDF no WhatsApp
     </button>
+    <div class="linha-botoes">
+      <button class="btn btn-pdf" id="btn-download-pdf" onclick="baixarPDFDireto()">
+        📄 Baixar PDF (1 Folha)
+      </button>
+      <button class="btn btn-imprimir" onclick="window.print()">
+        🖨️ Imprimir
+      </button>
+    </div>
+    <a href="/#/pagamentos" class="btn btn-voltar">
+      &larr; Voltar ao Controle de Pagamentos
+    </a>
   </div>
 
-  <!-- Folha Oficial da Placa -->
-  <div class="placa-folha">
+  <!-- Folha Oficial da Placa (1 Única Página) -->
+  <div class="placa-folha" id="placa-alvo-render">
     <div class="placa-cabecalho">
       <span class="logo-chama">🍗</span>
       <h1 class="nome-ponto" id="placa-nome-ponto">Ao Ponto Assados</h1>
@@ -262,7 +338,7 @@
         <rect x="40" y="40" width="20" height="20" fill="#EA580C" rx="4"/>
         <text x="50" y="55" font-size="12" fill="#fff" text-anchor="middle" font-weight="bold">⚡</text>
 
-        <!-- Matriz de Pontos Simulada -->
+        <!-- Matriz de Pontos Pix -->
         <rect x="40" y="12" width="7" height="7" fill="#000"/>
         <rect x="52" y="18" width="7" height="7" fill="#000"/>
         <rect x="43" y="27" width="6" height="6" fill="#000"/>
@@ -290,30 +366,40 @@
     </div>
   </div>
 
+  <!-- Canvas Oculto para renderização de imagem/PDF em alta fidelidade 300DPI -->
+  <canvas id="canvas-export-placa" width="1240" height="1754" style="display:none;"></canvas>
+
   <script>
+    let dadosLoja = {
+      nome: 'Ao Ponto Assados',
+      chave: '12.345.678/0001-90',
+      tipo: 'CNPJ',
+      titular: 'Ao Ponto Assados Ltda'
+    };
+
     // Recuperar dados dinâmicos do LocalStorage ou Sessão
     try {
-      const sessaoStr = sessionStorage.getItem('fa-sessao');
       const pagamentosStr = localStorage.getItem('fa-pagamentos-config');
-      
-      let nomeLoja = 'Ao Ponto Assados';
-      let chavePix = '12.345.678/0001-90';
-      let tipoChave = 'CNPJ';
-      let titular = 'Ao Ponto Assados Ltda';
-
       if (pagamentosStr) {
         const pag = JSON.parse(pagamentosStr);
         if (pag.pix) {
-          if (pag.pix.chave) chavePix = pag.pix.chave;
-          if (pag.pix.tipoChave) tipoChave = pag.pix.tipoChave.toUpperCase();
-          if (pag.pix.titular) titular = pag.pix.titular;
+          if (pag.pix.chave) dadosLoja.chave = pag.pix.chave;
+          if (pag.pix.tipoChave) dadosLoja.tipo = pag.pix.tipoChave.toUpperCase();
+          if (pag.pix.titular) dadosLoja.titular = pag.pix.titular;
         }
       }
 
-      document.getElementById('placa-nome-ponto').textContent = nomeLoja;
-      document.getElementById('placa-tipo-chave').textContent = 'Chave Pix (' + tipoChave + ')';
-      document.getElementById('placa-valor-chave').textContent = chavePix;
-      document.getElementById('placa-favorecido').innerHTML = 'Favorecido: <strong>' + titular + '</strong>';
+      // Nome do ponto
+      const tenantStr = localStorage.getItem('fa-tenant');
+      if (tenantStr) {
+        const tenant = JSON.parse(tenantStr);
+        if (tenant?.nome) dadosLoja.nome = tenant.nome;
+      }
+
+      document.getElementById('placa-nome-ponto').textContent = dadosLoja.nome;
+      document.getElementById('placa-tipo-chave').textContent = 'Chave Pix (' + dadosLoja.tipo + ')';
+      document.getElementById('placa-valor-chave').textContent = dadosLoja.chave;
+      document.getElementById('placa-favorecido').innerHTML = 'Favorecido: <strong>' + dadosLoja.titular + '</strong>';
     } catch (e) {
       console.warn('Erro ao carregar dados dinâmicos da placa:', e);
     }
@@ -323,6 +409,231 @@
       setTimeout(() => {
         window.print();
       }, 500);
+    }
+
+    // Renderiza a placa no Canvas em alta definição (1240 x 1754 px - Proporção A4)
+    function renderizarPlacaNoCanvas() {
+      return new Promise((resolve) => {
+        const canvas = document.getElementById('canvas-export-placa');
+        const ctx = canvas.getContext('2d');
+
+        // Fundo Branco A4
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, 1240, 1754);
+
+        // Borda Laranja Brasa
+        ctx.lineWidth = 16;
+        ctx.strokeStyle = '#EA580C';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(60, 60, 1120, 1634, 32);
+        } else {
+          ctx.rect(60, 60, 1120, 1634);
+        }
+        ctx.stroke();
+
+        // Logo e Nome do Ponto
+        ctx.textAlign = 'center';
+        ctx.font = '96px sans-serif';
+        ctx.fillText('🍗', 620, 190);
+
+        ctx.fillStyle = '#C2410C';
+        ctx.font = 'bold 52px Montserrat, sans-serif';
+        ctx.fillText(dadosLoja.nome.toUpperCase(), 620, 280);
+
+        // Badge Pix Verde
+        ctx.fillStyle = '#DCFCE7';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(320, 320, 600, 60, 30);
+        } else {
+          ctx.rect(320, 320, 600, 60);
+        }
+        ctx.fill();
+
+        ctx.fillStyle = '#166534';
+        ctx.font = 'bold 28px Montserrat, sans-serif';
+        ctx.fillText('⚡ PAGAMENTO INSTANTÂNEO VIA PIX', 620, 362);
+
+        // Desenhar SVG do QR Code
+        const svgElement = document.getElementById('placa-svg-qr');
+        const xml = new XMLSerializer().serializeToString(svgElement);
+        const svg64 = btoa(unescape(encodeURIComponent(xml)));
+        const image64 = 'data:image/svg+xml;base64,' + svg64;
+
+        const qrImg = new Image();
+        qrImg.onload = () => {
+          // Borda suave do QR Code
+          ctx.strokeStyle = '#FED7AA';
+          ctx.lineWidth = 4;
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(360, 430, 520, 520, 24);
+          } else {
+            ctx.rect(360, 430, 520, 520);
+          }
+          ctx.fill();
+          ctx.stroke();
+
+          // Desenho do QR Code
+          ctx.drawImage(qrImg, 385, 455, 470, 470);
+
+          // Caixa da Chave Pix
+          ctx.fillStyle = '#FFFBF5';
+          ctx.strokeStyle = '#EA580C';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          if (ctx.roundRect) {
+            ctx.roundRect(140, 1020, 960, 270, 20);
+          } else {
+            ctx.rect(140, 1020, 960, 270);
+          }
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = '#C2410C';
+          ctx.font = 'bold 28px Montserrat, sans-serif';
+          ctx.fillText(('CHAVE PIX (' + dadosLoja.tipo + ')').toUpperCase(), 620, 1080);
+
+          ctx.fillStyle = '#18181B';
+          ctx.font = 'bold 44px Fira Code, monospace';
+          ctx.fillText(dadosLoja.chave, 620, 1160);
+
+          ctx.fillStyle = '#52525B';
+          ctx.font = '30px Montserrat, sans-serif';
+          ctx.fillText('Favorecido: ' + dadosLoja.titular, 620, 1235);
+
+          // Instruções de Pagamento
+          ctx.fillStyle = '#3F3F46';
+          ctx.font = 'bold 30px Montserrat, sans-serif';
+          ctx.fillText('Abra o app do seu banco, escolha Pix', 620, 1370);
+          ctx.fillText('e aponte a câmera para pagar na hora sem taxas!', 620, 1420);
+
+          // Rodapé
+          ctx.fillStyle = '#A1A1AA';
+          ctx.font = 'bold 22px Montserrat, sans-serif';
+          ctx.fillText('AO PONTO • GESTÃO PROFISSIONAL DE ASSADOS', 620, 1580);
+
+          resolve(canvas);
+        };
+        qrImg.src = image64;
+      });
+    }
+
+    // Gera o PDF de 1 Página A4 Exata via jsPDF
+    async function criarDocPdf() {
+      const canvas = await renderizarPlacaNoCanvas();
+      const imgData = canvas.toDataURL('image/png', 1.0);
+
+      // Usando jsPDF UMD
+      const { jsPDF } = window.jspdf || {};
+      if (!jsPDF) {
+        throw new Error('Biblioteca jsPDF não carregada.');
+      }
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+      });
+
+      // A4 exato: 210 x 297 mm - exatamente 1 página sem margem extra
+      pdf.addImage(imgData, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
+      return pdf;
+    }
+
+    // 1) Enviar PDF no WhatsApp
+    async function gerarECompartilharPDF() {
+      const btn = document.getElementById('btn-share-whatsapp');
+      if (btn) {
+        btn.textContent = '⏳ Gerando PDF (1 Folha)...';
+        btn.disabled = true;
+      }
+
+      try {
+        const pdf = await criarDocPdf();
+        const pdfBlob = pdf.output('blob');
+        const pdfFile = new File([pdfBlob], 'Placa-Pix-Ao-Ponto-1-Folha.pdf', { type: 'application/pdf' });
+
+        if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+          try {
+            await navigator.share({
+              title: 'Placa Pix - Ao Ponto',
+              text: `🍗 *${dadosLoja.nome}*\nPlaca Oficial Pix para balcão (PDF 1 Folha A4 Pronto para Impressão).\nChave Pix: *${dadosLoja.chave}*`,
+              files: [pdfFile]
+            });
+          } catch (err) {
+            if (err.name !== 'AbortError') {
+              pdf.save('Placa-Pix-Ao-Ponto-1-Folha.pdf');
+              abrirLinkZapFallback();
+            }
+          }
+        } else {
+          pdf.save('Placa-Pix-Ao-Ponto-1-Folha.pdf');
+          abrirLinkZapFallback();
+        }
+      } catch (err) {
+        console.warn('Fallback para imagem PNG / Link WhatsApp:', err);
+        baixarImagemEEnviarZap();
+      } finally {
+        if (btn) {
+          btn.textContent = '💬 Enviar PDF no WhatsApp';
+          btn.disabled = false;
+        }
+      }
+    }
+
+    // 2) Baixar PDF Direto (1 Folha)
+    async function baixarPDFDireto() {
+      const btn = document.getElementById('btn-download-pdf');
+      if (btn) {
+        btn.textContent = '⏳ Baixando...';
+        btn.disabled = true;
+      }
+
+      try {
+        const pdf = await criarDocPdf();
+        pdf.save('Placa-Pix-Ao-Ponto-1-Folha.pdf');
+      } catch (err) {
+        console.warn('Erro ao baixar PDF:', err);
+        const canvas = await renderizarPlacaNoCanvas();
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL('image/png');
+        a.download = 'Placa-Pix-Ao-Ponto-1-Folha.png';
+        a.click();
+      } finally {
+        if (btn) {
+          btn.textContent = '📄 Baixar PDF (1 Folha)';
+          btn.disabled = false;
+        }
+      }
+    }
+
+    function abrirLinkZapFallback() {
+      setTimeout(() => {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(`🍗 *${dadosLoja.nome} - Placa Pix de Balcão*\nO arquivo PDF oficial de 1 página foi gerado!\nChave Pix: *${dadosLoja.chave}* (${dadosLoja.tipo})\nFavorecido: ${dadosLoja.titular}`)}`, '_blank');
+      }, 600);
+    }
+
+    async function baixarImagemEEnviarZap() {
+      const canvas = await renderizarPlacaNoCanvas();
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Placa-Pix-Ao-Ponto-1-Folha.png';
+        a.click();
+        abrirLinkZapFallback();
+      }, 'image/png', 0.95);
+    }
+
+    // Auto-compartilhar se solicitado por parâmetro
+    if (window.location.search.includes('share=pdf')) {
+      setTimeout(() => {
+        gerarECompartilharPDF();
+      }, 700);
     }
   </script>
 </body>
