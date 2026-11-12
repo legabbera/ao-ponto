@@ -15,6 +15,7 @@ export function inicializarPwa() {
       navigator.serviceWorker.register('/sw.js').then(
         (reg) => {
           console.log('✅ Service Worker PWA registrado com escopo:', reg.scope);
+          try { reg.update(); } catch (_) {}
         },
         (err) => {
           console.warn('⚠️ Falha ao registrar Service Worker PWA:', err);

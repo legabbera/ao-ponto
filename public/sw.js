@@ -2,7 +2,7 @@
  * Service Worker Oficial — Ao Ponto PWA
  * Fornece caching inteligente, carregamento rápido e suporte offline básico.
  */
-const CACHE_NAME = 'ao-ponto-cache-v1';
+const CACHE_NAME = 'ao-ponto-cache-v3';
 const ASSETS_ESTATICOS = [
   '/',
   '/index.html',
@@ -49,6 +49,25 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Navegações de página: busca sempre da rede para ter o HTML mais novo e não travar em versões antigas
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req)
+        .then((respostaRede) => {
+          if (respostaRede && respostaRede.status === 200) {
+            const respostaClone = respostaRede.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, respostaClone));
+          }
+          return respostaRede;
+        })
+        .catch(async () => {
+          const emCache = await caches.match(req) || await caches.match('/index.html');
+          return emCache || new Response('Offline', { status: 503 });
+        })
+    );
+    return;
+  }
+
   event.respondWith(
     fetch(req)
       .then((respostaRede) => {
@@ -66,10 +85,6 @@ self.addEventListener('fetch', (event) => {
         const respostaCache = await caches.match(req);
         if (respostaCache) {
           return respostaCache;
-        }
-        // Se for navegação de página HTML e estiver offline, devolve index.html
-        if (req.mode === 'navigate') {
-          return caches.match('/index.html');
         }
         return new Response('Sem conexão com a internet', {
           status: 503,
