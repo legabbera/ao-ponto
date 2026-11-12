@@ -12,13 +12,13 @@ import { executarComIdempotencia, gerarIdempotencyKey } from '../utils/idempoten
 import { escapeHtml, sanitizarNome, sanitizarTelefone, sanitizarTexto } from '../utils/sanitizar.js';
 
 let filtroStatus = 'todos';
-let filtroData = 'hoje';
+let filtroData = 'todas';
 let buscaTexto = '';
 
 export function renderPedidos(raiz, irPara) {
   const st = store.get(), perfil = store.perfil();
-  const nomePonto = st.ponto === 'todos' 
-    ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome) 
+  const nomePonto = st.ponto === 'todos'
+    ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome)
     : PONTOS.find((p) => p.id === st.ponto)?.nome;
 
   function desenhar() {
@@ -34,9 +34,9 @@ export function renderPedidos(raiz, irPara) {
     }
     if (buscaTexto.trim()) {
       const q = buscaTexto.toLowerCase().trim();
-      lista = lista.filter((p) => 
-        p.cliente.toLowerCase().includes(q) || 
-        p.telefone.includes(q) || 
+      lista = lista.filter((p) =>
+        p.cliente.toLowerCase().includes(q) ||
+        p.telefone.includes(q) ||
         String(p.id).includes(q)
       );
     }
@@ -64,27 +64,32 @@ export function renderPedidos(raiz, irPara) {
         </div>
       </div>
 
-      <!-- Resumo Rápido em Cards -->
+      <!-- Resumo Rápido em Cards (Clique para abrir popup com os clientes) -->
       <div class="pedidos-kpi-grade">
-        <div class="kpi-mini" data-status-click="todos">
+        <div class="kpi-mini" data-status-click="todos" style="cursor:pointer;" title="Clique para ver os clientes">
           <span class="km-rotulo">Total de Pedidos</span>
           <strong class="km-val">${contagemPorStatus.todos}</strong>
+          <small style="font-size:10.5px; color:var(--texto-suave); display:block; margin-top:2px;">Ver clientes &rarr;</small>
         </div>
-        <div class="kpi-mini ambar" data-status-click="aguardando">
+        <div class="kpi-mini ambar" data-status-click="aguardando" style="cursor:pointer;" title="Clique para ver os clientes">
           <span class="km-rotulo">Aguardando</span>
           <strong class="km-val">${contagemPorStatus.aguardando}</strong>
+          <small style="font-size:10.5px; color:var(--texto-suave); display:block; margin-top:2px;">Ver clientes &rarr;</small>
         </div>
-        <div class="kpi-mini azul" data-status-click="confirmado">
+        <div class="kpi-mini azul" data-status-click="confirmado" style="cursor:pointer;" title="Clique para ver os clientes">
           <span class="km-rotulo">Confirmados</span>
           <strong class="km-val">${contagemPorStatus.confirmado}</strong>
+          <small style="font-size:10.5px; color:var(--texto-suave); display:block; margin-top:2px;">Ver clientes &rarr;</small>
         </div>
-        <div class="kpi-mini brasa" data-status-click="preparo">
-          <span class="km-rotulo">🔥 No Espeto (Preparo)</span>
+        <div class="kpi-mini brasa" data-status-click="preparo" style="cursor:pointer;" title="Clique para ver os clientes">
+          <span class="km-rotulo">🔥 No Espeto</span>
           <strong class="km-val">${contagemPorStatus.preparo}</strong>
+          <small style="font-size:10.5px; color:var(--texto-suave); display:block; margin-top:2px;">Ver clientes &rarr;</small>
         </div>
-        <div class="kpi-mini roxo" data-status-click="pronto">
+        <div class="kpi-mini roxo" data-status-click="pronto" style="cursor:pointer;" title="Clique para ver os clientes">
           <span class="km-rotulo">🍗 Pronto p/ Retirada</span>
           <strong class="km-val">${contagemPorStatus.pronto}</strong>
+          <small style="font-size:10.5px; color:var(--texto-suave); display:block; margin-top:2px;">Ver clientes &rarr;</small>
         </div>
       </div>
 
@@ -123,12 +128,12 @@ export function renderPedidos(raiz, irPara) {
             <button class="btn btn-primario" id="btn-vazio-novo">${icone('mais')} Fazer Nova Reserva</button>
           </div>
         ` : lista.map((p) => {
-          const stInfo = STATUS_PEDIDO.find((s) => s.id === p.status) || STATUS_PEDIDO[0];
-          const isPago = p.pagamento?.status === 'pago';
-          const horaFmt = `${p.hora}h`;
-          const dataFmt = p.data === 'hoje' ? 'Hoje' : p.data === 'amanha' ? 'Amanhã' : 'Domingo';
+      const stInfo = STATUS_PEDIDO.find((s) => s.id === p.status) || STATUS_PEDIDO[0];
+      const isPago = p.pagamento?.status === 'pago';
+      const horaFmt = `${p.hora}h`;
+      const dataFmt = p.data === 'hoje' ? 'Hoje' : p.data === 'amanha' ? 'Amanhã' : 'Domingo';
 
-          return `
+      return `
           <div class="pedido-card ${p.status}">
             <div class="pedido-card-topo">
               <div class="pedido-id-linha">
@@ -211,7 +216,7 @@ export function renderPedidos(raiz, irPara) {
             </div>
           </div>
           `;
-        }).join('')}
+    }).join('')}
       </div>
     </div>
     `;
@@ -256,8 +261,11 @@ export function renderPedidos(raiz, irPara) {
 
     raiz.querySelectorAll('[data-status-click]').forEach((card) => {
       card.addEventListener('click', () => {
-        filtroStatus = card.dataset.statusClick;
+        const stAlvo = card.dataset.statusClick;
+        filtroStatus = stAlvo;
+        filtroData = 'todas';
         desenhar();
+        abrirModalListaStatus(stAlvo);
       });
     });
 
@@ -281,6 +289,109 @@ export function renderPedidos(raiz, irPara) {
           toast(`Pedido #${id} cancelado.`, 'info');
           desenhar();
         }
+      });
+    });
+  }
+
+  function abrirModalListaStatus(statusAlvo) {
+    const todosPedidos = store.getPedidos();
+    const stInfo = STATUS_PEDIDO.find((s) => s.id === statusAlvo) || {
+      id: 'todos',
+      nome: 'Todos os Pedidos',
+      emoji: '📋',
+      cor: 'var(--creme)'
+    };
+
+    const pedidosFiltrados = statusAlvo === 'todos' 
+      ? todosPedidos 
+      : todosPedidos.filter((p) => p.status === statusAlvo);
+
+    abrirModal(`
+      <div class="modal-status-pedidos">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+          <span style="font-size:28px;">${stInfo.emoji}</span>
+          <div>
+            <h2 style="margin:0; font-size:18px;">${statusAlvo === 'todos' ? 'Todos os Pedidos' : `Pedidos: ${stInfo.nome}`}</h2>
+            <p style="margin:2px 0 0; color:var(--texto-suave); font-size:13px;">
+              ${pedidosFiltrados.length} ${pedidosFiltrados.length === 1 ? 'pedido cadastrado' : 'pedidos cadastrados'}
+            </p>
+          </div>
+        </div>
+
+        ${pedidosFiltrados.length === 0 ? `
+          <div class="vazio" style="padding:24px 12px; text-align:center;">
+            <p style="color:var(--texto-suave); margin:0 0 10px 0;">Nenhum pedido no status <strong>${stInfo.nome}</strong> no momento.</p>
+            <small style="color:var(--texto-suave); font-size:11.5px;">Toque em "+ Novo Pedido" para cadastrar uma reserva.</small>
+          </div>
+        ` : `
+          <div style="display:flex; flex-direction:column; gap:10px; max-height:55vh; overflow-y:auto; padding-right:4px;">
+            ${pedidosFiltrados.map((p) => {
+              const dataFmt = p.data === 'hoje' ? 'Hoje' : p.data === 'amanha' ? 'Amanhã' : 'Domingo';
+              const isPago = p.pagamento?.status === 'pago';
+              return `
+              <div class="card-modal-pedido-item" style="background:var(--creme); border:1.5px solid var(--borda); border-radius:12px; padding:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+                  <div>
+                    <strong style="font-size:15px; color:var(--carvao); display:block;">${escapeHtml(p.cliente)}</strong>
+                    <span style="font-size:12px; color:var(--texto-suave);">
+                      #${p.id} &bull; ${dataFmt} às ${p.hora}h
+                    </span>
+                  </div>
+                  <span class="badge ${isPago ? 'badge-verde' : 'badge-laranja'}" style="font-size:11px;">
+                    ${isPago ? '✓ Pago' : 'Pagar na retirada'}
+                  </span>
+                </div>
+
+                <div style="font-size:13px; color:var(--texto); margin-bottom:8px;">
+                  ${p.itens.map((it) => `${it.qtd}x ${escapeHtml(it.nome)}`).join(', ')}
+                  ${p.itens[0]?.obs ? `<div style="font-size:11.5px; color:var(--brasa); font-style:italic; margin-top:2px;">Obs: ${escapeHtml(p.itens[0].obs)}</div>` : ''}
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed var(--borda); padding-top:8px; gap:8px; flex-wrap:wrap;">
+                  <strong style="font-size:14px; color:var(--carvao);">${fmtMoeda(p.total)}</strong>
+                  <div style="display:flex; gap:6px; margin-left:auto;">
+                    ${p.status === 'aguardando' ? `
+                      <button class="btn btn-primario btn-sm btn-modal-avancar" data-id="${p.id}" data-prox="confirmado">
+                        ${icone('check')} Confirmar
+                      </button>
+                    ` : ''}
+                    ${p.status === 'confirmado' ? `
+                      <button class="btn btn-escuro btn-sm btn-modal-avancar" data-id="${p.id}" data-prox="preparo">
+                        🔥 No Espeto
+                      </button>
+                    ` : ''}
+                    ${p.status === 'preparo' ? `
+                      <button class="btn btn-primario btn-sm btn-modal-avancar" data-id="${p.id}" data-prox="pronto">
+                        🍗 Pronto (Estufa)
+                      </button>
+                    ` : ''}
+                    ${p.status === 'pronto' ? `
+                      <button class="btn btn-sucesso btn-sm btn-modal-avancar" data-id="${p.id}" data-prox="entregue">
+                        ${icone('check')} Entregar
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+              `;
+            }).join('')}
+          </div>
+        `}
+
+        <div class="modal-acoes" style="margin-top:14px;">
+          <button class="btn btn-contorno btn-bloco" data-fechar>Fechar Janela</button>
+        </div>
+      </div>
+    `, (modal, fechar) => {
+      modal.querySelectorAll('.btn-modal-avancar').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = Number(btn.dataset.id);
+          const prox = btn.dataset.prox;
+          store.atualizarStatusPedido(id, prox);
+          toast(`Pedido #${id} atualizado para ${prox.toUpperCase()}!`, 'sucesso');
+          fechar();
+          desenhar();
+        });
       });
     });
   }
