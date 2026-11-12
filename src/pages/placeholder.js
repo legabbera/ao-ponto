@@ -20,30 +20,21 @@ export function renderEmBreve(raiz, rotaId, irPara) {
   raiz.querySelector('#btn-voltar-inicio')?.addEventListener('click', () => irPara('inicio'));
 }
 
-// Lista oficial completa de módulos de gestão exibidos no Menu mobile
-export const ITENS_GESTAO_MENU = [
-  { id: 'precificacao', rotulo: 'Calculadora de Preços', icone: 'dinheiro', desc: 'Custos, ficha técnica e lucro real' },
-  { id: 'clientes', rotulo: 'Clientes', icone: 'clientes', desc: 'Histórico e fidelidade' },
-  { id: 'usuarios', rotulo: 'Usuários', icone: 'usuarios', desc: 'Equipe e permissões' },
-  { id: 'whatsapp', rotulo: 'WhatsApp', icone: 'whatsapp', desc: 'Central de atendimento' },
-  { id: 'relatorios', rotulo: 'Relatórios', icone: 'grafico', desc: 'Análises e exportação' },
-  { id: 'planos', rotulo: 'Meu Plano', icone: 'grafico', desc: 'Planos e limites de uso' },
-  { id: 'configuracoes', rotulo: 'Configurações', icone: 'config', desc: 'Dados do ponto, backups e aparência' },
-];
-
 export function renderMenu(raiz, irPara) {
   if (!raiz) return;
-
-  const st = store?.get?.() || {};
-  const perfil = (typeof store?.perfil === 'function' ? store.perfil() : null) || PERFIS[st.perfil] || PERFIS.owner || { id: 'owner', nome: 'Carlos Mendes', papel: 'Dono / Administrador', emoji: '🍗' };
-  const isDemo = typeof store?.isDemo === 'function' ? store.isDemo() : (!st.usuario || st.usuario.id === 'user_demo');
-  const tenant = typeof store?.getTenant === 'function' ? store.getTenant() : st.tenant;
+  const st = store.get() || {};
+  const perfil = (typeof store.perfil === 'function' ? store.perfil() : null) || PERFIS[st.perfil] || PERFIS.owner || { id: 'owner', nome: 'Carlos Mendes', papel: 'Dono / Administrador', emoji: '🍗' };
+  const isDemo = store.isDemo ? store.isDemo() : (!st.usuario || st.usuario.id === 'user_demo');
+  const tenant = store.getTenant ? store.getTenant() : st.tenant;
   const nomeExibicao = (!isDemo && st.usuario?.nome) ? st.usuario.nome : (perfil?.nome || 'Carlos Mendes');
   const papelExibicao = (!isDemo && (st.usuario?.role || tenant?.nome)) ? (st.usuario.role || 'Administrador') : (perfil?.papel || 'Administrador');
   
-  // Exibe todas as ferramentas de gestão do ponto
-  const itens = ITENS_GESTAO_MENU;
-  const isDark = document.documentElement?.classList?.contains('dark') || false;
+  // Lista dos módulos de gestão (todos os blocos oficiais do menu)
+  // Em modo demonstração ou no ponto, exibe todas as ferramentas de gestão
+  const rotasFiltradas = rotasDoPerfil().filter((r) => !r.principal);
+  const todasRotasGestao = ROTAS.filter((r) => !r.principal);
+  const itens = isDemo ? todasRotasGestao : (rotasFiltradas.length > 0 ? rotasFiltradas : todasRotasGestao);
+  const isDark = document.documentElement.classList.contains('dark');
 
   raiz.innerHTML = `
   <div style="margin-bottom: 16px;">
@@ -80,7 +71,6 @@ export function renderMenu(raiz, irPara) {
       </button>
     `).join('')}
   </div>
-
   <div style="margin-top:24px; margin-bottom:12px;">
     <h3 style="font-size:16px; font-weight:700; color:var(--carvao); margin:0 0 10px 0;">Ajuda & Apoio</h3>
     <div class="menu-grade">
@@ -118,7 +108,6 @@ export function renderMenu(raiz, irPara) {
       </button>
     </div>
   </div>
-
   <div style="margin-top:24px; margin-bottom:12px;">
     <h3 style="font-size:16px; font-weight:700; color:var(--carvao); margin:0 0 10px 0;">Sessão & Conta</h3>
     <div class="menu-grade">
@@ -152,19 +141,13 @@ export function renderMenu(raiz, irPara) {
     </div>
   </div>`;
 
-  // Liga navegação aos botões
-  raiz.querySelectorAll('[data-ir]').forEach((b) => {
-    b.addEventListener('click', () => {
-      try { irPara(b.dataset.ir); } catch (e) { location.hash = `#/${b.dataset.ir}`; }
-    });
-  });
+  raiz.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => irPara(b.dataset.ir)));
   
-  // Chave seletora dark/light mode
   const toggleMenu = raiz.querySelector('#menu-toggle-tema-dark');
   toggleMenu?.addEventListener('change', (e) => {
     const darkAtivo = e.target.checked;
     document.documentElement.classList.toggle('dark', darkAtivo);
-    try { localStorage.setItem('ao-ponto-tema', darkAtivo ? 'dark' : 'light'); } catch (_) {}
+    localStorage.setItem('ao-ponto-tema', darkAtivo ? 'dark' : 'light');
     const label = raiz.querySelector('#menu-label-tema');
     const ic = raiz.querySelector('#menu-icone-tema');
     if (label) label.textContent = darkAtivo ? 'Modo Escuro Ativo' : 'Modo Claro Ativo';
@@ -174,27 +157,12 @@ export function renderMenu(raiz, irPara) {
     try { toast(darkAtivo ? 'Modo Escuro ativado! 🌙' : 'Modo Claro ativado! ☀️', 'info'); } catch (_) {}
   });
 
-  // Modais de ajuda e suporte
-  raiz.querySelector('#menu-btn-suporte')?.addEventListener('click', () => {
-    try { abrirModalSuporte(); } catch (_) {}
-  });
-  raiz.querySelector('#menu-btn-sugestoes')?.addEventListener('click', () => {
-    try { abrirModalSugestoes(); } catch (_) {}
-  });
-
-  // Modal de perfil
+  raiz.querySelector('#menu-btn-suporte')?.addEventListener('click', () => abrirModalSuporte());
+  raiz.querySelector('#menu-btn-sugestoes')?.addEventListener('click', () => abrirModalSugestoes());
   if (isDemo) {
-    raiz.querySelector('#menu-trocar-perfil')?.addEventListener('click', () => {
-      try { modalPerfil(irPara); } catch (_) {}
-    });
+    raiz.querySelector('#menu-trocar-perfil')?.addEventListener('click', () => modalPerfil(irPara));
   } else {
-    raiz.querySelector('#menu-meu-perfil')?.addEventListener('click', () => {
-      try { modalMeuPerfil(irPara); } catch (_) {}
-    });
+    raiz.querySelector('#menu-meu-perfil')?.addEventListener('click', () => modalMeuPerfil(irPara));
   }
-
-  // Sair
-  raiz.querySelector('#menu-sair')?.addEventListener('click', () => {
-    try { sair(irPara); } catch (_) { location.hash = '#/login'; }
-  });
+  raiz.querySelector('#menu-sair')?.addEventListener('click', () => sair(irPara));
 }

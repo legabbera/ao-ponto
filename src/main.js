@@ -106,41 +106,20 @@ function render() {
   if (!conteudo) return;
 
   conteudo.innerHTML = '';
-  try {
-    if (hashRota === 'inicio')             renderDashboard(conteudo, irPara);
-    else if (hashRota === 'vendas')        renderVendas(conteudo, irPara);
-    else if (hashRota === 'pedidos')       renderPedidos(conteudo, irPara);
-    else if (hashRota === 'estoque')       renderEstoque(conteudo, irPara);
-    else if (hashRota === 'clientes')      renderClientes(conteudo, irPara);
-    else if (hashRota === 'usuarios')      renderUsuarios(conteudo, irPara);
-    else if (hashRota === 'whatsapp')      renderWhatsapp(conteudo, irPara);
-    else if (hashRota === 'pagamentos')    renderPagamentos(conteudo, irPara);
-    else if (hashRota === 'relatorios')    renderRelatorios(conteudo, irPara);
-    else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
-    else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
-    else if (hashRota === 'precificacao' || hashRota === 'calculadora') renderCalculadora(conteudo, irPara);
-    else if (hashRota === 'menu')          renderMenu(conteudo, irPara);
-    else                                   renderDashboard(conteudo, irPara);
-  } catch (err) {
-    console.error(`Erro ao renderizar rota ${hashRota}:`, err);
-    conteudo.innerHTML = `
-      <div style="padding: 28px 16px; text-align: center;">
-        <div style="font-size: 36px; margin-bottom: 12px;">🍗</div>
-        <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--carvao);">Tudo pronto no ponto!</h3>
-        <p style="color: var(--texto-suave); font-size: 14px; margin-bottom: 16px;">
-          Toque abaixo para abrir o Menu de ferramentas ou voltar ao início:
-        </p>
-        <div style="display: flex; flex-direction: column; gap: 10px; max-width: 320px; margin: 0 auto;">
-          <button class="btn btn-primario btn-bloco" id="btn-fallback-menu">📋 Abrir Menu do Ponto</button>
-          <button class="btn btn-contorno btn-bloco" id="btn-fallback-inicio">🏠 Voltar ao Início</button>
-        </div>
-      </div>
-    `;
-    document.getElementById('btn-fallback-menu')?.addEventListener('click', () => {
-      try { renderMenu(conteudo, irPara); } catch (_) { irPara('inicio'); }
-    });
-    document.getElementById('btn-fallback-inicio')?.addEventListener('click', () => irPara('inicio'));
-  }
+  if (hashRota === 'inicio')             renderDashboard(conteudo, irPara);
+  else if (hashRota === 'vendas')        renderVendas(conteudo, irPara);
+  else if (hashRota === 'pedidos')       renderPedidos(conteudo, irPara);
+  else if (hashRota === 'estoque')       renderEstoque(conteudo, irPara);
+  else if (hashRota === 'clientes')      renderClientes(conteudo, irPara);
+  else if (hashRota === 'usuarios')      renderUsuarios(conteudo, irPara);
+  else if (hashRota === 'whatsapp')      renderWhatsapp(conteudo, irPara);
+  else if (hashRota === 'pagamentos')    renderPagamentos(conteudo, irPara);
+  else if (hashRota === 'relatorios')    renderRelatorios(conteudo, irPara);
+  else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
+  else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
+  else if (hashRota === 'precificacao' || hashRota === 'calculadora') renderCalculadora(conteudo, irPara);
+  else if (hashRota === 'menu')          renderMenu(conteudo, irPara);
+  else                                   renderDashboard(conteudo, irPara);
 }
 
 window.addEventListener('hashchange', render);
