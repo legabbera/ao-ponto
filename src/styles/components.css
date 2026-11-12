@@ -416,15 +416,20 @@ svg.ic.ic-suave {
 }
 
 /* ---------- Modal ---------- */
+#modal-root {
+  position: relative;
+  z-index: 2500;
+}
+
 .modal-fundo {
   position: fixed;
   inset: 0;
-  background: rgba(31, 27, 24, .55);
-  backdrop-filter: blur(3px);
+  background: rgba(31, 27, 24, .65);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  z-index: 100;
+  z-index: 2500 !important;
   animation: aparecer .2s;
 }
 
@@ -433,11 +438,13 @@ svg.ic.ic-suave {
   width: 100%;
   max-width: 480px;
   border-radius: var(--raio-g) var(--raio-g) 0 0;
-  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
-  box-shadow: var(--sombra-forte);
+  padding: 24px 20px calc(36px + env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.28);
   animation: subir .25s cubic-bezier(.2, .9, .3, 1.2);
-  max-height: 90vh;
-  overflow: auto;
+  max-height: 86vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
 
 .modal h2 {
@@ -542,7 +549,7 @@ svg.ic.ic-suave {
   left: 50%;
   transform: translateX(-50%);
   bottom: calc(var(--bottom-nav) + 20px);
-  z-index: 200;
+  z-index: 3000 !important;
   display: flex;
   flex-direction: column;
   gap: 8px;

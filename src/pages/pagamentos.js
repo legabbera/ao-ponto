@@ -541,53 +541,51 @@ function abrirModalNovaMaquininha(onSalvar) {
         </p>
 
         <div class="campo">
-          <label>Identificação / Apelido no Caixa: *</label>
-          <input type="text" id="nova-maq-nome" class="input" placeholder="Ex: Maquininha Balcão 1, Retirada Motoqueiro..." autofocus />
+          <label style="font-weight:700;">Identificação / Apelido no Caixa: *</label>
+          <input type="text" id="nova-maq-nome" class="input" placeholder="Ex: Maquininha Balcão 1, Retirada Motoqueiro..." autofocus style="width:100%; font-size:15px;" />
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-          <div class="campo">
-            <label>Modelo do Aparelho: *</label>
-            <select id="nova-maq-modelo" class="select">
-              <option value="Mercado Pago Point Pro 2">Mercado Pago Point Pro 2</option>
-              <option value="Mercado Pago Point Smart">Mercado Pago Point Smart</option>
-              <option value="Stone Smart POS S920">Stone Smart POS S920</option>
-              <option value="Stone POS P2">Stone POS P2</option>
-              <option value="PagBank Moderninha Pro">PagBank Moderninha Pro</option>
-              <option value="PagBank Moderninha Smart">PagBank Moderninha Smart</option>
-              <option value="Cielo LIO Smart">Cielo LIO Smart</option>
-              <option value="Maquininha Genérica">Maquininha Genérica / Outro</option>
-            </select>
-          </div>
-          <div class="campo">
-            <label>Número de Série (S/N):</label>
-            <input type="text" id="nova-maq-serial" class="input" placeholder="Ex: PAX-882194" />
-          </div>
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Modelo do Aparelho: *</label>
+          <select id="nova-maq-modelo" class="select" style="width:100%; font-size:14px;">
+            <option value="Mercado Pago Point Pro 2">Mercado Pago Point Pro 2</option>
+            <option value="Mercado Pago Point Smart">Mercado Pago Point Smart</option>
+            <option value="Stone Smart POS S920">Stone Smart POS S920</option>
+            <option value="Stone POS P2">Stone POS P2</option>
+            <option value="PagBank Moderninha Pro">PagBank Moderninha Pro</option>
+            <option value="PagBank Moderninha Smart">PagBank Moderninha Smart</option>
+            <option value="Cielo LIO Smart">Cielo LIO Smart</option>
+            <option value="Maquininha Genérica">Maquininha Genérica / Outro</option>
+          </select>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-          <div class="campo">
-            <label>Tipo de Conexão:</label>
-            <select id="nova-maq-conexao" class="select">
-              <option value="Wi-Fi / 4G">Wi-Fi / 4G Chip</option>
-              <option value="Wi-Fi">Apenas Wi-Fi</option>
-              <option value="Bluetooth">Bluetooth (Pareada ao PC/Celular)</option>
-            </select>
-          </div>
-          <div class="campo">
-            <label>Unidade / Ponto de Venda:</label>
-            <select id="nova-maq-ponto" class="select">
-              <option value="todos">Todas as Unidades</option>
-              ${PONTOS.map((p) => `<option value="${p.id}">${p.nome}</option>`).join('')}
-            </select>
-          </div>
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Número de Série (S/N):</label>
+          <input type="text" id="nova-maq-serial" class="input" placeholder="Ex: PAX-882194 (ou deixe em branco p/ gerar)" style="width:100%; font-size:14px;" />
         </div>
 
-        <div class="modal-botoes" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px;">
-          <button type="button" class="btn btn-contorno" data-fechar>Cancelar</button>
-          <button type="button" class="btn btn-primario" id="btn-confirmar-add-maq">
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Tipo de Conexão:</label>
+          <select id="nova-maq-conexao" class="select" style="width:100%; font-size:14px;">
+            <option value="Wi-Fi / 4G">Wi-Fi / 4G Chip</option>
+            <option value="Wi-Fi">Apenas Wi-Fi</option>
+            <option value="Bluetooth">Bluetooth (Pareada ao PC/Celular)</option>
+          </select>
+        </div>
+
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Unidade / Ponto de Venda:</label>
+          <select id="nova-maq-ponto" class="select" style="width:100%; font-size:14px;">
+            <option value="todos">Todas as Unidades</option>
+            ${PONTOS.map((p) => `<option value="${p.id}">${p.nome}</option>`).join('')}
+          </select>
+        </div>
+
+        <div class="modal-botoes" style="margin-top: 24px; display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" class="btn btn-primario btn-bloco" id="btn-confirmar-add-maq" style="padding: 13px; font-size: 15px; font-weight: 700; background: var(--brasa); border-color: var(--brasa);">
             ${icone('mais')} Conectar Aparelho
           </button>
+          <button type="button" class="btn btn-fantasma btn-bloco" data-fechar style="padding: 10px;">Cancelar</button>
         </div>
       </div>
     `,
@@ -616,40 +614,38 @@ function abrirModalEditarMaquininha(maq, onSalvar) {
     html: `
       <div class="form-modal-maquininha">
         <div class="campo">
-          <label>Identificação / Apelido:</label>
-          <input type="text" id="edit-maq-nome" class="input" value="${maq.nome}" />
+          <label style="font-weight:700;">Identificação / Apelido:</label>
+          <input type="text" id="edit-maq-nome" class="input" value="${maq.nome}" style="width:100%; font-size:15px;" />
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-          <div class="campo">
-            <label>Modelo:</label>
-            <input type="text" id="edit-maq-modelo" class="input" value="${maq.modelo}" />
-          </div>
-          <div class="campo">
-            <label>Número de Série:</label>
-            <input type="text" id="edit-maq-serial" class="input" value="${maq.serial}" />
-          </div>
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Modelo do Aparelho:</label>
+          <input type="text" id="edit-maq-modelo" class="input" value="${maq.modelo}" style="width:100%; font-size:14px;" />
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-          <div class="campo">
-            <label>Status:</label>
-            <select id="edit-maq-status" class="select">
-              <option value="online" ${maq.status === 'online' ? 'selected' : ''}>🟢 Online e Pronta</option>
-              <option value="offline" ${maq.status === 'offline' ? 'selected' : ''}>🔴 Offline (Desativada)</option>
-            </select>
-          </div>
-          <div class="campo">
-            <label>Conexão:</label>
-            <input type="text" id="edit-maq-conexao" class="input" value="${maq.tipoConexao || 'Wi-Fi'}" />
-          </div>
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Número de Série (S/N):</label>
+          <input type="text" id="edit-maq-serial" class="input" value="${maq.serial}" style="width:100%; font-size:14px;" />
         </div>
 
-        <div class="modal-botoes" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px;">
-          <button type="button" class="btn btn-contorno" data-fechar>Cancelar</button>
-          <button type="button" class="btn btn-primario" id="btn-confirmar-edit-maq">
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Status Operacional:</label>
+          <select id="edit-maq-status" class="select" style="width:100%; font-size:14px;">
+            <option value="online" ${maq.status === 'online' ? 'selected' : ''}>🟢 Online e Pronta no Balcão</option>
+            <option value="offline" ${maq.status === 'offline' ? 'selected' : ''}>🔴 Offline (Desativada)</option>
+          </select>
+        </div>
+
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Tipo de Conexão:</label>
+          <input type="text" id="edit-maq-conexao" class="input" value="${maq.tipoConexao || 'Wi-Fi'}" style="width:100%; font-size:14px;" />
+        </div>
+
+        <div class="modal-botoes" style="margin-top: 24px; display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" class="btn btn-primario btn-bloco" id="btn-confirmar-edit-maq" style="padding: 13px; font-size: 15px; font-weight: 700;">
             Salvar Alterações
           </button>
+          <button type="button" class="btn btn-fantasma btn-bloco" data-fechar style="padding: 10px;">Cancelar</button>
         </div>
       </div>
     `,
@@ -682,31 +678,29 @@ function abrirModalEditarTaxas(onSalvar) {
           Informe as taxas exatas acordadas com o seu provedor (Stone, PagBank, Mercado Pago, etc.):
         </p>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <div class="campo">
-            <label>Taxa de Débito (%):</label>
-            <input type="number" id="taxa-debito" class="input" value="${taxas.debito || 1.19}" step="0.01" />
-          </div>
-          <div class="campo">
-            <label>Taxa Crédito à Vista 1x (%):</label>
-            <input type="number" id="taxa-credito-vista" class="input" value="${taxas.creditoVista || 2.89}" step="0.01" />
-          </div>
+        <div class="campo">
+          <label style="font-weight:700;">Taxa de Débito (%):</label>
+          <input type="number" id="taxa-debito" class="input" value="${taxas.debito || 1.19}" step="0.01" style="width:100%; font-size:15px;" />
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-          <div class="campo">
-            <label>Taxa Crédito Parcelado (%):</label>
-            <input type="number" id="taxa-credito-parc" class="input" value="${taxas.creditoParcelado || 3.99}" step="0.01" />
-          </div>
-          <div class="campo">
-            <label>Taxa Pix Maquininha (%):</label>
-            <input type="number" id="taxa-pix" class="input" value="${taxas.pix || 0.00}" step="0.01" />
-          </div>
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Taxa Crédito à Vista 1x (%):</label>
+          <input type="number" id="taxa-credito-vista" class="input" value="${taxas.creditoVista || 2.89}" step="0.01" style="width:100%; font-size:15px;" />
         </div>
 
-        <div class="campo" style="margin-top: 10px;">
-          <label>Prazo de Recebimento na Conta:</label>
-          <select id="taxa-prazo" class="select">
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Taxa Crédito Parcelado (%):</label>
+          <input type="number" id="taxa-credito-parc" class="input" value="${taxas.creditoParcelado || 3.99}" step="0.01" style="width:100%; font-size:15px;" />
+        </div>
+
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Taxa Pix Maquininha (%):</label>
+          <input type="number" id="taxa-pix" class="input" value="${taxas.pix || 0.00}" step="0.01" style="width:100%; font-size:15px;" />
+        </div>
+
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Prazo de Recebimento na Conta:</label>
+          <select id="taxa-prazo" class="select" style="width:100%; font-size:14px;">
             <option value="Na hora" ${taxas.prazoRecebimento === 'Na hora' ? 'selected' : ''}>Na hora (Instantâneo)</option>
             <option value="D+1" ${taxas.prazoRecebimento === 'D+1' ? 'selected' : ''}>D+1 (1 dia útil - Padrão)</option>
             <option value="D+14" ${taxas.prazoRecebimento === 'D+14' ? 'selected' : ''}>D+14 (14 dias corridos)</option>
@@ -714,11 +708,11 @@ function abrirModalEditarTaxas(onSalvar) {
           </select>
         </div>
 
-        <div class="modal-botoes" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px;">
-          <button type="button" class="btn btn-contorno" data-fechar>Cancelar</button>
-          <button type="button" class="btn btn-primario" id="btn-salvar-taxas">
+        <div class="modal-botoes" style="margin-top: 24px; display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" class="btn btn-primario btn-bloco" id="btn-salvar-taxas" style="padding: 13px; font-size: 15px; font-weight: 700;">
             Salvar Taxas
           </button>
+          <button type="button" class="btn btn-fantasma btn-bloco" data-fechar style="padding: 10px;">Cancelar</button>
         </div>
       </div>
     `,
@@ -749,8 +743,8 @@ function abrirModalEditarPix(onSalvar) {
     html: `
       <div class="form-modal-pix">
         <div class="campo">
-          <label>Tipo de Chave:</label>
-          <select id="pix-tipo" class="select">
+          <label style="font-weight:700;">Tipo de Chave: *</label>
+          <select id="pix-tipo" class="select" style="width:100%; font-size:14px;">
             <option value="cnpj" ${pix.tipoChave === 'cnpj' ? 'selected' : ''}>CNPJ</option>
             <option value="cpf" ${pix.tipoChave === 'cpf' ? 'selected' : ''}>CPF</option>
             <option value="celular" ${pix.tipoChave === 'celular' ? 'selected' : ''}>Celular / Telefone</option>
@@ -759,27 +753,26 @@ function abrirModalEditarPix(onSalvar) {
           </select>
         </div>
 
-        <div class="campo" style="margin-top: 10px;">
-          <label>Chave Pix: *</label>
-          <input type="text" id="pix-chave" class="input" value="${pix.chave || ''}" placeholder="Cole sua chave aqui..." />
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Chave Pix: *</label>
+          <input type="text" id="pix-chave" class="input" value="${pix.chave || ''}" placeholder="Cole sua chave aqui..." style="width:100%; font-size:15px; font-family:monospace;" />
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-          <div class="campo">
-            <label>Nome do Favorecido / Razão Social:</label>
-            <input type="text" id="pix-titular" class="input" value="${pix.titular || ''}" placeholder="Ex: Ao Ponto Assados Ltda" />
-          </div>
-          <div class="campo">
-            <label>Cidade do Estabelecimento:</label>
-            <input type="text" id="pix-cidade" class="input" value="${pix.cidade || 'São Paulo'}" />
-          </div>
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Nome do Favorecido / Razão Social:</label>
+          <input type="text" id="pix-titular" class="input" value="${pix.titular || ''}" placeholder="Ex: Ao Ponto Assados Ltda" style="width:100%; font-size:14px;" />
         </div>
 
-        <div class="modal-botoes" style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px;">
-          <button type="button" class="btn btn-contorno" data-fechar>Cancelar</button>
-          <button type="button" class="btn btn-primario" id="btn-salvar-pix">
+        <div class="campo" style="margin-top: 12px;">
+          <label style="font-weight:700;">Cidade do Estabelecimento:</label>
+          <input type="text" id="pix-cidade" class="input" value="${pix.cidade || 'São Paulo'}" style="width:100%; font-size:14px;" />
+        </div>
+
+        <div class="modal-botoes" style="margin-top: 24px; display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" class="btn btn-primario btn-bloco" id="btn-salvar-pix" style="padding: 13px; font-size: 15px; font-weight: 700; background: #16A34A; border-color: #16A34A;">
             Salvar Dados Pix
           </button>
+          <button type="button" class="btn btn-fantasma btn-bloco" data-fechar style="padding: 10px;">Cancelar</button>
         </div>
       </div>
     `,
