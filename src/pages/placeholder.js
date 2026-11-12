@@ -19,13 +19,18 @@ export function renderEmBreve(raiz, rotaId, irPara) {
 }
 
 export function renderMenu(raiz, irPara) {
+  if (!raiz) return;
   const st = store.get();
-  const perfil = store.perfil();
+  const perfil = store.perfil() || PERFIS[st.perfil] || PERFIS.owner || { id: 'owner', nome: 'Operador', papel: 'Administrador', emoji: '🍗' };
   const isDemo = store.isDemo ? store.isDemo() : (!st.usuario || st.usuario.id === 'user_demo');
   const tenant = store.getTenant ? store.getTenant() : st.tenant;
-  const nomeExibicao = (!isDemo && st.usuario?.nome) ? st.usuario.nome : perfil.nome;
-  const papelExibicao = (!isDemo && (st.usuario?.role || tenant?.nome)) ? (st.usuario.role || 'Administrador') : perfil.papel;
-  const itens = rotasDoPerfil().filter((r) => !r.principal);
+  const nomeExibicao = (!isDemo && st.usuario?.nome) ? st.usuario.nome : (perfil?.nome || 'Operador');
+  const papelExibicao = (!isDemo && (st.usuario?.role || tenant?.nome)) ? (st.usuario.role || 'Administrador') : (perfil?.papel || 'Administrador');
+  
+  // No menu mobile, exibe todos os módulos do negócio (e em demo, libera tudo para teste)
+  const itens = isDemo 
+    ? ROTAS.filter((r) => !r.principal)
+    : rotasDoPerfil().filter((r) => !r.principal);
   const isDark = document.documentElement.classList.contains('dark');
 
   raiz.innerHTML = `
@@ -105,10 +110,10 @@ export function renderMenu(raiz, irPara) {
     <div class="menu-grade">
       ${isDemo ? `
         <button class="menu-card" id="menu-trocar-perfil">
-          <span class="mc-ic">${perfil.emoji}</span>
+          <span class="mc-ic">${perfil?.emoji || '👨‍💼'}</span>
           <div class="menu-card-conteudo">
             <strong class="menu-card-titulo">Trocar perfil (demonstração)</strong>
-            <span class="menu-card-desc">Logado como ${perfil.nome} (${perfil.papel})</span>
+            <span class="menu-card-desc">Logado como ${perfil?.nome || 'Operador'} (${perfil?.papel || 'Demonstração'})</span>
           </div>
           <span class="menu-card-seta">&rarr;</span>
         </button>
@@ -155,5 +160,5 @@ export function renderMenu(raiz, irPara) {
   } else {
     raiz.querySelector('#menu-meu-perfil')?.addEventListener('click', () => modalMeuPerfil(irPara));
   }
-  raiz.querySelector('#menu-sair').addEventListener('click', () => sair(irPara));
+  raiz.querySelector('#menu-sair')?.addEventListener('click', () => sair(irPara));
 }

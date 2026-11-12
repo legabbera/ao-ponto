@@ -103,21 +103,28 @@ function render() {
   // ── Shell ────────────────────────────────────────────────────
   renderShell(app, hashRota, irPara);
   const conteudo = document.getElementById('conteudo');
+  if (!conteudo) return;
 
-  if (hashRota === 'inicio')             renderDashboard(conteudo, irPara);
-  else if (hashRota === 'vendas')        renderVendas(conteudo, irPara);
-  else if (hashRota === 'pedidos')       renderPedidos(conteudo, irPara);
-  else if (hashRota === 'estoque')       renderEstoque(conteudo, irPara);
-  else if (hashRota === 'clientes')      renderClientes(conteudo, irPara);
-  else if (hashRota === 'usuarios')      renderUsuarios(conteudo, irPara);
-  else if (hashRota === 'whatsapp')      renderWhatsapp(conteudo, irPara);
-  else if (hashRota === 'pagamentos')    renderPagamentos(conteudo, irPara);
-  else if (hashRota === 'relatorios')    renderRelatorios(conteudo, irPara);
-  else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
-  else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
-  else if (hashRota === 'precificacao' || hashRota === 'calculadora') renderCalculadora(conteudo, irPara);
-  else if (hashRota === 'menu')          renderMenu(conteudo, irPara);
-  else                                   renderDashboard(conteudo, irPara);
+  conteudo.innerHTML = '';
+  try {
+    if (hashRota === 'inicio')             renderDashboard(conteudo, irPara);
+    else if (hashRota === 'vendas')        renderVendas(conteudo, irPara);
+    else if (hashRota === 'pedidos')       renderPedidos(conteudo, irPara);
+    else if (hashRota === 'estoque')       renderEstoque(conteudo, irPara);
+    else if (hashRota === 'clientes')      renderClientes(conteudo, irPara);
+    else if (hashRota === 'usuarios')      renderUsuarios(conteudo, irPara);
+    else if (hashRota === 'whatsapp')      renderWhatsapp(conteudo, irPara);
+    else if (hashRota === 'pagamentos')    renderPagamentos(conteudo, irPara);
+    else if (hashRota === 'relatorios')    renderRelatorios(conteudo, irPara);
+    else if (hashRota === 'planos')        renderPlanos(conteudo, irPara);
+    else if (hashRota === 'configuracoes') renderConfiguracoes(conteudo, irPara);
+    else if (hashRota === 'precificacao' || hashRota === 'calculadora') renderCalculadora(conteudo, irPara);
+    else if (hashRota === 'menu')          renderMenu(conteudo, irPara);
+    else                                   renderDashboard(conteudo, irPara);
+  } catch (err) {
+    console.error(`Erro ao renderizar rota ${hashRota}:`, err);
+    renderMenu(conteudo, irPara);
+  }
 }
 
 window.addEventListener('hashchange', render);
