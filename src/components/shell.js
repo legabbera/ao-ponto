@@ -26,15 +26,16 @@ export const ROTAS = [
 export const rotasDoPerfil = () => ROTAS.filter((r) => !r.perfis || r.perfis.includes(store.get().perfil));
 
 export function renderShell(raiz, rotaAtual, irPara) {
-  const st = store.get(), perfil = PERFIS[st.perfil];
+  const st = store.get() || {};
+  const perfil = PERFIS[st.perfil] || PERFIS.owner;
   const isDemo = store.isDemo ? store.isDemo() : (!st.usuario || st.usuario.id === 'user_demo');
   const tenant = store.getTenant();
   const rotas = rotasDoPerfil();
-  const nomeExibicao = (!isDemo && st.usuario?.nome) ? st.usuario.nome : perfil.nome;
-  const iniciais = nomeExibicao.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
+  const nomeExibicao = (!isDemo && st.usuario?.nome) ? st.usuario.nome : (perfil?.nome || 'Carlos Mendes');
+  const iniciais = (nomeExibicao || 'AP').split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
   const nomePonto = st.ponto === 'todos' 
-    ? (perfil.pontos.length > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil.pontos[0]).nome) 
-    : PONTOS.find((p) => p.id === st.ponto)?.nome;
+    ? ((perfil?.pontos?.length || 0) > 1 ? 'Todos os pontos' : PONTOS.find((p) => p.id === perfil?.pontos?.[0])?.nome || 'Ponto Centro') 
+    : PONTOS.find((p) => p.id === st.ponto)?.nome || 'Ponto Centro';
   const atual = ROTAS.find((r) => r.id === rotaAtual);
   const ativo = (id) => (id === rotaAtual || (id === 'menu' && !atual?.principal && rotaAtual !== 'inicio') ? 'aria-current="page"' : '');
 

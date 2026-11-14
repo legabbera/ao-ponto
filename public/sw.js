@@ -2,7 +2,7 @@
  * Service Worker Oficial — Ao Ponto PWA
  * Fornece caching inteligente, carregamento rápido e suporte offline básico.
  */
-const CACHE_NAME = 'ao-ponto-cache-v4';
+const CACHE_NAME = 'ao-ponto-cache-v5';
 const ASSETS_ESTATICOS = [
   '/',
   '/index.html',
